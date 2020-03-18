@@ -18,7 +18,7 @@ public class MainActivity extends AppCompatActivity {
 
         User p1 = new User();
         p1.setName("Fabio");
-        p1.setSurname("Steve");
+        p1.setSurname("Ciao");
 
         Backendless.Data.of(User.class).save(p1, new AsyncCallback<User>() {
                     @Override
