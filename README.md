@@ -5,4 +5,4 @@
 - SERVER CLOUD MESSAGING
 - API: GOOGLE MAPS API
 
-![Architecture (1)](architettura.png)
+![Architecture (1)](architettura.jpg)
