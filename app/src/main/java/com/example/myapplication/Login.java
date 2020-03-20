@@ -49,13 +49,43 @@ public class Login extends AppCompatActivity {
         btnRegister = findViewById(R.id.btnRegister);
         tvReset = findViewById(R.id.tvReset);
 
-        showProgress(true);
+        //togliere il seguente commento per login automatico
+       // showProgress(true);
 
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (etMail.getText().toString().isEmpty() || etPassword.getText().toString().isEmpty()) {
+                    Toast.makeText(Login.this, "Please enter all fields!", Toast.LENGTH_SHORT).show();
+                } else {
 
+                    String email = etMail.getText().toString().trim();
+                    String password = etPassword.getText().toString().trim();
 
+                    showProgress(true);
+                    tvLoad.setText("Busy logging you in...please wait...");
+
+                    Backendless.UserService.login(email, password, new AsyncCallback<BackendlessUser>() {
+                        @Override
+                        public void handleResponse(BackendlessUser response) {
+
+                           // ApplicationClass.user = response;
+                            Toast.makeText(Login.this, "Logged in successfully!", Toast.LENGTH_SHORT).show();
+                            startActivity(new Intent(Login.this, MainActivity.class));
+                            Login.this.finish();
+
+                        }
+
+                        @Override
+                        public void handleFault(BackendlessFault fault) {
+
+                            Toast.makeText(Login.this, "Error: " + fault.getMessage(), Toast.LENGTH_SHORT).show();
+                            showProgress(false);
+
+                        }
+                    }, true);
+
+                }
             }
         });
 
@@ -71,10 +101,42 @@ public class Login extends AppCompatActivity {
         tvReset.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (etMail.getText().toString().isEmpty())
+                {
+                    Toast.makeText(Login.this, "Please enter your email address in the email field!", Toast.LENGTH_SHORT).show();
+                }
+                else
+                {
+                    String email = etMail.getText().toString().trim();
 
+                    showProgress(true);
+                    tvLoad.setText("Busy sending reset instructions...please wait...");
+
+                    Backendless.UserService.restorePassword(email, new AsyncCallback<Void>() {
+                        @Override
+                        public void handleResponse(Void response) {
+
+                            Toast.makeText(Login.this, "Reset instructions sent to email address!", Toast.LENGTH_SHORT).show();
+                            showProgress(false);
+                        }
+
+                        @Override
+                        public void handleFault(BackendlessFault fault) {
+
+                            Toast.makeText(Login.this, "Error: " + fault.getMessage(), Toast.LENGTH_SHORT).show();
+                            showProgress(false);
+
+                        }
+                    });
+                }
 
             }
         });
+
+
+
+        //Togliere i seguenti commenti per effettuare il login automatico
+        /*
 
         tvLoad.setText("Checking login credentials...please wait...");
 
@@ -121,7 +183,11 @@ public class Login extends AppCompatActivity {
             }
         });
 
+        */
+
     }
+
+
 
     /**
      * Shows the progress UI and hides the login form.
