@@ -24,7 +24,7 @@ public class Register extends AppCompatActivity {
     private View mLoginFormView;
     private TextView tvLoad;
 
-    EditText etName,etMail,etPassword,etReEnter;
+    EditText etName,etMail,etPassword,etReEnter,etUsername,etSurname;
     Button btnRegister;
 
 
@@ -41,13 +41,16 @@ public class Register extends AppCompatActivity {
         etMail=findViewById(R.id.etMail);
         etPassword=findViewById(R.id.etPassword);
         etReEnter=findViewById(R.id.etReEnter);
+        etUsername=findViewById(R.id.etUsername);
+        etSurname=findViewById(R.id.etSurname);
         btnRegister=findViewById(R.id.btnRegister);
 
         btnRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (etName.getText().toString().isEmpty() || etMail.getText().toString().isEmpty() ||
-                     etReEnter.getText().toString().isEmpty())
+                     etReEnter.getText().toString().isEmpty() ||  etUsername.getText().toString().isEmpty()
+                     || etSurname.getText().toString().isEmpty())
                 {
                     Toast.makeText(Register.this, "Please enter all details", Toast.LENGTH_LONG).show();
                 }
@@ -55,13 +58,17 @@ public class Register extends AppCompatActivity {
                 {
                     if (etPassword.getText().toString().equals(etReEnter.getText().toString())){
                         String name = etName.getText().toString().trim();
+                        String surname= etSurname.getText().toString().trim();
                         String email = etMail.getText().toString().trim();
+                        String username= etUsername.getText().toString().trim();
                         String password = etPassword.getText().toString().trim();
 
                         BackendlessUser user= new BackendlessUser();
                         user.setEmail(email);
                         user.setPassword(password);
                         user.setProperty("name",name);
+                        user.setProperty("username",username);
+                        user.setProperty("surname",surname);
 
                         showProgress(true);
 
