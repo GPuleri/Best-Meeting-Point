@@ -1,11 +1,9 @@
 
-package com.examples.bestmeetingpoint.data;
+package com.example.myapplication.data;
 
 import com.backendless.Backendless;
-import com.backendless.BackendlessUser;
 import com.backendless.async.callback.AsyncCallback;
 import com.backendless.persistence.*;
-import com.backendless.geo.GeoPoint;
 
 import java.util.List;
 import java.util.Date;
