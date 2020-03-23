@@ -13,17 +13,17 @@ import java.util.Date;
 public class Group_Place_User
 {
   private Date updated;
-  private Date created;
-  private String ownerId;
   private String objectId;
+  private String ownerId;
+  private Date created;
   public Date getUpdated()
   {
     return updated;
   }
 
-  public Date getCreated()
+  public String getObjectId()
   {
-    return created;
+    return objectId;
   }
 
   public String getOwnerId()
@@ -31,9 +31,9 @@ public class Group_Place_User
     return ownerId;
   }
 
-  public String getObjectId()
+  public Date getCreated()
   {
-    return objectId;
+    return created;
   }
 
                                                     

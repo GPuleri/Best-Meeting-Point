@@ -32,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
                 Backendless.UserService.login("sgmonti@gmail.com", "123456", new AsyncCallback<BackendlessUser>() {
                     @Override
                     public void handleResponse(BackendlessUser response) {
+                        TestApplication.user = response;
                         Toast.makeText(MainActivity.this, "Login successfully", Toast.LENGTH_SHORT).show();
                         startActivity(new Intent(MainActivity.this, GroupsList.class));
                         MainActivity.this.finish();
@@ -54,6 +55,7 @@ public class MainActivity extends AppCompatActivity {
                     Backendless.Data.of(BackendlessUser.class).findById(userObjectId, new AsyncCallback<BackendlessUser>() {
                         @Override
                         public void handleResponse(BackendlessUser response) {
+                            TestApplication.user = response;
                             startActivity(new Intent(MainActivity.this, GroupsList.class));
                             MainActivity.this.finish();
                         }
@@ -61,6 +63,7 @@ public class MainActivity extends AppCompatActivity {
                         @Override
                         public void handleFault(BackendlessFault fault) {
                             Toast.makeText(MainActivity.this, "Error: " + fault.getMessage(), Toast.LENGTH_SHORT).show();
+                            MainActivity.this.finish();
                         }
                     });
                 } else {
