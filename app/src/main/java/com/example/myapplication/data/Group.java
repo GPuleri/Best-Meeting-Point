@@ -2,8 +2,10 @@
 package com.example.myapplication.data;
 
 import com.backendless.Backendless;
+import com.backendless.BackendlessUser;
 import com.backendless.async.callback.AsyncCallback;
 import com.backendless.persistence.*;
+import com.backendless.geo.GeoPoint;
 
 import java.util.List;
 import java.util.Date;
@@ -11,24 +13,18 @@ import java.util.Date;
 public class Group
 {
   private String objectId;
+  private Date created;
+  private String name;
   private Date updated;
   private String ownerId;
-  private String name;
-  private Date created;
-  private String id_group;
   public String getObjectId()
   {
     return objectId;
   }
 
-  public Date getUpdated()
+  public Date getCreated()
   {
-    return updated;
-  }
-
-  public String getOwnerId()
-  {
-    return ownerId;
+    return created;
   }
 
   public String getName()
@@ -41,19 +37,14 @@ public class Group
     this.name = name;
   }
 
-  public Date getCreated()
+  public Date getUpdated()
   {
-    return created;
+    return updated;
   }
 
-  public String getId_group()
+  public String getOwnerId()
   {
-    return id_group;
-  }
-
-  public void setId_group( String id_group )
-  {
-    this.id_group = id_group;
+    return ownerId;
   }
 
                                                     
