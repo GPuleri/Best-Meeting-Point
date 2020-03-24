@@ -4,6 +4,7 @@ import android.app.Application;
 
 import com.backendless.Backendless;
 import com.backendless.BackendlessUser;
+import com.example.myapplication.data.Group;
 import com.example.myapplication.data.Group_Place_User;
 
 
@@ -15,7 +16,7 @@ public class TestApplication extends Application {
     public static final String SERVER_URL = "https://api.backendless.com";
 
     public static BackendlessUser user;
-    public static List<Group_Place_User> groups;
+    public static List<Group_Place_User> group_place_users;
 
     @Override
     public void onCreate() {
