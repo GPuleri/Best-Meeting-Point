@@ -1,5 +1,5 @@
 
-package com.examples.bestmeetingpoint.data;
+package com.example.myapplication.data;
 
 import com.backendless.Backendless;
 import com.backendless.BackendlessUser;
@@ -12,14 +12,38 @@ import java.util.Date;
 
 public class Place
 {
+  private String city;
+  private String country;
+  private Date created;
   private String ownerId;
   private String address;
-  private Date created;
-  private Date updated;
-  private String country;
-  private String id_place;
-  private String city;
   private String objectId;
+  private Date updated;
+  public String getCity()
+  {
+    return city;
+  }
+
+  public void setCity( String city )
+  {
+    this.city = city;
+  }
+
+  public String getCountry()
+  {
+    return country;
+  }
+
+  public void setCountry( String country )
+  {
+    this.country = country;
+  }
+
+  public Date getCreated()
+  {
+    return created;
+  }
+
   public String getOwnerId()
   {
     return ownerId;
@@ -35,49 +59,14 @@ public class Place
     this.address = address;
   }
 
-  public Date getCreated()
+  public String getObjectId()
   {
-    return created;
+    return objectId;
   }
 
   public Date getUpdated()
   {
     return updated;
-  }
-
-  public String getCountry()
-  {
-    return country;
-  }
-
-  public void setCountry( String country )
-  {
-    this.country = country;
-  }
-
-  public String getId_place()
-  {
-    return id_place;
-  }
-
-  public void setId_place( String id_place )
-  {
-    this.id_place = id_place;
-  }
-
-  public String getCity()
-  {
-    return city;
-  }
-
-  public void setCity( String city )
-  {
-    this.city = city;
-  }
-
-  public String getObjectId()
-  {
-    return objectId;
   }
 
                                                     
