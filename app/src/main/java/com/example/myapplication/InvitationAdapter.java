@@ -6,7 +6,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -18,13 +20,17 @@ import com.backendless.exceptions.BackendlessFault;
 import com.backendless.persistence.DataQueryBuilder;
 import com.backendless.persistence.LoadRelationsQueryBuilder;
 import com.example.myapplication.data.Group;
+import com.example.myapplication.data.Group_Place_User;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 public class InvitationAdapter extends ArrayAdapter<Group> {
     private Context context;
     private List<Group> groups;
+
+
 
     public InvitationAdapter (Context context, List <Group> list){
         super(context,R.layout.row_layout_invitation,list);
@@ -34,12 +40,14 @@ public class InvitationAdapter extends ArrayAdapter<Group> {
 
     @NonNull
     @Override
-    public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+    public View getView(final int position, @Nullable View convertView, @NonNull ViewGroup parent) {
 
         LayoutInflater inflater= (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
         convertView= inflater.inflate(R.layout.row_layout_invitation,parent,false);
 
+        Button btnConfirm=convertView.findViewById(R.id.btnConfirm);
+        Button btnDelete=convertView.findViewById(R.id.btnDelete);
         TextView tvChar= convertView.findViewById(R.id.tvChar);
         TextView tvName= convertView.findViewById(R.id.tvName);
         final TextView tvCreator = convertView.findViewById(R.id.tvCreator);
@@ -65,6 +73,103 @@ public class InvitationAdapter extends ArrayAdapter<Group> {
             @Override
             public void handleFault(BackendlessFault fault) {
                 Log.e("MYAPP", fault.getMessage());
+            }
+        });
+
+        btnConfirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(v.getContext(), "invitation accepted", Toast.LENGTH_SHORT).show();
+                Log.i("MYAPP", "bottone confirm cliccato");
+
+                Group_Place_User gpu = new Group_Place_User();
+                Backendless.Data.of(Group_Place_User.class).save(gpu, new AsyncCallback<Group_Place_User>() {
+                    @Override
+                    public void handleResponse(Group_Place_User response) {
+
+                        ArrayList l= new ArrayList<Group_Place_User>();
+                        l.add(response);
+                        Backendless.Data.of(Group.class).addRelation(groups.get(position), "group_group", l,
+                                new AsyncCallback<Integer>() {
+                                    @Override
+                                    public void handleResponse(Integer response) {
+                                        Log.i("MYAPP", "aggiunta group_group fatta in group");
+                                    }
+
+                                    @Override
+                                    public void handleFault(BackendlessFault fault) {
+                                        Log.e( "MYAPP", "server reported an error - " + fault.getMessage() );
+                                    }
+                                });
+
+
+
+
+                        Backendless.Data.of(BackendlessUser.class).addRelation(TestApplication.user, "group_user", l,
+                                new AsyncCallback<Integer>() {
+                                    @Override
+                                    public void handleResponse(Integer response) {
+                                        Log.i("MYAPP", "aggiunta group_user fatta in user");
+                                    }
+
+                                    @Override
+                                    public void handleFault(BackendlessFault fault) {
+                                        Log.e( "MYAPP", "server reported an error - " + fault.getMessage() );
+                                    }
+                                });
+
+
+
+                        ArrayList<Group> groupCollection = new ArrayList <Group>();
+                        groupCollection.add(groups.get(position));
+                        Backendless.Data.of("Users").deleteRelation(TestApplication.user.getProperties(), "myInvitation", groupCollection,
+                                new AsyncCallback<Integer>() {
+                                    @Override
+                                    public void handleResponse(Integer response) {
+                                        Log.i( "MYAPP", "relation has been deleted");
+                                    }
+
+                                    @Override
+                                    public void handleFault(BackendlessFault fault) {
+                                        Log.e( "MYAPP", "server reported an error - " + fault.getMessage() );
+                                    }
+                                });
+
+
+
+                    }
+
+                    @Override
+                    public void handleFault(BackendlessFault fault) {
+
+                    }
+                });
+            }
+        });
+
+
+
+
+        btnDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(v.getContext(), "invitation declined", Toast.LENGTH_SHORT).show();
+                Log.i("MYAPP", "bottone delete cliccato");
+
+                ArrayList<Group> groupCollection = new ArrayList <Group>();
+                groupCollection.add(groups.get(position));
+                Backendless.Data.of("Users").deleteRelation(TestApplication.user.getProperties(), "myInvitation", groupCollection,
+                        new AsyncCallback<Integer>() {
+                            @Override
+                            public void handleResponse(Integer response) {
+                                Log.i( "MYAPP", "relation has been deleted");
+                            }
+
+                            @Override
+                            public void handleFault(BackendlessFault fault) {
+                                Log.e( "MYAPP", "server reported an error - " + fault.getMessage() );
+                            }
+                        });
             }
         });
 
