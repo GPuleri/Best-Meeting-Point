@@ -6,3 +6,7 @@
 - API: GOOGLE MAPS API
 
 ![Architecture (1)](architettura.jpg)
+
+# DATABASE DIAGRAM
+
+![Database diagram](Database_diagram.jpg)
