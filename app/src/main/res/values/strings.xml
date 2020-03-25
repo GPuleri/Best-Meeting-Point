@@ -1,4 +1,11 @@
 <resources>
-    <string name="app_name">My Application</string>
+    <string name="app_name">BMP</string>
     <string name="groups">Groups</string>
+    <string name="key_new">New</string>
+    <string name="name">Name</string>
+    <string name="descr_invite">Invite new user</string>
+    <string name="delete_group">Delete group</string>
+    <string name="editGroup">edit_group</string>
+    <string name="navigate">navigate</string>
+    <string name="submit">Submit</string>
 </resources>

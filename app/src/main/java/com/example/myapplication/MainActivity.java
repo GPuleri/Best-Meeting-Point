@@ -34,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
                     public void handleResponse(BackendlessUser response) {
                         TestApplication.user = response;
                         Toast.makeText(MainActivity.this, "Login successfully", Toast.LENGTH_SHORT).show();
-                        startActivity(new Intent(MainActivity.this, GroupsList.class));
+                        startActivity(new Intent(MainActivity.this, GroupList.class));
                         MainActivity.this.finish();
                     }
 
@@ -56,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
                         @Override
                         public void handleResponse(BackendlessUser response) {
                             TestApplication.user = response;
-                            startActivity(new Intent(MainActivity.this, GroupsList.class));
+                            startActivity(new Intent(MainActivity.this, GroupList.class));
                             MainActivity.this.finish();
                         }
 

@@ -17,6 +17,7 @@ public class TestApplication extends Application {
 
     public static BackendlessUser user;
     public static List<Group_Place_User> group_place_users;
+    public static List<Group> groups;
 
     @Override
     public void onCreate() {

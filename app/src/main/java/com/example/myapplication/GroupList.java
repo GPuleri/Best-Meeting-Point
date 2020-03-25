@@ -1,10 +1,14 @@
 package com.example.myapplication;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.backendless.Backendless;
@@ -18,21 +22,26 @@ import com.example.myapplication.data.Group_Place_User;
 
 import java.util.List;
 
-public class GroupsList extends AppCompatActivity {
+public class GroupList extends AppCompatActivity {
     ListView lvList;
-    GroupsAdapter adapter;
+    GroupAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.groups_activity);
-
         lvList = findViewById(R.id.lvList);
 
-        LoadRelationsQueryBuilder<Group_Place_User> loadRelationsQueryBuilder;
+        lvList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent(GroupList.this, GroupInfo.class);
+                intent.putExtra("index", position);
+                startActivityForResult(intent, 1);
+            }
+        });
 
-// Generic reference to CHILDCLASS is needed so that related objects
-// from the servers are returned to the client as instances of CHILDCLASS.
+        LoadRelationsQueryBuilder<Group_Place_User> loadRelationsQueryBuilder;
         loadRelationsQueryBuilder = LoadRelationsQueryBuilder.of(Group_Place_User.class);
         loadRelationsQueryBuilder.setRelationName("group_user");
 
@@ -44,37 +53,43 @@ public class GroupsList extends AppCompatActivity {
                         TestApplication.group_place_users = response;
                         StringBuilder whereClause = new StringBuilder();
                         for (int i = 0; i < TestApplication.group_place_users.size(); i++) {
-                            whereClause.append( "group_group" );
-                            whereClause.append( ".objectId='" ).append( TestApplication.group_place_users.get(i).getObjectId()).append( "'" );
-                            if (i != TestApplication.group_place_users.size()-1) {
+                            whereClause.append("group_group");
+                            whereClause.append(".objectId='").append(TestApplication.group_place_users.get(i).getObjectId()).append("'");
+                            if (i != TestApplication.group_place_users.size() - 1) {
                                 whereClause.append(" and ");
                             }
                         }
                         DataQueryBuilder queryBuilder = DataQueryBuilder.create();
-                        queryBuilder.setWhereClause( whereClause.toString() );
+                        queryBuilder.setWhereClause(whereClause.toString());
                         Log.i("query", whereClause.toString());
-                        Backendless.Data.of( Group.class ).find( queryBuilder, new AsyncCallback<List<Group>>(){
+                        Backendless.Data.of(Group.class).find(queryBuilder, new AsyncCallback<List<Group>>() {
                             @Override
                             public void handleResponse(List<Group> response) {
-                                Log.i("empty", "" + response.isEmpty());
-                                adapter = new GroupsAdapter(GroupsList.this, response);
+                                TestApplication.groups = response;
+                                adapter = new GroupAdapter(GroupList.this, response);
                                 lvList.setAdapter(adapter);
                             }
 
                             @Override
                             public void handleFault(BackendlessFault fault) {
-
+                                Toast.makeText(GroupList.this, "Error: " + fault.getMessage(), Toast.LENGTH_SHORT).show();
                             }
                         });
                     }
 
                     @Override
                     public void handleFault(BackendlessFault fault) {
-                        Toast.makeText(GroupsList.this, "Error: " + fault.getMessage(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(GroupList.this, "Error: " + fault.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
 
     }
 
-
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 1) {
+            adapter.notifyDataSetChanged();
+        }
+    }
 }

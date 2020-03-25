@@ -14,12 +14,12 @@ import com.example.myapplication.data.Group;
 
 import java.util.List;
 
-public class GroupsAdapter extends ArrayAdapter<Group>
+public class GroupAdapter extends ArrayAdapter<Group>
 {
     private Context context;
     private List<Group> groups;
 
-    public GroupsAdapter(Context context, List<Group> list) {
+    GroupAdapter(Context context, List<Group> list) {
         super(context, R.layout.row_groups, list);
         this.context = context;
         this.groups = list;
