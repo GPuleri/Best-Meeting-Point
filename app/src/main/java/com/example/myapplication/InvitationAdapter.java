@@ -127,6 +127,8 @@ public class InvitationAdapter extends ArrayAdapter<Group> {
                                     @Override
                                     public void handleResponse(Integer response) {
                                         Log.i( "MYAPP", "relation has been deleted");
+                                        groups.remove(position);
+                                        notifyDataSetChanged();
                                     }
 
                                     @Override
@@ -163,6 +165,8 @@ public class InvitationAdapter extends ArrayAdapter<Group> {
                             @Override
                             public void handleResponse(Integer response) {
                                 Log.i( "MYAPP", "relation has been deleted");
+                                groups.remove(position);
+                                notifyDataSetChanged();
                             }
 
                             @Override
