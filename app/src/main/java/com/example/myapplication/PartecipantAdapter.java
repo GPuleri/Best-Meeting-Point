@@ -21,6 +21,9 @@ public class PartecipantAdapter extends ArrayAdapter<BackendlessUser> {
     private Context context;
     private List<BackendlessUser> users;
 
+    /**
+     * Costruttore che riceve un oggetto Contect e una lista di Utenti
+     */
     PartecipantAdapter(Context context, List<BackendlessUser> list) {
         super(context, R.layout.row_groups, list);
         this.context = context;
@@ -28,6 +31,9 @@ public class PartecipantAdapter extends ArrayAdapter<BackendlessUser> {
 
     }
 
+    /**
+     * Setti i dettagli di ciascun Utente all'interno della lista
+     */
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {

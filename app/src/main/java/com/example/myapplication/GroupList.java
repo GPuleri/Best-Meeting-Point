@@ -22,12 +22,19 @@ import com.example.myapplication.data.Group_Place_User;
 
 import java.util.List;
 
+
 public class GroupList extends AppCompatActivity {
     ListView lvList;
     GroupAdapter adapter;
+    private Bundle savedInstanceState;
 
+    /**
+     * crea un'activity in cui è presente ula lista di gruppi a cui partecipa l'utente loggato
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        this.savedInstanceState = savedInstanceState;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.groups_activity);
         lvList = findViewById(R.id.lvList);
@@ -48,6 +55,7 @@ public class GroupList extends AppCompatActivity {
         Backendless.Data.of(BackendlessUser.class).loadRelations(TestApplication.user.getObjectId(),
                 loadRelationsQueryBuilder,
                 new AsyncCallback<List<Group_Place_User>>() {
+
                     @Override
                     public void handleResponse(List<Group_Place_User> response) {
                         TestApplication.group_place_users = response;
@@ -63,12 +71,14 @@ public class GroupList extends AppCompatActivity {
                         queryBuilder.setWhereClause(whereClause.toString());
                         Log.i("query", whereClause.toString());
                         Backendless.Data.of(Group.class).find(queryBuilder, new AsyncCallback<List<Group>>() {
+
                             @Override
                             public void handleResponse(List<Group> response) {
                                 TestApplication.groups = response;
                                 adapter = new GroupAdapter(GroupList.this, response);
                                 lvList.setAdapter(adapter);
                             }
+
 
                             @Override
                             public void handleFault(BackendlessFault fault) {
@@ -85,6 +95,9 @@ public class GroupList extends AppCompatActivity {
 
     }
 
+    /**
+     * cambia i dati della lista di gruppi se modificata
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);

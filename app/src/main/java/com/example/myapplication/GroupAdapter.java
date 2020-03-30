@@ -19,12 +19,18 @@ public class GroupAdapter extends ArrayAdapter<Group>
     private Context context;
     private List<Group> groups;
 
+    /**
+     * Costruttore che riceve un oggetto Context e una lista di Gruppi
+     */
     GroupAdapter(Context context, List<Group> list) {
         super(context, R.layout.row_groups, list);
         this.context = context;
         this.groups = list;
     }
 
+    /**
+     * Setti i dettagli di ciascun Gruppo all'interno della lista
+     */
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {

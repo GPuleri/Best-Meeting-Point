@@ -19,6 +19,9 @@ public class MainActivity extends AppCompatActivity {
 
     Button btnGroups;
 
+    /**
+     * crea una vista con un bottone con cui si può loggare con l'utenti sgmonti@gmail.com
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
