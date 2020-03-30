@@ -16,21 +16,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        User p1 = new User();
-        p1.setName("Fabio");
-        p1.setSurname("Ciao");
 
-        Backendless.Data.of(User.class).save(p1, new AsyncCallback<User>() {
-                    @Override
-                    public void handleResponse(User response) {
-
-                    }
-
-                    @Override
-                    public void handleFault(BackendlessFault fault) {
-
-                    }
-                }
-        );
     }
 }

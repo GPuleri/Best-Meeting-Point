@@ -67,14 +67,22 @@ import static com.google.android.gms.maps.GoogleMap.MAP_TYPE_NORMAL;
 import static com.google.android.gms.maps.GoogleMap.MAP_TYPE_SATELLITE;
 import static com.google.android.gms.maps.GoogleMap.MAP_TYPE_TERRAIN;
 
+/**
+ * This Activity allows the user to see other departure points and one or more
+ * best meeting points. Furthermore they can have a detailed look of their routes.
+ */
+
 public class MapsActivity extends FragmentActivity implements OnMyLocationButtonClickListener,
         OnMapReadyCallback, AdapterView.OnItemSelectedListener, GoogleMap.OnPolylineClickListener,
         GoogleMap.OnMarkerClickListener, GoogleMap.OnInfoWindowClickListener,
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
-    private GoogleMap mMap; // map
-    private Bundle b_in; // object used to get parameters from other activities
+    private GoogleMap mMap; // A generic Google's map
+    private Bundle b_in; // Object used to get parameters from other activities
 
+    /**
+     * Inner class used for storing trip informations.
+     */
     class Trip {
         private int duration;
         private int distance;
@@ -107,20 +115,22 @@ public class MapsActivity extends FragmentActivity implements OnMyLocationButton
 
     }
 
-    private ArrayList<Trip> trips;
+    private ArrayList<Trip> trips; // A list of trip
+    private ArrayList<Marker> departureMarkers; // A list of departure markers
+    private ArrayList<Marker> bestMarkers; // A list of best meeting point markers
+    private ArrayList<Polyline> polylines; // A list of polylines (used to draw routes)
+    private HashMap<Marker, Polyline> markersPolylines; // A map between a marker and its polyline
+    private HashMap<Marker, Trip> markersTrips; // A map between a marker and its trip information
 
-    private ArrayList<Marker> departureMarkers;
-    private ArrayList<Marker> bestMarkers;
-    private ArrayList<Polyline> polylines;
-    private HashMap<Marker, Polyline> markersPolylines;
-    private HashMap<Marker, Trip> markersTrips;
+    private Spinner spinnerMapType; // A spinner used to select the map style
+    private TextView tvDistance; // A textview used to show up the distance of a trip
+    private TextView tvDuration; // A textview used to show up the duration of a trip
+    private Button btnInfo; // A button used to switch to the GroupInfo Activity
+    private Button btnVote; // A button used to switch to the Vote Activity
 
-    private Spinner spinnerMapType;
-    private TextView tvDistance;
-    private TextView tvDuration;
-    private Button btnInfo;
-    private Button btnVote;
-
+    /**
+     * It handles the creation of the activity initializating the needed objects
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -145,7 +155,6 @@ public class MapsActivity extends FragmentActivity implements OnMyLocationButton
         tvDistance = (TextView) findViewById(R.id.distance);
         tvDuration = (TextView) findViewById(R.id.duration);
 
-        // spinner for selection of the type of the maps
         spinnerMapType = (Spinner) findViewById(R.id.spinnerMapType);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
                 this, R.array.layers_array, R.layout.spinner_layout);
@@ -153,6 +162,9 @@ public class MapsActivity extends FragmentActivity implements OnMyLocationButton
         spinnerMapType.setAdapter(adapter);
         spinnerMapType.setOnItemSelectedListener(this);
 
+        /**
+         * Open the GroupInfo Activity
+         */
         btnInfo = (Button) findViewById(R.id.btnInfo);
         btnInfo.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -168,6 +180,9 @@ public class MapsActivity extends FragmentActivity implements OnMyLocationButton
             }
         });
 
+        /**
+         * Open the Vote Activity
+         */
         btnVote = (Button) findViewById(R.id.btnVote);
         btnVote.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -189,9 +204,12 @@ public class MapsActivity extends FragmentActivity implements OnMyLocationButton
         });
     }
 
+    /**
+     * It handles the map itself on all of its features
+     */
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        
+
         /* b_in = getIntent().getExtras();
         ArrayList<BackendlessUser> users = b_in.getStringArrayList("ID_User");
         ArrayList<Place> places = b_in.getStringArrayList("ID_Place");*/
@@ -202,16 +220,19 @@ public class MapsActivity extends FragmentActivity implements OnMyLocationButton
         test();
         //setMap(users, places);
 
-        //enabling localization and localization button
+        /**
+         * enabling localization and localization button
+         */
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
             mMap.setMyLocationEnabled(true);
         }
 
-        //enabling zoom keys
         mMap.getUiSettings().setZoomControlsEnabled(true);
-        /*disabling toolbar (it is used to continue using this app without having to
-        use the official google maps app)*/
+        /**
+         * disabling toolbar (it is used to continue using this app without having to
+         * use the official google maps app)
+         */
         mMap.getUiSettings().setMapToolbarEnabled(false);
         mMap.setOnInfoWindowClickListener(this);
         mMap.setOnMyLocationButtonClickListener(this);
@@ -219,6 +240,9 @@ public class MapsActivity extends FragmentActivity implements OnMyLocationButton
         mMap.setOnPolylineClickListener(this);
     }
 
+    /**
+     * Temporary method for testing the activity
+     */
     public void test() {
 
         departureMarkers.add(mMap.addMarker(new MarkerOptions()
@@ -251,10 +275,18 @@ public class MapsActivity extends FragmentActivity implements OnMyLocationButton
         mMap.animateCamera(cameraUpdate);
     }
 
-    /* public void setMap(ArrayList<BackendlessUser> users, ArrayList<Place> places) {
+    /*
+    /**
+     * Set the map by creating markers, drawing routes and calculating best meeting points
+     */
+    /*public void setMap(ArrayList<BackendlessUser> users, ArrayList<Place> places) {
 
         int index;
 
+        /**
+        * For every departure add a marker setting its title to the username and alpha to 0.4f
+        */
+    /*
         for (int i = 0; i < places.size(); i++) {
             if (!users.get(i).getProperty("username").toString()
                     .equals(TestApplication.user.getProperty("username").toString())) {
@@ -273,7 +305,7 @@ public class MapsActivity extends FragmentActivity implements OnMyLocationButton
                 .alpha(0.99f)));
 
 
-        //calculateBestMeetingPoint();
+        // calculateBestMeetingPoint();
         bestMarkers.add(mMap.addMarker(new MarkerOptions()
                 .position(new LatLng(45.5, 9.5))
                 .title("best")
@@ -285,8 +317,11 @@ public class MapsActivity extends FragmentActivity implements OnMyLocationButton
         mMap.moveCamera(CameraUpdateFactory.newLatLng(bestMarkers.get(0).getPosition()));
         CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(bestMarkers.get(0).getPosition(), 15);
         mMap.animateCamera(cameraUpdate);
-    } */
+    }*/
 
+    /**
+     * For every departure it asks Google Maps for getting the routes to best
+     */
     public void drawDirections(ArrayList<Marker> departures, Marker best) {
         for (Marker departure : departures) {
             // Getting URL to the Google Directions API
@@ -299,15 +334,21 @@ public class MapsActivity extends FragmentActivity implements OnMyLocationButton
         }
     }
 
+    /**
+     * Show an info text on click of my location button
+     */
     @Override
     public boolean onMyLocationButtonClick() {
         Toast.makeText(this, "Localizzazione..", Toast.LENGTH_SHORT).show();
         return false;
     }
 
+    /**
+     * Change layout of routes and markers on click of a marker and show the info
+     */
     @Override
     public boolean onMarkerClick(Marker marker) {
-        /* if (marker.getAlpha() == 0.5f) { //other best point
+        /* if (marker.getAlpha() == 0.5f) { // if is other best points
             for (Marker mark : bestMarkers) {
                 mark.setAlpha(0.5f);
             }
@@ -319,17 +360,20 @@ public class MapsActivity extends FragmentActivity implements OnMyLocationButton
             trips.clear();
             drawDirections(departureMarkers, marker);
         } else */
-        if (marker.getAlpha() == 0.4f || marker.getAlpha() == 0.99f) { //user departure
+        if (marker.getAlpha() == 0.4f || marker.getAlpha() == 0.99f) { // if is user departure
             changePolyline(markersPolylines.get(marker));
             setTextView(markersTrips.get(marker));
         }
         if (marker.getAlpha() == 1f)
-            //recensione
+            // recensione
             ;
         marker.showInfoWindow();
         return true;
     }
 
+    /**
+     * Show the StreetView of the position
+     */
     @Override
     public void onInfoWindowClick(Marker marker) {
         /* Bundle b_out = new Bundle();
@@ -347,6 +391,9 @@ public class MapsActivity extends FragmentActivity implements OnMyLocationButton
         Toast.makeText(getBaseContext(), "Work in progress", Toast.LENGTH_SHORT).show();
     }
 
+    /**
+     * Change layout of routes and markers on click of a polyline and show the info
+     */
     @Override
     public void onPolylineClick(Polyline polyline) {
         changePolyline(polyline);
@@ -355,6 +402,9 @@ public class MapsActivity extends FragmentActivity implements OnMyLocationButton
         setTextView(markersTrips.get(m));
     }
 
+    /**
+     * Get the directions from origin to dest
+     */
     private String getDirectionsUrl(LatLng origin, LatLng dest) {
         // Origin of route
         String str_origin = "origin=" + origin.latitude + "," + origin.longitude;
@@ -379,6 +429,9 @@ public class MapsActivity extends FragmentActivity implements OnMyLocationButton
         return url;
     }
 
+    /**
+     * Perform an URL call and store the data obtained
+     */
     private String downloadUrl(String strUrl) throws IOException {
         String data = "";
         InputStream iStream = null;
@@ -417,6 +470,9 @@ public class MapsActivity extends FragmentActivity implements OnMyLocationButton
         return data;
     }
 
+    /**
+     * It allows the URL connection to be asynchronous and invokes a thread to parse JSON data
+     */
     private class DownloadTask extends AsyncTask<String, Void, String> {
         ParserTask parserTask = null;
 
@@ -451,8 +507,11 @@ public class MapsActivity extends FragmentActivity implements OnMyLocationButton
 
     }
 
+    /**
+     * It allows the parsing to be asynchronous and parse JSON data. It sets all the needed objects
+     * in order to draw polylines subsequently
+     */
     private class ParserTask extends AsyncTask<String, Integer, List<List<HashMap<String, String>>>> {
-
         // Parsing the data in non-ui thread
         @Override
         protected List<List<HashMap<String, String>>> doInBackground(String... jsonData) {
@@ -538,6 +597,9 @@ public class MapsActivity extends FragmentActivity implements OnMyLocationButton
 
     }
 
+    /**
+     * Change layout of polylines
+     */
     public void changePolyline(Polyline polyline) {
         for (Polyline poly : polylines)
             if (poly.getColor() == Color.RED) {
@@ -550,6 +612,9 @@ public class MapsActivity extends FragmentActivity implements OnMyLocationButton
         }
     }
 
+    /**
+     * Returns the key of a specific value in a map object
+     */
     public static <T, E> T getKeyByValue(Map<T, E> map, E value) {
         for (Map.Entry<T, E> entry : map.entrySet()) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
@@ -561,6 +626,9 @@ public class MapsActivity extends FragmentActivity implements OnMyLocationButton
         return null;
     }
 
+    /**
+     * Set the trip info
+     */
     public void setTextView(Trip trip) {
         int duration = trip.getDuration();
         int distance = trip.getDistance();
@@ -588,11 +656,11 @@ public class MapsActivity extends FragmentActivity implements OnMyLocationButton
                 tvDistance.setText("(" + new DecimalFormat("#.#").format(dist) + " km)");
         } else
             tvDistance.setText("(" + Integer.toString(distance) + " m)");
-
-        tvDuration.setVisibility(View.VISIBLE);
-        tvDistance.setVisibility(View.VISIBLE);
     }
 
+    /**
+     * Set the traffic layout on click
+     */
     public void onCheckboxClicked(View view) {
         boolean checked = ((CheckBox) view).isChecked();
         if (checked)
@@ -601,10 +669,16 @@ public class MapsActivity extends FragmentActivity implements OnMyLocationButton
             mMap.setTrafficEnabled(false);
     }
 
+    /**
+     * Set the map style in base of the item selected of its spinner
+     */
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         updateMapType();
     }
 
+    /**
+     * Update the map style
+     */
     private void updateMapType() {
         // No toast because this can also be called by the Android framework in onResume() at which
         // point mMap may not be ready yet.

@@ -10,6 +10,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+/**
+ * It allows to parse a JSON file into nested java lists
+ */
 public class DirectionsJSONParser {
 
     /** Receives a JSONObject and returns a list of lists containing latitude and longitude */
@@ -70,6 +73,9 @@ public class DirectionsJSONParser {
         return routes;
     }
 
+    /**
+     * Decode the google maps coding in a comprehensible java friendly coding
+     */
     private List<LatLng> decodePoly(String encoded) {
 
         List<LatLng> poly = new ArrayList<LatLng>();
