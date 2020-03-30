@@ -23,10 +23,14 @@ public class InvitationList extends AppCompatActivity {
 
     InvitationAdapter adapter;
 
+    /**
+     * this method is performed when the InvitationList activity is created and allows you to load
+     * the list of invitations from the databse with the possibility to confirm or refit the invitation
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_invitation_list);
+        setContentView(R.layout.activity_invitation_list); //I set the xml file to be used for the layouts of this activity
 
         lvList=findViewById(R.id.lvList);
 
@@ -34,7 +38,7 @@ public class InvitationList extends AppCompatActivity {
         loadRelationsQueryBuilder = LoadRelationsQueryBuilder.of( Group.class );
         loadRelationsQueryBuilder.setRelationName( "myInvitation" );
 
-
+        //For the logged in user I recover all the groups I have been invited to
         Backendless.Data.of( "Users" ).loadRelations( TestApplication.user.getObjectId(),
                 loadRelationsQueryBuilder,
                 new AsyncCallback<List<Group>>()
@@ -46,6 +50,7 @@ public class InvitationList extends AppCompatActivity {
                             Log.i( "MYAPP", groups.getName() );
 
                         TestApplication.invitation_group=group;
+                        //I set the adapter to use in the ListView
                         adapter = new InvitationAdapter(InvitationList.this, group);
                         lvList.setAdapter(adapter);
 

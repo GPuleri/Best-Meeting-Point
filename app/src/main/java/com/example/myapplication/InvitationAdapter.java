@@ -26,24 +26,36 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+
 public class InvitationAdapter extends ArrayAdapter<Group> {
+
     private Context context;
     private List<Group> groups;
 
 
-
+    /**
+     * Adapter constructor. In Android, Adapter is a bridge between UI component and data source that
+     * helps us to fill data in UI component.
+     * To initialize the adapter I pass him the context of the activity and the list of groups
+     * that I have recovered
+     *
+     */
     public InvitationAdapter (Context context, List <Group> list){
         super(context,R.layout.row_layout_invitation,list);
         this.context=context;
         this.groups=list;
     }
 
+    /**
+     * Get a View that displays the data at the specified position in the data set.
+     */
     @NonNull
     @Override
     public View getView(final int position, @Nullable View convertView, @NonNull ViewGroup parent) {
 
         LayoutInflater inflater= (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
+        //specify a root view
         convertView= inflater.inflate(R.layout.row_layout_invitation,parent,false);
 
         Button btnConfirm=convertView.findViewById(R.id.btnConfirm);
@@ -57,10 +69,13 @@ public class InvitationAdapter extends ArrayAdapter<Group> {
         tvChar.setText(groups.get(position).getName().toUpperCase().charAt(0)+ "");
         tvName.setText(groups.get(position).getName());
 
+        // I prepare the query to search, for the logged in user, by who has been invited
         String where= "objectId= '" +groups.get(position).getOwnerId()+"'";
         DataQueryBuilder queryBuilder = DataQueryBuilder.create();
         queryBuilder.setWhereClause(where);
 
+        // I run the query which will return a list of users. Since for each group only the creator
+        // of the group can invite me, the list will consist of 1 element.
         Backendless.Persistence.of(BackendlessUser.class).find(queryBuilder, new AsyncCallback<List<BackendlessUser>>() {
             @Override
             public void handleResponse(List<BackendlessUser> response) {
@@ -76,6 +91,8 @@ public class InvitationAdapter extends ArrayAdapter<Group> {
             }
         });
 
+        // if the user confirms the invitation, I insert the user into that group by making the appropriate
+        // joins in the db and then I delete the invitation
         btnConfirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -151,7 +168,7 @@ public class InvitationAdapter extends ArrayAdapter<Group> {
 
 
 
-
+        //if the user refuses the invitation I delete it
         btnDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
