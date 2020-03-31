@@ -34,6 +34,7 @@ public class InvitationList extends AppCompatActivity {
 
         lvList=findViewById(R.id.lvList);
 
+        // I prepare the query and set the name of the relationship (foreign key)
         LoadRelationsQueryBuilder<Group> loadRelationsQueryBuilder;
         loadRelationsQueryBuilder = LoadRelationsQueryBuilder.of( Group.class );
         loadRelationsQueryBuilder.setRelationName( "myInvitation" );

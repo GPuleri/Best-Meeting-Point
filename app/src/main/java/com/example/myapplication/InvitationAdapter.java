@@ -58,6 +58,7 @@ public class InvitationAdapter extends ArrayAdapter<Group> {
         //specify a root view
         convertView= inflater.inflate(R.layout.row_layout_invitation,parent,false);
 
+
         Button btnConfirm=convertView.findViewById(R.id.btnConfirm);
         Button btnDelete=convertView.findViewById(R.id.btnDelete);
         TextView tvChar= convertView.findViewById(R.id.tvChar);
@@ -66,6 +67,7 @@ public class InvitationAdapter extends ArrayAdapter<Group> {
 
         final String[] s = new String[1];
 
+        // I write in the TextView the first letter and the name of the i-th group
         tvChar.setText(groups.get(position).getName().toUpperCase().charAt(0)+ "");
         tvName.setText(groups.get(position).getName());
 
