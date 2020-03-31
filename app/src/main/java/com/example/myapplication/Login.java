@@ -49,8 +49,8 @@ public class Login extends AppCompatActivity {
         btnRegister = findViewById(R.id.btnRegister);
         tvReset = findViewById(R.id.tvReset);
 
-        //togliere il seguente commento per login automatico
-       // showProgress(true);
+        //la seguente riga serve per il login automatico con barra di caricamento
+        showProgress(true);
 
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -69,7 +69,7 @@ public class Login extends AppCompatActivity {
                         @Override
                         public void handleResponse(BackendlessUser response) {
 
-                           // ApplicationClass.user = response;
+                            TestApplication.user = response;
                             Toast.makeText(Login.this, "Logged in successfully!", Toast.LENGTH_SHORT).show();
                             startActivity(new Intent(Login.this, MainActivity.class));
                             Login.this.finish();
@@ -136,7 +136,7 @@ public class Login extends AppCompatActivity {
 
 
         //Togliere i seguenti commenti per effettuare il login automatico
-        /*
+
 
         tvLoad.setText("Checking login credentials...please wait...");
 
@@ -183,8 +183,9 @@ public class Login extends AppCompatActivity {
             }
         });
 
-        */
 
+
+        //fine login automatico
     }
 
 
