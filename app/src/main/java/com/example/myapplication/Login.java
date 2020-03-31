@@ -34,6 +34,13 @@ public class Login extends AppCompatActivity {
     TextView tvReset;
 
 
+    /**
+     * This is the first activity that starts when you open the app. You will be presented with
+     * the possibility of logging in (after entering your email and password),
+     * of switching to the activity of registering a new account or of requesting a new password
+     * (after entering your email).
+     *
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,9 +56,13 @@ public class Login extends AppCompatActivity {
         btnRegister = findViewById(R.id.btnRegister);
         tvReset = findViewById(R.id.tvReset);
 
-        //la seguente riga serve per il login automatico con barra di caricamento
+        // the following line is for automatic login with the loading bar
         showProgress(true);
 
+        /**
+         *if the login button is clicked, it will be made with the relative API call
+         * (after checking that mail and password are present)
+         */
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -89,6 +100,9 @@ public class Login extends AppCompatActivity {
             }
         });
 
+        /**
+         * if the registration button is clicked, it will go to the relative "Register" activity.
+         */
         btnRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -98,6 +112,10 @@ public class Login extends AppCompatActivity {
             }
         });
 
+        /**
+         * if the reset password link is clicked, after checking that the email has been entered,
+         * the reset email will be sent for the appropriate API call.
+         */
         tvReset.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -134,9 +152,9 @@ public class Login extends AppCompatActivity {
         });
 
 
-
-        //Togliere i seguenti commenti per effettuare il login automatico
-
+        /**
+         * check if the last login is still valid. If yes, I login directly without requesting insertion
+         */
 
         tvLoad.setText("Checking login credentials...please wait...");
 
