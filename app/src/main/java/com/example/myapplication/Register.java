@@ -29,11 +29,15 @@ import com.google.android.libraries.places.widget.listener.PlaceSelectionListene
 import java.util.ArrayList;
 import java.util.Arrays;
 
+/**
+ * this class is responsible for all the management of the registration phase
+ */
 public class Register extends AppCompatActivity {
 
     private View mProgressView;
     private View mLoginFormView;
     private TextView tvLoad;
+
 
     EditText etName,etMail,etPassword,etReEnter,etUsername,etSurname, etAddress;
     Button btnRegister;
@@ -46,10 +50,12 @@ public class Register extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
+        //components needed for the loading bar
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
         tvLoad = findViewById(R.id.tvLoad);
 
+        //identify all the elements of the layout where the user enters their data
         etName=findViewById(R.id.etName);
         etMail=findViewById(R.id.etMail);
         etPassword=findViewById(R.id.etPassword);
@@ -69,6 +75,8 @@ public class Register extends AppCompatActivity {
                 .hide(autocompleteFragment)
                 .commit();
 
+        // when the input field of the address is clicked, I start the Google widget
+        // (through the appropriate API) to search for the address
         etAddress.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -97,6 +105,8 @@ public class Register extends AppCompatActivity {
                 });
             }});
 
+        // if the button confirming the registration is clicked, it will be checked that the user
+        // has entered all the data correctly and then the user will enter the relevant data in the database
         btnRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -179,13 +189,6 @@ public class Register extends AppCompatActivity {
                                     Toast.makeText(Register.this, "Error: "+ fault.getMessage(), Toast.LENGTH_LONG).show();
                             }
                         });
-
-
-
-
-
-
-
 
 
                     }
