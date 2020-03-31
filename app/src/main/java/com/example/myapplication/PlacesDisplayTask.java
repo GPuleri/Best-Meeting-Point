@@ -19,9 +19,7 @@ public class PlacesDisplayTask extends AsyncTask<Object, Integer, List<HashMap<S
     GoogleMap googleMap;
 
     /**
-     * prende in input i dati in formato json e tramite la classe Places li parsa
-     * @param inputObj
-     * @return
+     * takes as input the data in json format and through the Places class it appears
      */
     @Override
     protected List<HashMap<String, String>> doInBackground(Object... inputObj) {
@@ -41,8 +39,7 @@ public class PlacesDisplayTask extends AsyncTask<Object, Integer, List<HashMap<S
 
 
     /**
-     * posiziona un marker sulla mappa per tutti i Place trovati, scrivendo per ognuno il nome e la via
-     * @param list
+     * put a marker on the map for all the Places found, writing the name and street for each one
      */
     @Override
     protected void onPostExecute(List<HashMap<String, String>> list) {

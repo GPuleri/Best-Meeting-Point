@@ -15,12 +15,9 @@ import java.net.URL;
 public class Http {
 
     /**
-     * prende in input come parametro la stringa "httpUrl" contentnte l'url da elaborare.
-     * crea un connessione http url per elaborare l'url di input.
-     * elaborato l'url, restituisce i dati ricevuti in formato String
-     * @param httpUrl
-     * @return
-     * @throws IOException
+     * takes as input the "httpUrl" string containing the url to be processed.
+     * create an http url connection to process the input url.
+     * after processing the url, it returns the data received in String format
      */
     @SuppressLint("LongLogTag")
     public String read(String httpUrl) throws IOException {

@@ -11,9 +11,7 @@ import java.util.List;
 public class Places {
 
     /**
-     * prende in input un jsonObject, lo trasforma in un jsonArray e ne restituisce una lista con i dati dell'oggetto json parsati
-     * @param jsonObject
-     * @return
+     * takes a jsonObject as input, transforms it into a jsonArray and returns a list with the data of the json object parsed
      */
     public List<HashMap<String, String>> parse(JSONObject jsonObject) {
         JSONArray jsonArray = null;
@@ -26,9 +24,7 @@ public class Places {
     }
 
     /**
-     * per ogni oggetto Place contenuto nel jsonArray, chiama la funzione gelPlace()
-     * @param jsonArray
-     * @return
+     * for each Place object contained in the jsonArray, call the gelPlace () function
      */
     private List<HashMap<String, String>> getPlaces(JSONArray jsonArray) {
         int placesCount = jsonArray.length();
@@ -49,9 +45,7 @@ public class Places {
 
 
     /**
-     * prende in input un oggetto place in formato json e lo trasfoma in un'hashmap contente: placeName, vicinity, latitude, longitude e reference
-     * @param googlePlaceJson
-     * @return
+     * takes as input a place object in json format and transforms it into a content hashmap: placeName, vicinity, latitude, longitude and reference
      */
     private HashMap<String, String> getPlace(JSONObject googlePlaceJson) {
         HashMap<String, String> googlePlaceMap = new HashMap<String, String>();

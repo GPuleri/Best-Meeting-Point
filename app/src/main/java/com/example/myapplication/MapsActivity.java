@@ -36,8 +36,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     ArrayList<LatLng> points;
 
     /**
-     * metodo che parte all'avvio dell'activity
-     * @param savedInstanceState
+     * It handles the creation of the activity initializating the needed objects
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,12 +63,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
 
     /**
-     * prende gli indirizzi delle persone nel gruppo e tramite la funzione getLocationFromAddress() li trasfoma in un oggetto LatLng.
-     * una volta che ha tutte le coordinate in formato Latlng di ogni partecipante al gruppo calcola la latitudine e longitudine al centro (best point).
-     * trovato il best point fa una richiesta url per cercare Place di tipo "ristorante" vicini a quella coordinata nel raggio di 3km.
-     * dopodichè tramite la classe GooglePlacesReadTask fa visualizzare i Places trovati sulla mappa, visualizzando nome del ristorante e la via.
-     * @throws IOException
-     * @throws JSONException
+     * takes the addresses of the people in the group and transforms them into a LatLng object using the getLocationFromAddress () function.
+     * once it has all the coordinates in Latlng format of each participant in the group it calculates the latitude and longitude at the center (best point).
+     * found the best point, the function makes a url request to look for "restaurant" type places close to the coordinated one within 3km.
+     * after which, through the GooglePlacesReadTask class, it displays the Places found on the map, displaying the name of the restaurant and the street.
      */
     private void bestPointCalculator()  throws IOException, JSONException {
 
@@ -121,9 +118,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     /**
-     * metodo che prende in input la stringa "strAddress" che rappresenta l'indirizzo di una persona e ne restituisce un oggetto LatLng contenente latitudine e longitudine di quell'indirizzo
-     * @param strAddress
-     * @return
+     * method that takes as input the string "strAddress" which represents a person's address and returns a LatLng object containing the latitude and longitude of that address
      */
     public LatLng getLocationFromAddress(String strAddress) {
 

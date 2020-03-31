@@ -10,9 +10,7 @@ public class GooglePlacesReadTask extends AsyncTask<Object, Integer, String> {
     GoogleMap googleMap;
 
     /**
-     * esegue la richiesta url utilizzando il metodo read della classe Http, restituisce i dati dei place in formato json
-     * @param inputObj
-     * @return
+     * executes the url request using the read method of the Http class, returns the place data in json format
      */
     @Override
     protected String doInBackground(Object... inputObj) {
@@ -28,8 +26,7 @@ public class GooglePlacesReadTask extends AsyncTask<Object, Integer, String> {
     }
 
     /**
-     * manda in esecuzione la classe PlacesDisplayTask
-     * @param result
+     * runs the PlacesDisplayTask class
      */
     @Override
     protected void onPostExecute(String result) {
