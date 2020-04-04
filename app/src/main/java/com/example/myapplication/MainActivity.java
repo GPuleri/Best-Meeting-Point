@@ -32,56 +32,61 @@ public class MainActivity extends AppCompatActivity {
         btnGroups.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Backendless.UserService.login("sgmonti@gmail.com", "123456", new AsyncCallback<BackendlessUser>() {
-                    @Override
-                    public void handleResponse(BackendlessUser response) {
-                        TestApplication.user = response;
-                        Toast.makeText(MainActivity.this, "Login successfully", Toast.LENGTH_SHORT).show();
-                        startActivity(new Intent(MainActivity.this, GroupList.class));
-                        MainActivity.this.finish();
-                    }
 
-                    @Override
-                    public void handleFault(BackendlessFault fault) {
-                        Toast.makeText(MainActivity.this, "Error: " + fault.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                }, true);
-
+                startActivity(new Intent(MainActivity.this, GroupList.class));
+                MainActivity.this.finish();
             }
         });
-
-        Backendless.UserService.isValidLogin(new AsyncCallback<Boolean>() {
-            @Override
-            public void handleResponse(Boolean response) {
-                if (response){
-                    String userObjectId = UserIdStorageFactory.instance().getStorage().get();
-                    Backendless.Data.of(BackendlessUser.class).findById(userObjectId, new AsyncCallback<BackendlessUser>() {
-                        @Override
-                        public void handleResponse(BackendlessUser response) {
-                            TestApplication.user = response;
-                            startActivity(new Intent(MainActivity.this, GroupList.class));
-                            MainActivity.this.finish();
-                        }
-
-                        @Override
-                        public void handleFault(BackendlessFault fault) {
-                            Toast.makeText(MainActivity.this, "Error: " + fault.getMessage(), Toast.LENGTH_SHORT).show();
-                            MainActivity.this.finish();
-                        }
-                    });
-                } else {
-
-                }
-
-            }
-
-            @Override
-            public void handleFault(BackendlessFault fault) {
-                Toast.makeText(MainActivity.this, "Error: " + fault.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        });
-
-
-
     }
 }
+
+//                Backendless.UserService.login("sgmonti@gmail.com", "123456", new AsyncCallback<BackendlessUser>() {
+//                    @Override
+//                    public void handleResponse(BackendlessUser response) {
+//                        TestApplication.user = response;
+//                        Toast.makeText(MainActivity.this, "Login successfully", Toast.LENGTH_SHORT).show();
+//                        startActivity(new Intent(MainActivity.this, GroupList.class));
+//                        MainActivity.this.finish();
+//                    }
+//
+//                    @Override
+//                    public void handleFault(BackendlessFault fault) {
+//                        Toast.makeText(MainActivity.this, "Error: " + fault.getMessage(), Toast.LENGTH_SHORT).show();
+//                    }
+//                }, true);
+//
+//            }
+//        });
+//
+//        Backendless.UserService.isValidLogin(new AsyncCallback<Boolean>() {
+//            @Override
+//            public void handleResponse(Boolean response) {
+//                if (response){
+//                    String userObjectId = UserIdStorageFactory.instance().getStorage().get();
+//                    Backendless.Data.of(BackendlessUser.class).findById(userObjectId, new AsyncCallback<BackendlessUser>() {
+//                        @Override
+//                        public void handleResponse(BackendlessUser response) {
+//                            TestApplication.user = response;
+//                            startActivity(new Intent(MainActivity.this, GroupList.class));
+//                            MainActivity.this.finish();
+//                        }
+//
+//                        @Override
+//                        public void handleFault(BackendlessFault fault) {
+//                            Toast.makeText(MainActivity.this, "Error: " + fault.getMessage(), Toast.LENGTH_SHORT).show();
+//                            MainActivity.this.finish();
+//                        }
+//                    });
+//                } else {
+//
+//                }
+//
+//            }
+//
+//            @Override
+//            public void handleFault(BackendlessFault fault) {
+//                Toast.makeText(MainActivity.this, "Error: " + fault.getMessage(), Toast.LENGTH_SHORT).show();
+//            }
+//        });
+
+
