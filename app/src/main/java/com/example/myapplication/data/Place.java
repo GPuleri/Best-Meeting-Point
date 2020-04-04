@@ -1,4 +1,3 @@
-
 package com.example.myapplication.data;
 
 import com.backendless.Backendless;
@@ -19,6 +18,25 @@ public class Place
   private String address;
   private String objectId;
   private Date updated;
+  private String full_address;
+  private String id_google_place;
+
+  public String getId_google_place() {
+    return id_google_place;
+  }
+
+  public void setId_google_place(String id_google_place) {
+    this.id_google_place = id_google_place;
+  }
+
+  public String getFull_address() {
+    return full_address;
+  }
+
+  public void setFull_address(String full_address) {
+    this.full_address = full_address;
+  }
+
   public String getCity()
   {
     return city;
@@ -69,7 +87,7 @@ public class Place
     return updated;
   }
 
-                                                    
+
   public Place save()
   {
     return Backendless.Data.of( Place.class ).save( this );
@@ -130,3 +148,4 @@ public class Place
     Backendless.Data.of( Place.class ).find( queryBuilder, callback );
   }
 }
+
