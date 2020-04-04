@@ -4,11 +4,13 @@ import android.app.Application;
 
 import com.backendless.Backendless;
 import com.backendless.BackendlessUser;
+
 import com.example.myapplication.data.Group;
 import com.example.myapplication.data.Group_Place_User;
 
 
 import java.util.List;
+
 
 public class TestApplication extends Application {
     public static final String APPLICATION_ID = "CC93AEC0-074E-BCAE-FFFE-748FA924E000";
