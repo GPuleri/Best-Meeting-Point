@@ -4,4 +4,7 @@
     <color name="colorPrimaryDark">#F57C00</color>
     <color name="colorAccent">#FF5722</color>
     <color name="colorPrimaryLight">#FFE0B2</color>
+    <color name="colorPrimaryMedium">#FF5722</color>
+    <color name="darkText">#202020</color>
+    <color name="white">#FFFAF0</color>
 </resources>
