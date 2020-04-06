@@ -29,7 +29,7 @@ public class GroupList extends AppCompatActivity {
     private Bundle savedInstanceState;
 
     /**
-     * crea un'activity in cui è presente ula lista di gruppi a cui partecipa l'utente loggato
+     * It creates an activity where there is the user groups list
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,7 +95,7 @@ public class GroupList extends AppCompatActivity {
     }
 
     /**
-     * cambia i dati della lista di gruppi se modificata
+     * if a group is modified it changes the data of the list
      */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {

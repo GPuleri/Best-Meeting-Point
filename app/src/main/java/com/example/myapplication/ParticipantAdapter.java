@@ -15,13 +15,16 @@ import com.backendless.BackendlessUser;
 
 import java.util.List;
 
+/**
+ *
+ */
 public class ParticipantAdapter extends ArrayAdapter<BackendlessUser> {
 
     private Context context;
     private List<BackendlessUser> users;
 
     /**
-     * Costruttore che riceve un oggetto Contect e una lista di Utenti
+     * Constructor that receives a Context object and a list of users
      */
     ParticipantAdapter(Context context, List<BackendlessUser> list) {
         super(context, R.layout.row_groups, list);
@@ -31,7 +34,7 @@ public class ParticipantAdapter extends ArrayAdapter<BackendlessUser> {
     }
 
     /**
-     * Setti i dettagli di ciascun Utente all'interno della lista
+     * It set the details of every user inside the list
      */
     @NonNull
     @Override

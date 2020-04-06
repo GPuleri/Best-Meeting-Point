@@ -20,7 +20,7 @@ public class MainActivity extends AppCompatActivity {
     Button btnGroups;
 
     /**
-     * crea una vista con un bottone con cui si può loggare con l'utenti sgmonti@gmail.com
+     * this is the page where there are all te links
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {

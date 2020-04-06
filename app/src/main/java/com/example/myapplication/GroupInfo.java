@@ -36,7 +36,7 @@ public class GroupInfo extends AppCompatActivity {
     Button btnSubmit;
 
     /**
-     * Crea una vista in cui sono presenti i dettagli di un gruppo, contiene la lista di utenti che partecipano al gruppo
+     * it creates a view where there are the group details, it also contains the list of the participants
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
