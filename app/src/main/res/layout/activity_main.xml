@@ -9,16 +9,16 @@
 
     <Button
         android:id="@+id/btnInvitationList"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="150dp"
+        android:layout_margin="70dp"
         android:text="invitation list"
         android:layout_gravity="center_horizontal"/>
 
     <Button
         android:id="@+id/btnGroups"
         android:layout_width="wrap_content"
-        android:layout_margin="150dp"
+        android:layout_margin="10dp"
         android:layout_height="wrap_content"
         android:text="@string/groups"
         android:layout_gravity="center_horizontal" />

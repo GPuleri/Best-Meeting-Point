@@ -53,13 +53,6 @@
                     android:text="User Settings"
                     android:layout_margin="30dp"/>
 
-                <Button
-                    android:id="@+id/button2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Invitations"
-                    android:layout_margin="30dp"/>
         </LinearLayout>
 
 
