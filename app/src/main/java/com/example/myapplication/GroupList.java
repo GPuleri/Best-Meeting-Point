@@ -38,6 +38,15 @@ public class GroupList extends AppCompatActivity {
         setContentView(R.layout.groups_activity);
         lvList = findViewById(R.id.lvList);
 
+        lvList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent(GroupList.this, GroupInfo.class);
+                intent.putExtra("index", position);
+                startActivityForResult(intent, 1);
+            }
+        });
+
         LoadRelationsQueryBuilder<Group_Place_User> loadRelationsQueryBuilder;
         loadRelationsQueryBuilder = LoadRelationsQueryBuilder.of(Group_Place_User.class);
         loadRelationsQueryBuilder.setRelationName("group_user");
