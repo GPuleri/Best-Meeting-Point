@@ -1,5 +1,7 @@
 package com.example.myapplication;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 
@@ -8,26 +10,47 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
+import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.Toast;
 
 import com.backendless.Backendless;
 import com.backendless.BackendlessUser;
+import com.backendless.UnitOfWork;
 import com.backendless.async.callback.AsyncCallback;
 import com.backendless.exceptions.BackendlessFault;
+import com.backendless.persistence.DataQueryBuilder;
+import com.backendless.transaction.OpResult;
+
+
+import java.security.acl.Group;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Map;
 import com.backendless.persistence.local.UserIdStorageFactory;
 
 public class MainActivity extends AppCompatActivity {
 
     Button btnGroups;
-
+    Button btnInvitationList;
     /**
      * this is the page where there are all te links
      */
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
         btnGroups = findViewById(R.id.btnGroups);
+        btnInvitationList=findViewById(R.id.btnInvitationList);
 
         btnGroups.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -37,56 +60,16 @@ public class MainActivity extends AppCompatActivity {
                 MainActivity.this.finish();
             }
         });
+
+
+
+        btnInvitationList.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this,InvitationList.class));
+                MainActivity.this.finish();
+            }
+        });
+
     }
 }
-
-//                Backendless.UserService.login("sgmonti@gmail.com", "123456", new AsyncCallback<BackendlessUser>() {
-//                    @Override
-//                    public void handleResponse(BackendlessUser response) {
-//                        TestApplication.user = response;
-//                        Toast.makeText(MainActivity.this, "Login successfully", Toast.LENGTH_SHORT).show();
-//                        startActivity(new Intent(MainActivity.this, GroupList.class));
-//                        MainActivity.this.finish();
-//                    }
-//
-//                    @Override
-//                    public void handleFault(BackendlessFault fault) {
-//                        Toast.makeText(MainActivity.this, "Error: " + fault.getMessage(), Toast.LENGTH_SHORT).show();
-//                    }
-//                }, true);
-//
-//            }
-//        });
-//
-//        Backendless.UserService.isValidLogin(new AsyncCallback<Boolean>() {
-//            @Override
-//            public void handleResponse(Boolean response) {
-//                if (response){
-//                    String userObjectId = UserIdStorageFactory.instance().getStorage().get();
-//                    Backendless.Data.of(BackendlessUser.class).findById(userObjectId, new AsyncCallback<BackendlessUser>() {
-//                        @Override
-//                        public void handleResponse(BackendlessUser response) {
-//                            TestApplication.user = response;
-//                            startActivity(new Intent(MainActivity.this, GroupList.class));
-//                            MainActivity.this.finish();
-//                        }
-//
-//                        @Override
-//                        public void handleFault(BackendlessFault fault) {
-//                            Toast.makeText(MainActivity.this, "Error: " + fault.getMessage(), Toast.LENGTH_SHORT).show();
-//                            MainActivity.this.finish();
-//                        }
-//                    });
-//                } else {
-//
-//                }
-//
-//            }
-//
-//            @Override
-//            public void handleFault(BackendlessFault fault) {
-//                Toast.makeText(MainActivity.this, "Error: " + fault.getMessage(), Toast.LENGTH_SHORT).show();
-//            }
-//        });
-
-

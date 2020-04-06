@@ -1,6 +1,8 @@
 package com.example.myapplication;
 
 import android.app.Application;
+import android.content.Intent;
+import android.widget.Toast;
 
 import com.backendless.Backendless;
 import com.backendless.BackendlessUser;
@@ -11,6 +13,14 @@ import com.example.myapplication.data.Group_Place_User;
 
 import java.util.List;
 
+import com.backendless.BackendlessUser;
+import com.backendless.async.callback.AsyncCallback;
+import com.backendless.exceptions.BackendlessFault;
+import com.backendless.persistence.local.UserIdStorageFactory;
+import com.example.myapplication.data.Group;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class TestApplication extends Application {
     public static final String APPLICATION_ID = "CC93AEC0-074E-BCAE-FFFE-748FA924E000";
@@ -20,10 +30,14 @@ public class TestApplication extends Application {
     public static BackendlessUser user;
     public static List<Group_Place_User> group_place_users;
     public static List<Group> groups;
+    public static List<Group> invitation_group;
 
     /**
      * it creates the link with the database
      */
+
+
+
     @Override
     public void onCreate() {
         super.onCreate();
