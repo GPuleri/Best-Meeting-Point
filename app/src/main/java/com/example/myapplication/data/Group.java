@@ -46,7 +46,6 @@ public class Group
   {
     return ownerId;
   }
-
                                                     
   public Group save()
   {
