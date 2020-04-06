@@ -3,7 +3,6 @@ package com.example.myapplication;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.app.Application;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
@@ -22,7 +21,6 @@ import com.backendless.async.callback.AsyncCallback;
 import com.backendless.exceptions.BackendlessFault;
 import com.backendless.persistence.DataQueryBuilder;
 import com.backendless.persistence.LoadRelationsQueryBuilder;
-import com.backendless.property.UserProperty;
 import com.example.myapplication.data.Group;
 import com.example.myapplication.data.Group_Place_User;
 
@@ -32,7 +30,7 @@ public class GroupInfo extends AppCompatActivity {
     TextView tvName, tvDescription, tvParticipants;
     ImageView ivInvite, ivDelete, ivEdit;
     LinearLayout llOptions;
-    PartecipantAdapter adapter;
+    ParticipantAdapter adapter;
     ListView lvParticipants;
     EditText etName;
     Button btnSubmit;
@@ -87,7 +85,7 @@ public class GroupInfo extends AppCompatActivity {
                             @Override
                             public void handleResponse(List<BackendlessUser> response) {
                                 Log.i("empty", "" + response.isEmpty());
-                                adapter = new PartecipantAdapter(GroupInfo.this, response);
+                                adapter = new ParticipantAdapter(GroupInfo.this, response);
                                 lvParticipants.setAdapter(adapter);
                             }
 

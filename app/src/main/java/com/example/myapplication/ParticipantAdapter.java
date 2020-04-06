@@ -1,7 +1,6 @@
 package com.example.myapplication;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,7 +15,7 @@ import com.backendless.BackendlessUser;
 
 import java.util.List;
 
-public class PartecipantAdapter extends ArrayAdapter<BackendlessUser> {
+public class ParticipantAdapter extends ArrayAdapter<BackendlessUser> {
 
     private Context context;
     private List<BackendlessUser> users;
@@ -24,7 +23,7 @@ public class PartecipantAdapter extends ArrayAdapter<BackendlessUser> {
     /**
      * Costruttore che riceve un oggetto Contect e una lista di Utenti
      */
-    PartecipantAdapter(Context context, List<BackendlessUser> list) {
+    ParticipantAdapter(Context context, List<BackendlessUser> list) {
         super(context, R.layout.row_groups, list);
         this.context = context;
         this.users = list;
@@ -39,7 +38,7 @@ public class PartecipantAdapter extends ArrayAdapter<BackendlessUser> {
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
 
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        convertView = inflater.inflate(R.layout.row_partecipant, parent, false);
+        convertView = inflater.inflate(R.layout.row_participant, parent, false);
 
         TextView tvUsername = convertView.findViewById(R.id.tvUsername);
         TextView tvEmail = convertView.findViewById(R.id.tvEmail);
