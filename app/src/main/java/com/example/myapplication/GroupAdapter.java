@@ -20,7 +20,7 @@ public class GroupAdapter extends ArrayAdapter<Group>
     private List<Group> groups;
 
     /**
-     * Costruttore che riceve un oggetto Context e una lista di Gruppi
+     * Constructor that receive a context object and a list of groups
      */
     GroupAdapter(Context context, List<Group> list) {
         super(context, R.layout.row_groups, list);
@@ -29,7 +29,7 @@ public class GroupAdapter extends ArrayAdapter<Group>
     }
 
     /**
-     * Setti i dettagli di ciascun Gruppo all'interno della lista
+     * it set the details of every group inside the list
      */
     @NonNull
     @Override

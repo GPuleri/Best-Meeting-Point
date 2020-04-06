@@ -21,6 +21,9 @@ public class TestApplication extends Application {
     public static List<Group_Place_User> group_place_users;
     public static List<Group> groups;
 
+    /**
+     * it creates the link with the database
+     */
     @Override
     public void onCreate() {
         super.onCreate();

@@ -29,7 +29,7 @@ public class GroupList extends AppCompatActivity {
     private Bundle savedInstanceState;
 
     /**
-     * crea un'activity in cui è presente ula lista di gruppi a cui partecipa l'utente loggato
+     * It creates an activity where there is the user groups list
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +37,15 @@ public class GroupList extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.groups_activity);
         lvList = findViewById(R.id.lvList);
+
+        lvList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent(GroupList.this, GroupInfo.class);
+                intent.putExtra("index", position);
+                startActivityForResult(intent, 1);
+            }
+        });
 
         LoadRelationsQueryBuilder<Group_Place_User> loadRelationsQueryBuilder;
         loadRelationsQueryBuilder = LoadRelationsQueryBuilder.of(Group_Place_User.class);
@@ -86,7 +95,7 @@ public class GroupList extends AppCompatActivity {
     }
 
     /**
-     * cambia i dati della lista di gruppi se modificata
+     * if a group is modified it changes the data of the list
      */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
