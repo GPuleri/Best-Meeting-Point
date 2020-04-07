@@ -1,13 +1,8 @@
 package com.example.myapplication;
 
 import android.Manifest;
-import android.app.FragmentManager;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
-import android.location.Address;
-import android.location.Geocoder;
-import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -24,17 +19,10 @@ import android.widget.Toast;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 
-import com.backendless.BackendlessUser;
-import com.example.myapplication.data.Group_Place_User;
-import com.example.myapplication.data.Place;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.Status;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap.OnMyLocationButtonClickListener;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -54,13 +42,10 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
 
 import static com.google.android.gms.maps.GoogleMap.MAP_TYPE_HYBRID;
 import static com.google.android.gms.maps.GoogleMap.MAP_TYPE_NORMAL;
@@ -91,11 +76,6 @@ public class MapsActivity extends FragmentActivity implements OnMyLocationButton
             this.distance = 0;
         }
 
-        public Trip(int duration, int distance) {
-            this.duration = duration;
-            this.distance = distance;
-        }
-
         int getDuration() {
             return duration;
         }
@@ -124,8 +104,6 @@ public class MapsActivity extends FragmentActivity implements OnMyLocationButton
     private Spinner spinnerMapType; // A spinner used to select the map style
     private TextView tvDistance; // A textview used to show up the distance of a trip
     private TextView tvDuration; // A textview used to show up the duration of a trip
-    private Button btnInfo; // A button used to switch to the GroupInfo Activity
-    private Button btnVote; // A button used to switch to the Vote Activity
 
     /**
      * It handles the creation of the activity initializating the needed objects
@@ -148,7 +126,9 @@ public class MapsActivity extends FragmentActivity implements OnMyLocationButton
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
+        if (mapFragment != null) {
+            mapFragment.getMapAsync(this);
+        }
 
         // textview for viewing data related to a route
         tvDistance = findViewById(R.id.distance);
@@ -161,10 +141,11 @@ public class MapsActivity extends FragmentActivity implements OnMyLocationButton
         spinnerMapType.setAdapter(adapter);
         spinnerMapType.setOnItemSelectedListener(this);
 
-        /**
-         * Open the GroupInfo Activity
+        /*
+          Open the GroupInfo Activity
          */
-        btnInfo = findViewById(R.id.btnInfo);
+        // A button used to switch to the GroupInfo Activity
+        Button btnInfo = findViewById(R.id.btnInfo);
         btnInfo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -179,10 +160,11 @@ public class MapsActivity extends FragmentActivity implements OnMyLocationButton
             }
         });
 
-        /**
+        /*
          * Open the Vote Activity
          */
-        btnVote = findViewById(R.id.btnVote);
+        // A button used to switch to the Vote Activity
+        Button btnVote = findViewById(R.id.btnVote);
         btnVote.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -219,7 +201,7 @@ public class MapsActivity extends FragmentActivity implements OnMyLocationButton
         test();
         //setMap(users, places);
 
-        /**
+        /*
          * enabling localization and localization button
          */
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
@@ -228,7 +210,7 @@ public class MapsActivity extends FragmentActivity implements OnMyLocationButton
         }
 
         mMap.getUiSettings().setZoomControlsEnabled(true);
-        /**
+        /*
          * disabling toolbar (it is used to continue using this app without having to
          * use the official google maps app)
          */
@@ -373,11 +355,12 @@ public class MapsActivity extends FragmentActivity implements OnMyLocationButton
         } else
         if (marker.getAlpha() == 0.4f || marker.getAlpha() == 0.99f) { // if is user departure
             changePolyline(markersPolylines.get(marker));
-            setTextView(markersTrips.get(marker));
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                setTextView(Objects.requireNonNull(markersTrips.get(marker)));
+            }
         }
         if (marker.getAlpha() == 1f)
-            // recensione
-            ;
+            Toast.makeText(getBaseContext(), "Work in progress (RECENSIONE)", Toast.LENGTH_SHORT).show();
         marker.showInfoWindow();
         return true;
     }
@@ -409,8 +392,12 @@ public class MapsActivity extends FragmentActivity implements OnMyLocationButton
     public void onPolylineClick(Polyline polyline) {
         changePolyline(polyline);
         Marker m = getKeyByValue(markersPolylines, polyline);
-        m.showInfoWindow();
-        setTextView(markersTrips.get(m));
+        if (m != null) {
+            m.showInfoWindow();
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                setTextView(Objects.requireNonNull(markersTrips.get(m)));
+            }
+        }
     }
 
     /**
