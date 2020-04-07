@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/colorPrimaryLight"
+    android:orientation="vertical"
+    android:id="@+id/login_form"
+    tools:context=".CreateGroup">
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Create Group"
+        android:textStyle="bold"
+        android:textSize="30sp"
+        android:layout_margin="19dp"
+        android:gravity="center_horizontal"
+        android:textColor="@color/quantum_black_text"
+        android:id="@+id/etTitle" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:layout_weight="1">
+
+        <EditText
+            style="@style/Widget.AppCompat.EditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+            android:gravity="center"
+            android:hint="Insert the title of the group"
+            android:importantForAutofill="no"
+            android:textSize="25sp"
+            android:visibility="visible" />
+
+    </LinearLayout>
+    <Button
+        android:id="@+id/btnNew"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="50dp"
+        android:layout_marginRight="50dp"
+        android:layout_marginBottom="50dp"
+        android:padding="20dp"
+        android:text="@string/create"
+        android:textColor="@color/darkText"
+        android:background="@color/colorPrimaryMedium"/>
+
+
+
+
+
+
+
+</LinearLayout>

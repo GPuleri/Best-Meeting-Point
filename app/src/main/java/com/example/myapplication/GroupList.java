@@ -35,7 +35,7 @@ public class GroupList extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         this.savedInstanceState = savedInstanceState;
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.groups_activity);
+        setContentView(R.layout.activity_groups);
         lvList = findViewById(R.id.lvList);
 
         lvList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
