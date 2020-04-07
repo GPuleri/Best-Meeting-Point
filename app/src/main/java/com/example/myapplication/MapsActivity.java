@@ -74,8 +74,7 @@ import static com.google.android.gms.maps.GoogleMap.MAP_TYPE_TERRAIN;
 
 public class MapsActivity extends FragmentActivity implements OnMyLocationButtonClickListener,
         OnMapReadyCallback, AdapterView.OnItemSelectedListener, GoogleMap.OnPolylineClickListener,
-        GoogleMap.OnMarkerClickListener, GoogleMap.OnInfoWindowClickListener,
-        GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
+        GoogleMap.OnMarkerClickListener, GoogleMap.OnInfoWindowClickListener {
 
     private GoogleMap mMap; // A generic Google's map
     private Bundle b_in; // Object used to get parameters from other activities
@@ -83,11 +82,11 @@ public class MapsActivity extends FragmentActivity implements OnMyLocationButton
     /**
      * Inner class used for storing trip informations.
      */
-    class Trip {
+    static class Trip {
         private int duration;
         private int distance;
 
-        public Trip() {
+        Trip() {
             this.duration = 0;
             this.distance = 0;
         }
@@ -97,19 +96,19 @@ public class MapsActivity extends FragmentActivity implements OnMyLocationButton
             this.distance = distance;
         }
 
-        public int getDuration() {
+        int getDuration() {
             return duration;
         }
 
-        public void setDuration(int duration) {
+        void setDuration(int duration) {
             this.duration = duration;
         }
 
-        public int getDistance() {
+        int getDistance() {
             return distance;
         }
 
-        public void setDistance(int distance) {
+        void setDistance(int distance) {
             this.distance = distance;
         }
 
@@ -152,10 +151,10 @@ public class MapsActivity extends FragmentActivity implements OnMyLocationButton
         mapFragment.getMapAsync(this);
 
         // textview for viewing data related to a route
-        tvDistance = (TextView) findViewById(R.id.distance);
-        tvDuration = (TextView) findViewById(R.id.duration);
+        tvDistance = findViewById(R.id.distance);
+        tvDuration = findViewById(R.id.duration);
 
-        spinnerMapType = (Spinner) findViewById(R.id.spinnerMapType);
+        spinnerMapType = findViewById(R.id.spinnerMapType);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
                 this, R.array.layers_array, R.layout.spinner_layout);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -165,7 +164,7 @@ public class MapsActivity extends FragmentActivity implements OnMyLocationButton
         /**
          * Open the GroupInfo Activity
          */
-        btnInfo = (Button) findViewById(R.id.btnInfo);
+        btnInfo = findViewById(R.id.btnInfo);
         btnInfo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -183,7 +182,7 @@ public class MapsActivity extends FragmentActivity implements OnMyLocationButton
         /**
          * Open the Vote Activity
          */
-        btnVote = (Button) findViewById(R.id.btnVote);
+        btnVote = findViewById(R.id.btnVote);
         btnVote.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -210,7 +209,7 @@ public class MapsActivity extends FragmentActivity implements OnMyLocationButton
     @Override
     public void onMapReady(GoogleMap googleMap) {
 
-        /* b_in = getIntent().getExtras();
+        /*b_in = getIntent().getExtras();
         ArrayList<BackendlessUser> users = b_in.getStringArrayList("ID_User");
         ArrayList<Place> places = b_in.getStringArrayList("ID_Place");*/
 
@@ -262,10 +261,17 @@ public class MapsActivity extends FragmentActivity implements OnMyLocationButton
                 .title("You")
                 .alpha(0.99f)));
 
+        // calculateBestMeetingPoint();
         bestMarkers.add(mMap.addMarker(new MarkerOptions()
                 .position(new LatLng(45.5, 9.5))
                 .title("best")
                 .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))));
+
+        bestMarkers.add(mMap.addMarker(new MarkerOptions()
+                .position(new LatLng(45.6, 9.5))
+                .title("best 2")
+                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
+                .alpha(0.5f)));
 
         bestMarkers.get(0).showInfoWindow();
         drawDirections(departureMarkers, bestMarkers.get(0));
@@ -278,6 +284,11 @@ public class MapsActivity extends FragmentActivity implements OnMyLocationButton
     /*
     /**
      * Set the map by creating markers, drawing routes and calculating best meeting points
+     * Marker's caption:
+     * 0.4f --> departures of the friends
+     * 0.99f --> my departure
+     * 0.5f --> other best points
+     * 1f --> current best point
      */
     /*public void setMap(ArrayList<BackendlessUser> users, ArrayList<Place> places) {
 
@@ -286,8 +297,8 @@ public class MapsActivity extends FragmentActivity implements OnMyLocationButton
         /**
         * For every departure add a marker setting its title to the username and alpha to 0.4f
         */
-    /*
-        for (int i = 0; i < places.size(); i++) {
+
+      /*for (int i = 0; i < places.size(); i++) {
             if (!users.get(i).getProperty("username").toString()
                     .equals(TestApplication.user.getProperty("username").toString())) {
 
@@ -317,7 +328,7 @@ public class MapsActivity extends FragmentActivity implements OnMyLocationButton
         mMap.moveCamera(CameraUpdateFactory.newLatLng(bestMarkers.get(0).getPosition()));
         CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(bestMarkers.get(0).getPosition(), 15);
         mMap.animateCamera(cameraUpdate);
-    }*/
+    } */
 
     /**
      * For every departure it asks Google Maps for getting the routes to best
@@ -348,7 +359,7 @@ public class MapsActivity extends FragmentActivity implements OnMyLocationButton
      */
     @Override
     public boolean onMarkerClick(Marker marker) {
-        /* if (marker.getAlpha() == 0.5f) { // if is other best points
+        if (marker.getAlpha() == 0.5f) { // if is other best points
             for (Marker mark : bestMarkers) {
                 mark.setAlpha(0.5f);
             }
@@ -359,7 +370,7 @@ public class MapsActivity extends FragmentActivity implements OnMyLocationButton
             markersPolylines.clear();
             trips.clear();
             drawDirections(departureMarkers, marker);
-        } else */
+        } else
         if (marker.getAlpha() == 0.4f || marker.getAlpha() == 0.99f) { // if is user departure
             changePolyline(markersPolylines.get(marker));
             setTextView(markersTrips.get(marker));
@@ -584,7 +595,7 @@ public class MapsActivity extends FragmentActivity implements OnMyLocationButton
             trips.add(trip);
 
             // Drawing polyline in the Google Map for the i-th route
-            if (polylines.size() == departureMarkers.size() - 1) //if you
+            if (polylines.size() == departureMarkers.size() - 1) // if you
                 polylines.add(mMap.addPolyline(lineOptions.color(Color.BLUE).width(13)));
             else
                 polylines.add(mMap.addPolyline(lineOptions.color(Color.GRAY)));
@@ -696,26 +707,6 @@ public class MapsActivity extends FragmentActivity implements OnMyLocationButton
         } else if (layerName.equals(getString(R.string.terrain))) {
             mMap.setMapType(MAP_TYPE_TERRAIN);
         }
-    }
-
-    @Override
-    public void onPointerCaptureChanged(boolean hasCapture) {
-
-    }
-
-    @Override
-    public void onConnected(Bundle bundle) {
-
-    }
-
-    @Override
-    public void onConnectionSuspended(int i) {
-
-    }
-
-    @Override
-    public void onConnectionFailed(ConnectionResult connectionResult) {
-
     }
 
     @Override
