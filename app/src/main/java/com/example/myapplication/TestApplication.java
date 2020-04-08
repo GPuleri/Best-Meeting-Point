@@ -18,6 +18,7 @@ import com.backendless.async.callback.AsyncCallback;
 import com.backendless.exceptions.BackendlessFault;
 import com.backendless.persistence.local.UserIdStorageFactory;
 import com.example.myapplication.data.Group;
+import com.example.myapplication.data.Place;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +32,8 @@ public class TestApplication extends Application {
     public static List<Group_Place_User> group_place_users;
     public static List<Group> groups;
     public static List<Group> invitation_group;
-    public static Group new_group;
+    public static List<BackendlessUser> users_active;
+    public static List<Place> places_active;
 
     /**
      * it creates the link with the database

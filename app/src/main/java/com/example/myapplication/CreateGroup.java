@@ -15,6 +15,7 @@ import com.backendless.Backendless;
 import com.backendless.BackendlessUser;
 import com.backendless.async.callback.AsyncCallback;
 import com.backendless.exceptions.BackendlessFault;
+import com.backendless.servercode.annotation.Async;
 import com.example.myapplication.data.Group;
 import com.example.myapplication.data.Group_Place_User;
 
@@ -24,13 +25,15 @@ public class CreateGroup extends AppCompatActivity {
 
     EditText etName;
     Button btnNew;
+    static Group group;
+    static Group_Place_User link;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_group);
-        btnNew = findViewById(R.id.btnNew);
-        etName = findViewById(R.id.etName);
+        btnNew = findViewById(R.id.btnNewGroup);
+        etName = findViewById(R.id.etNameGroup);
 
         btnNew.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -38,66 +41,70 @@ public class CreateGroup extends AppCompatActivity {
                 if (etName.getText().toString().isEmpty()) {
                     Toast.makeText(CreateGroup.this, "Please enter the name", Toast.LENGTH_SHORT).show();
                 } else {
-                    Group_Place_User link = new Group_Place_User();
 
-                    Backendless.Persistence.save(link, new AsyncCallback<Group_Place_User>() {
+                    String name = etName.getText().toString().trim();
+                    group = new Group();
+                    group.setName(name);
+                    group.saveAsync(new AsyncCallback<Group>() {
                         @Override
-                        public void handleResponse(Group_Place_User response) {
-                            String name = etName.getText().toString().trim();
-
-                            Group group = new Group();
-                            group.setName(name);
-
-                            Backendless.Persistence.save(group, new AsyncCallback<Group>() {
-                                @Override
-                                public void handleResponse(Group response) {
-                                    TestApplication.new_group = response;
-                                }
-
-                                @Override
-                                public void handleFault(BackendlessFault fault) {
-                                    Toast.makeText(CreateGroup.this, "Error: " + fault.getMessage(), Toast.LENGTH_SHORT).show();
-                                }
-                            });
-
-                            ArrayList list = new ArrayList<Group_Place_User>();
-                            list.add(response);
-
-                            Backendless.Data.of(Group.class).addRelation(TestApplication.new_group, "group_group", list,
-                                    new AsyncCallback<Integer>() {
-                                        @Override
-                                        public void handleResponse(Integer response) {
-                                            Log.i("add_relation", "group");
-                                        }
-
-                                        @Override
-                                        public void handleFault(BackendlessFault fault) {
-                                            Toast.makeText(CreateGroup.this, "Error: " + fault.getMessage(), Toast.LENGTH_SHORT).show();
-                                            Log.e("add_relation", fault.getMessage());
-                                        }
-                                    });
-
-                            Backendless.Data.of(BackendlessUser.class).addRelation(TestApplication.user, "group_user", list,
-                                    new AsyncCallback<Integer>() {
-                                        @Override
-                                        public void handleResponse(Integer response) {
-                                            Log.i("add_relation", "user");
-                                        }
-
-                                        @Override
-                                        public void handleFault(BackendlessFault fault) {
-                                            Log.e("add_relation", "group");
-                                            Toast.makeText(CreateGroup.this, "Error: " + fault.getMessage(), Toast.LENGTH_SHORT).show();
-                                        }
-                                    });
-                            CreateGroup.this.finish();
+                        public void handleResponse(Group response) {
+                            Log.i("object_id", response.getObjectId());
+                            group = response;
                         }
 
                         @Override
                         public void handleFault(BackendlessFault fault) {
+                            Log.e("error", fault.getMessage());
                             Toast.makeText(CreateGroup.this, "Error: " + fault.getMessage(), Toast.LENGTH_SHORT).show();
                         }
                     });
+                    link = new Group_Place_User();
+
+
+
+                    Backendless.Persistence.save(link, new AsyncCallback<Group_Place_User>() {
+                        @Override
+                        public void handleResponse(Group_Place_User response) {
+                            ArrayList<Group_Place_User> list = new ArrayList<Group_Place_User>();
+                            list.add(response);
+                            Backendless.Data.of(BackendlessUser.class).addRelation(TestApplication.user, "group_user", list,
+                                    new AsyncCallback<Integer>() {
+                                        @Override
+                                        public void handleResponse(Integer response) {
+
+                                        }
+
+                                        @Override
+                                        public void handleFault(BackendlessFault fault) {
+                                            Log.e("error backendless", fault.getMessage());
+                                            Toast.makeText(CreateGroup.this, "Error: " + fault.getMessage(), Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
+
+                            Backendless.Data.of(Group.class).addRelation(group, "group_group", list,
+                                    new AsyncCallback<Integer>() {
+                                        @Override
+                                        public void handleResponse(Integer response) {
+                                            CreateGroup.this.finish();
+                                        }
+
+                                        @Override
+                                        public void handleFault(BackendlessFault fault) {
+                                            Log.e("error group", fault.getMessage());
+                                            Toast.makeText(CreateGroup.this, "Error: " + fault.getMessage(), Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
+                        }
+
+                        @Override
+                        public void handleFault(BackendlessFault fault) {
+                            Log.e("error create group user", fault.getMessage());
+                            Toast.makeText(CreateGroup.this, "Error: " + fault.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    });
+
+
+
 
                 }
             }

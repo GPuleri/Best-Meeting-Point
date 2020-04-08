@@ -23,6 +23,7 @@ import com.backendless.persistence.DataQueryBuilder;
 import com.backendless.persistence.LoadRelationsQueryBuilder;
 import com.example.myapplication.data.Group;
 import com.example.myapplication.data.Group_Place_User;
+import com.example.myapplication.data.Place;
 
 import java.util.List;
 
@@ -85,8 +86,33 @@ public class GroupInfo extends AppCompatActivity {
                             @Override
                             public void handleResponse(List<BackendlessUser> response) {
                                 Log.i("empty", "" + response.isEmpty());
+                                TestApplication.users_active = response;
                                 adapter = new ParticipantAdapter(GroupInfo.this, response);
                                 lvParticipants.setAdapter(adapter);
+                            }
+
+                            @Override
+                            public void handleFault(BackendlessFault fault) {
+                                Toast.makeText(GroupInfo.this, "Error: " + fault.getMessage(), Toast.LENGTH_SHORT).show();
+                            }
+                        });
+
+                        whereClause = new StringBuilder();
+                        for (int i = 0; i < TestApplication.group_place_users.size(); i++) {
+                            whereClause.append("group_place");
+                            whereClause.append(".objectId='").append(TestApplication.group_place_users.get(i).getObjectId()).append("'");
+                            if (i != TestApplication.group_place_users.size() - 1) {
+                                whereClause.append(" or ");
+                            }
+                        }
+                        queryBuilder = DataQueryBuilder.create();
+                        queryBuilder.setWhereClause(whereClause.toString());
+                        Log.i("query", whereClause.toString());
+                        Backendless.Data.of(Place.class).find(queryBuilder, new AsyncCallback<List<Place>>() {
+                            @Override
+                            public void handleResponse(List<Place> response) {
+                                Log.i("empty", "" + response.size());
+                                TestApplication.places_active = response;
                             }
 
                             @Override

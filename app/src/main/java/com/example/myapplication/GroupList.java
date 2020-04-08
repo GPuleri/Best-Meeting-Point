@@ -74,17 +74,19 @@ public class GroupList extends AppCompatActivity {
                             whereClause.append("group_group");
                             whereClause.append(".objectId='").append(TestApplication.group_place_users.get(i).getObjectId()).append("'");
                             if (i != TestApplication.group_place_users.size() - 1) {
-                                whereClause.append(" and ");
+                                whereClause.append(" or ");
                             }
                         }
                         DataQueryBuilder queryBuilder = DataQueryBuilder.create();
                         queryBuilder.setWhereClause(whereClause.toString());
+//                        queryBuilder.setSortBy( "created");
                         Log.i("query", whereClause.toString());
                         Backendless.Data.of(Group.class).find(queryBuilder, new AsyncCallback<List<Group>>() {
 
                             @Override
                             public void handleResponse(List<Group> response) {
                                 TestApplication.groups = response;
+                                Log.i("group_number", "" + response.size());
                                 adapter = new GroupAdapter(GroupList.this, response);
                                 lvList.setAdapter(adapter);
                             }
@@ -92,6 +94,7 @@ public class GroupList extends AppCompatActivity {
 
                             @Override
                             public void handleFault(BackendlessFault fault) {
+                                Log.e("error", fault.getMessage());
                                 Toast.makeText(GroupList.this, "Error: " + fault.getMessage(), Toast.LENGTH_SHORT).show();
                             }
                         });
@@ -99,6 +102,7 @@ public class GroupList extends AppCompatActivity {
 
                     @Override
                     public void handleFault(BackendlessFault fault) {
+                        Log.e("error", fault.getMessage());
                         Toast.makeText(GroupList.this, "Error: " + fault.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
