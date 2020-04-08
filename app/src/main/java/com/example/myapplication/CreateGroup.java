@@ -85,6 +85,7 @@ public class CreateGroup extends AppCompatActivity {
                                     new AsyncCallback<Integer>() {
                                         @Override
                                         public void handleResponse(Integer response) {
+                                            TestApplication.groups.add(group);
                                             CreateGroup.this.finish();
                                         }
 
