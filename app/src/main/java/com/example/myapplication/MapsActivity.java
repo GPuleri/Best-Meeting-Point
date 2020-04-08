@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.renderscript.ScriptGroup;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -16,9 +17,12 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.arch.core.executor.TaskExecutor;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 
+import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap.OnMyLocationButtonClickListener;
@@ -31,6 +35,15 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.android.gms.tasks.Continuation;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.android.libraries.places.api.Places;
+import com.google.android.libraries.places.api.model.Place;
+import com.google.android.libraries.places.api.net.FetchPlaceRequest;
+import com.google.android.libraries.places.api.net.FetchPlaceResponse;
+import com.google.android.libraries.places.api.net.PlacesClient;
 
 import org.json.JSONObject;
 
@@ -42,10 +55,13 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.Future;
+import java.util.concurrent.FutureTask;
 
 import static com.google.android.gms.maps.GoogleMap.MAP_TYPE_HYBRID;
 import static com.google.android.gms.maps.GoogleMap.MAP_TYPE_NORMAL;
@@ -105,6 +121,8 @@ public class MapsActivity extends FragmentActivity implements OnMyLocationButton
     private TextView tvDistance; // A textview used to show up the distance of a trip
     private TextView tvDuration; // A textview used to show up the duration of a trip
 
+    private PlacesClient placesClient;
+
     /**
      * It handles the creation of the activity initializating the needed objects
      */
@@ -129,6 +147,12 @@ public class MapsActivity extends FragmentActivity implements OnMyLocationButton
         if (mapFragment != null) {
             mapFragment.getMapAsync(this);
         }
+
+        // Initialize the SDK
+        Places.initialize(getApplicationContext(), getString(R.string.google_maps_key));
+
+        // Create a new Places client instance
+        placesClient = Places.createClient(this);
 
         // textview for viewing data related to a route
         tvDistance = findViewById(R.id.distance);
@@ -163,7 +187,6 @@ public class MapsActivity extends FragmentActivity implements OnMyLocationButton
         /*
          * Open the Vote Activity
          */
-        // A button used to switch to the Vote Activity
         Button btnVote = findViewById(R.id.btnVote);
         btnVote.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -191,9 +214,9 @@ public class MapsActivity extends FragmentActivity implements OnMyLocationButton
     @Override
     public void onMapReady(GoogleMap googleMap) {
 
-        /*b_in = getIntent().getExtras();
-        ArrayList<BackendlessUser> users = b_in.getStringArrayList("ID_User");
-        ArrayList<Place> places = b_in.getStringArrayList("ID_Place");*/
+        b_in = getIntent().getExtras();
+        ArrayList<String> users = b_in.getStringArrayList("users");
+        ArrayList<String> places = b_in.getStringArrayList("places");
 
         mMap = googleMap;
         updateMapType();
@@ -263,7 +286,6 @@ public class MapsActivity extends FragmentActivity implements OnMyLocationButton
         mMap.animateCamera(cameraUpdate);
     }
 
-    /*
     /**
      * Set the map by creating markers, drawing routes and calculating best meeting points
      * Marker's caption:
@@ -272,14 +294,80 @@ public class MapsActivity extends FragmentActivity implements OnMyLocationButton
      * 0.5f --> other best points
      * 1f --> current best point
      */
-    /*public void setMap(ArrayList<BackendlessUser> users, ArrayList<Place> places) {
 
-        int index;
+    public void setMap(ArrayList<String> users, ArrayList<String> places) {
+
+        int index = 0;
+
+        List<Place.Field> placeFields = Arrays.asList(Place.Field.LAT_LNG);
+        FetchPlaceRequest request = FetchPlaceRequest.newInstance(places.get(0), placeFields);
+
+        Task<FetchPlaceResponse> r = null;
+        /**
+         * For every departure add a marker setting its title to the username
+         */
+        r = placesClient.fetchPlace(request).addOnSuccessListener((response) -> {
+            Place place = response.getPlace();
+        }).addOnFailureListener((exception) -> {
+            if (exception instanceof ApiException) {
+                ApiException apiException = (ApiException) exception;
+            }
+        });
+
+        Toast.makeText(getBaseContext(), Double.toString(r.getResult().getPlace().getLatLng().latitude), Toast.LENGTH_SHORT).show();
+
+        /*placesClient.fetchPlace(request).addOnSuccessListener(new OnSuccessListener<FetchPlaceResponse>() {
+            @Override
+            public void onSuccess(FetchPlaceResponse response) {
+                for (int i = 0; i < places.size(); i++) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                        if (!users.get(i).equals(TestApplication.user.getProperty("username").toString())) {
+                            departureMarkers.add(mMap.addMarker(new MarkerOptions()
+                                    .position(new LatLng(Objects.requireNonNull(response.getPlace().getLatLng()).latitude,
+                                            Objects.requireNonNull(response.getPlace().getLatLng()).longitude))
+                                    .title(users.get(i))
+                                    .alpha(0.4f)));
+                        } else
+                            departureMarkers.add(mMap.addMarker(new MarkerOptions()
+                                    .position(new LatLng(Objects.requireNonNull(response.getPlace().getLatLng()).latitude,
+                                            Objects.requireNonNull(response.getPlace().getLatLng()).longitude))
+                                    .title("You")
+                                    .alpha(0.99f)));
+                    }
+                }
+
+
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                if (exception instanceof ApiException) {
+                    ApiException apiException = (ApiException) exception;
+                    Toast.makeText(MapsActivity.this.getBaseContext(), "Place not found", apiException.getStatusCode()).show();
+                }
+            }
+        }).continueWithTask(new Continuation<FetchPlaceResponse, Task<FetchPlaceResponse>>() {
+            @Override
+            public FetchPlaceResponse then(@NonNull Task<FetchPlaceResponse> task) {
+
+            }
+        }));
+
+
+        Task<FetchPlaceResponse> ra = placesClient.fetchPlace(request);
+        Toast.makeText(getBaseContext(), Double.toString(ra.getResult().getPlace().getLatLng().latitude), Toast.LENGTH_SHORT).show();
+
+
+
+
+
+
+
+
 
         /**
-        * For every departure add a marker setting its title to the username and alpha to 0.4f
-        */
-
+         * For every departure add a marker setting its title to the username and alpha to 0.4f
+         */
       /*for (int i = 0; i < places.size(); i++) {
             if (!users.get(i).getProperty("username").toString()
                     .equals(TestApplication.user.getProperty("username").toString())) {
@@ -295,7 +383,7 @@ public class MapsActivity extends FragmentActivity implements OnMyLocationButton
         departureMarkers.add(mMap.addMarker(new MarkerOptions()
                 .position(new LatLng(places.get(index).getLatLng()))
                 .title("You")
-                .alpha(0.99f)));
+                .alpha(0.99f)));*/
 
 
         // calculateBestMeetingPoint();
@@ -304,13 +392,19 @@ public class MapsActivity extends FragmentActivity implements OnMyLocationButton
                 .title("best")
                 .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))));
 
+        bestMarkers.add(mMap.addMarker(new MarkerOptions()
+                .position(new LatLng(45.6, 9.5))
+                .title("best 2")
+                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
+                .alpha(0.5f)));
+
         bestMarkers.get(0).showInfoWindow();
         drawDirections(departureMarkers, bestMarkers.get(0));
 
         mMap.moveCamera(CameraUpdateFactory.newLatLng(bestMarkers.get(0).getPosition()));
         CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(bestMarkers.get(0).getPosition(), 15);
         mMap.animateCamera(cameraUpdate);
-    } */
+    }
 
     /**
      * For every departure it asks Google Maps for getting the routes to best
@@ -352,8 +446,7 @@ public class MapsActivity extends FragmentActivity implements OnMyLocationButton
             markersPolylines.clear();
             trips.clear();
             drawDirections(departureMarkers, marker);
-        } else
-        if (marker.getAlpha() == 0.4f || marker.getAlpha() == 0.99f) { // if is user departure
+        } else if (marker.getAlpha() == 0.4f || marker.getAlpha() == 0.99f) { // if is user departure
             changePolyline(markersPolylines.get(marker));
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
                 setTextView(Objects.requireNonNull(markersTrips.get(marker)));
@@ -422,9 +515,7 @@ public class MapsActivity extends FragmentActivity implements OnMyLocationButton
         String key = "key=" + getString(R.string.google_maps_key);
 
         // Building the url to the web service
-        String url = "https://maps.googleapis.com/maps/api/directions/" + output + "?" + parameters + "&" + key;
-
-        return url;
+        return "https://maps.googleapis.com/maps/api/directions/" + output + "?" + parameters + "&" + key;
     }
 
     /**
@@ -448,9 +539,9 @@ public class MapsActivity extends FragmentActivity implements OnMyLocationButton
 
             BufferedReader br = new BufferedReader(new InputStreamReader(iStream));
 
-            StringBuffer sb = new StringBuffer();
+            StringBuilder sb = new StringBuilder();
 
-            String line = "";
+            String line;
             while ((line = br.readLine()) != null) {
                 sb.append(line);
             }
@@ -462,8 +553,12 @@ public class MapsActivity extends FragmentActivity implements OnMyLocationButton
         } catch (Exception e) {
             Log.d("Downloading url", e.toString());
         } finally {
-            iStream.close();
-            urlConnection.disconnect();
+            if (iStream != null) {
+                iStream.close();
+            }
+            if (urlConnection != null) {
+                urlConnection.disconnect();
+            }
         }
         return data;
     }
@@ -554,18 +649,22 @@ public class MapsActivity extends FragmentActivity implements OnMyLocationButton
                     HashMap<String, String> point = path.get(j);
 
                     try {
-                        double lat = Double.parseDouble(point.get("lat"));
-                        double lng = Double.parseDouble(point.get("lng"));
+                        double lat = 0;
+                        double lng = 0;
+                        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT) {
+                            lat = Double.parseDouble(Objects.requireNonNull(point.get("lat")));
+                            lng = Double.parseDouble(Objects.requireNonNull(point.get("lng")));
+                        }
                         LatLng position = new LatLng(lat, lng);
                         points.add(position);
 
-                    } catch (NullPointerException e) {
+                    } catch (NullPointerException ignored) {
                     }
 
                     try {
-                        duration += Integer.parseInt(path.get(j).get("duration"));
-                        distance += Integer.parseInt(path.get(j).get("distance"));
-                    } catch (NumberFormatException e) {
+                            duration += Integer.parseInt(path.get(j).get("duration"));
+                            distance += Integer.parseInt(path.get(j).get("distance"));
+                    } catch (NumberFormatException ignored) {
                     }
                 }
 
@@ -636,10 +735,10 @@ public class MapsActivity extends FragmentActivity implements OnMyLocationButton
         int min = (duration - (day * 24 * 60 * 60 + hour * 60 * 60)) / 60;
         double dist = (double) distance / 1000;
 
-        if (day > 0)
+        if (day > 0) {
             tvDuration.setText(Integer.toString(day) + "d "
                     + Integer.toString(hour) + "hr ");
-        else if (hour > 0)
+        } else if (hour > 0)
             tvDuration.setText(Integer.toString(hour) + "hr "
                     + Integer.toString(min) + "min ");
         else if (min > 0)

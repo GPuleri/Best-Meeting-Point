@@ -1,8 +1,6 @@
 package com.example.myapplication;
 
 import android.app.Application;
-import android.content.Intent;
-import android.widget.Toast;
 
 import com.backendless.Backendless;
 import com.backendless.BackendlessUser;
@@ -10,16 +8,6 @@ import com.backendless.BackendlessUser;
 import com.example.myapplication.data.Group;
 import com.example.myapplication.data.Group_Place_User;
 
-
-import java.util.List;
-
-import com.backendless.BackendlessUser;
-import com.backendless.async.callback.AsyncCallback;
-import com.backendless.exceptions.BackendlessFault;
-import com.backendless.persistence.local.UserIdStorageFactory;
-import com.example.myapplication.data.Group;
-
-import java.util.ArrayList;
 import java.util.List;
 
 public class TestApplication extends Application {
@@ -35,9 +23,6 @@ public class TestApplication extends Application {
     /**
      * it creates the link with the database
      */
-
-
-
     @Override
     public void onCreate() {
         super.onCreate();

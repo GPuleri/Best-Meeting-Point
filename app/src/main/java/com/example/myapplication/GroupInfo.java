@@ -4,6 +4,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -24,11 +25,12 @@ import com.backendless.persistence.LoadRelationsQueryBuilder;
 import com.example.myapplication.data.Group;
 import com.example.myapplication.data.Group_Place_User;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class GroupInfo extends AppCompatActivity {
     TextView tvName, tvDescription, tvParticipants;
-    ImageView ivInvite, ivDelete, ivEdit;
+    ImageView ivInvite, ivNavigate, ivDelete, ivEdit;
     LinearLayout llOptions;
     ParticipantAdapter adapter;
     ListView lvParticipants;
@@ -45,13 +47,14 @@ public class GroupInfo extends AppCompatActivity {
         tvName = findViewById(R.id.tvName);
         tvDescription = findViewById(R.id.tvDescription);
         ivInvite = findViewById(R.id.ivInvite);
+        ivNavigate = findViewById(R.id.ivNavigate);
         ivDelete = findViewById(R.id.ivDelete);
         llOptions = findViewById(R.id.llOptions);
         lvParticipants = findViewById(R.id.lvParticipants);
         etName = findViewById(R.id.etName);
         btnSubmit = findViewById(R.id.btnSubmit);
         ivEdit = findViewById(R.id.ivEdit);
-        tvParticipants =findViewById(R.id.tvParticipants);
+        tvParticipants = findViewById(R.id.tvParticipants);
 
         final int index = getIntent().getIntExtra("index", 0);
 
@@ -204,7 +207,25 @@ public class GroupInfo extends AppCompatActivity {
                     }
                 });
 
+            }
+        });
+        ivNavigate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Bundle b = new Bundle();
+                ArrayList<String> users = new ArrayList<>();
+                ArrayList<String> places = new ArrayList<>();
+                users.add("pule");
+                users.add("pule2");
+                places.add("ChIJMSVLoRy8hkcRNZ8Fi-Cgp28");
+                places.add("ChIJnfEj-pPBhkcREvPvegzTxwk");
 
+                b.putStringArrayList("users", users);
+                b.putStringArrayList("places", places);
+
+                Intent intent = new Intent(GroupInfo.this, MapsActivity.class);
+                intent.putExtras(b);
+                startActivityForResult(intent, 1);
             }
         });
 
