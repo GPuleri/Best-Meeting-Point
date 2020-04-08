@@ -3,6 +3,8 @@ package com.example.myapplication;
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -45,6 +47,7 @@ import com.google.android.libraries.places.api.net.FetchPlaceRequest;
 import com.google.android.libraries.places.api.net.FetchPlaceResponse;
 import com.google.android.libraries.places.api.net.PlacesClient;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -79,6 +82,7 @@ public class MapsActivity extends FragmentActivity implements OnMyLocationButton
 
     private GoogleMap mMap; // A generic Google's map
     private Bundle b_in; // Object used to get parameters from other activities
+    private ArrayList<LatLng> points;
 
     /**
      * Inner class used for storing trip informations.
@@ -204,6 +208,19 @@ public class MapsActivity extends FragmentActivity implements OnMyLocationButton
                 } */
 
                 Toast.makeText(getBaseContext(), "Work in progress", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        final Button button = findViewById(R.id.bestpoint);
+        button.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                try {
+                    bestPointCalculator();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
         });
     }
@@ -662,8 +679,8 @@ public class MapsActivity extends FragmentActivity implements OnMyLocationButton
                     }
 
                     try {
-                            duration += Integer.parseInt(path.get(j).get("duration"));
-                            distance += Integer.parseInt(path.get(j).get("distance"));
+                        duration += Integer.parseInt(path.get(j).get("duration"));
+                        distance += Integer.parseInt(path.get(j).get("distance"));
                     } catch (NumberFormatException ignored) {
                     }
                 }
@@ -798,5 +815,87 @@ public class MapsActivity extends FragmentActivity implements OnMyLocationButton
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
 
+    }
+
+    /**
+     * takes the addresses of the people in the group and transforms them into a LatLng object using the getLocationFromAddress() function.
+     * once it has all the coordinates in Latlng format of each participant in the group it calculates the latitude and longitude at the center (best point).
+     * found the best point, the function makes a url request to look for "restaurant" type places close to the coordinated one within 3km.
+     * after which, through the GooglePlacesReadTask class, it displays the Places found on the map, displaying the name of the restaurant and the street.
+     */
+    private void bestPointCalculator()  throws IOException, JSONException {
+
+        points = new ArrayList<LatLng>();
+
+        // indirizzi fittizi, prendere gli indirizzi veri tramite intent
+        ArrayList<String> indirizzi = new ArrayList<>();
+        indirizzi.add("Roma piazza di trevi italia");
+        indirizzi.add("Milan, italy");
+        indirizzi.add("Venice, italy");
+
+        // prendo l'array di indirizzi e li trasformo in LatLng
+        for (int i=0; i<indirizzi.size(); i++){
+            LatLng point = getLocationFromAddress(indirizzi.get(i));
+            points.add(point);
+        }
+
+        // calcolo best point
+        double latitude = 0.0;
+        double longitude = 0.0;
+
+        for (int i = 0; i<points.size(); i++){
+            latitude = latitude + points.get(i).latitude;
+            longitude = longitude + points.get(i).longitude;
+        }
+
+        latitude = latitude/points.size();
+        longitude = longitude/points.size();
+
+        // metto un marker sul best point trovato
+        LatLng bestPoint = new LatLng(latitude, longitude);
+        mMap.addMarker(new MarkerOptions().position(bestPoint).title("Best Point"));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(bestPoint, 10));
+
+        // creo la custom string per la richiesta url dei places
+        StringBuilder googlePlacesUrl = new StringBuilder("https://maps.googleapis.com/maps/api/place/nearbysearch/json?");
+        googlePlacesUrl.append("location=" + latitude + "," + longitude);
+        googlePlacesUrl.append("&radius=" + 3000);
+        googlePlacesUrl.append("&types=" + "restaurant");
+        googlePlacesUrl.append("&key=" + "AIzaSyByyPXoo6la_E0E5MR7kLUL6Vh_YKgrLLg");
+
+        // eseguo la classe GooglePlacesReadTask per visualizzare i place sulla mappa
+        GooglePlacesReadTask googlePlacesReadTask = new GooglePlacesReadTask();
+        Object[] toPass = new Object[2];
+        toPass[0] = mMap;
+        toPass[1] = googlePlacesUrl.toString();
+        googlePlacesReadTask.execute(toPass);
+
+    }
+
+    /**
+     * method that takes as input the string "strAddress" which represents a person's address and returns a LatLng object containing the latitude and longitude of that address
+     */
+    public LatLng getLocationFromAddress(String strAddress) {
+
+        Geocoder coder = new Geocoder(this);
+        List<Address> address;
+        LatLng p1 = null;
+
+        try {
+            // May throw an IOException
+            address = coder.getFromLocationName(strAddress, 5);
+            if (address == null) {
+                return null;
+            }
+
+            Address location = address.get(0);
+            p1 = new LatLng(location.getLatitude(), location.getLongitude() );
+
+        } catch (IOException ex) {
+
+            ex.printStackTrace();
+        }
+
+        return p1;
     }
 }

@@ -98,6 +98,12 @@
             android:layout_weight="1"
             android:text="@string/vote"
             android:textSize="30sp" />
+
+        <Button
+            android:id="@+id/bestpoint"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:text="best point" />
     </LinearLayout>
 
 </LinearLayout>
