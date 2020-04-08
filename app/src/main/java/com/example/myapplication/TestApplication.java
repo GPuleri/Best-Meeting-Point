@@ -31,6 +31,7 @@ public class TestApplication extends Application {
     public static List<Group_Place_User> group_place_users;
     public static List<Group> groups;
     public static List<Group> invitation_group;
+    public static Group new_group;
 
     /**
      * it creates the link with the database

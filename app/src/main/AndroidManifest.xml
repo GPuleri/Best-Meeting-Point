@@ -24,6 +24,7 @@
         <activity android:name=".GroupList" />
         <activity android:name=".GroupInfo" />
         <activity android:name=".InvitationList" />
+        <activity android:name=".CreateGroup"/>
     </application>
 
 </manifest>

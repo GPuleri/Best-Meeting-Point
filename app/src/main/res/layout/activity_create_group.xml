@@ -34,7 +34,8 @@
             android:hint="Insert the title of the group"
             android:importantForAutofill="no"
             android:textSize="25sp"
-            android:visibility="visible" />
+            android:visibility="visible"
+            android:id="@+id/etName"/>
 
     </LinearLayout>
     <Button

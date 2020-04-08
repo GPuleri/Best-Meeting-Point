@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -25,6 +26,7 @@ import java.util.List;
 
 public class GroupList extends AppCompatActivity {
     ListView lvList;
+    Button btnNew;
     GroupAdapter adapter;
     private Bundle savedInstanceState;
 
@@ -37,12 +39,21 @@ public class GroupList extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_groups);
         lvList = findViewById(R.id.lvList);
+        btnNew = findViewById(R.id.btnNew);
+
 
         lvList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent(GroupList.this, GroupInfo.class);
                 intent.putExtra("index", position);
+                startActivityForResult(intent, 1);
+            }
+        });
+        btnNew.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(GroupList.this, CreateGroup.class);
                 startActivityForResult(intent, 1);
             }
         });
