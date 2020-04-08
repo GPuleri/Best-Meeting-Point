@@ -63,7 +63,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
 
     /**
-     * takes the addresses of the people in the group and transforms them into a LatLng object using the getLocationFromAddress () function.
+     * takes the addresses of the people in the group and transforms them into a LatLng object using the getLocationFromAddress() function.
      * once it has all the coordinates in Latlng format of each participant in the group it calculates the latitude and longitude at the center (best point).
      * found the best point, the function makes a url request to look for "restaurant" type places close to the coordinated one within 3km.
      * after which, through the GooglePlacesReadTask class, it displays the Places found on the map, displaying the name of the restaurant and the street.
@@ -74,7 +74,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         // indirizzi fittizi, prendere gli indirizzi veri tramite intent
         ArrayList<String> indirizzi = new ArrayList<>();
-        indirizzi.add("Rome, italy");
+        indirizzi.add("Roma piazza di trevi italia");
         indirizzi.add("Milan, italy");
         indirizzi.add("Venice, italy");
 
