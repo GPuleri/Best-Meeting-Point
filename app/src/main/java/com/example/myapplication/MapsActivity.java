@@ -37,6 +37,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
+/*
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -46,6 +47,8 @@ import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.api.net.FetchPlaceRequest;
 import com.google.android.libraries.places.api.net.FetchPlaceResponse;
 import com.google.android.libraries.places.api.net.PlacesClient;
+
+ */
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -125,7 +128,7 @@ public class MapsActivity extends FragmentActivity implements OnMyLocationButton
     private TextView tvDistance; // A textview used to show up the distance of a trip
     private TextView tvDuration; // A textview used to show up the duration of a trip
 
-    private PlacesClient placesClient;
+    //private PlacesClient placesClient;
 
     /**
      * It handles the creation of the activity initializating the needed objects
@@ -153,10 +156,10 @@ public class MapsActivity extends FragmentActivity implements OnMyLocationButton
         }
 
         // Initialize the SDK
-        Places.initialize(getApplicationContext(), getString(R.string.google_maps_key));
+        //Places.initialize(getApplicationContext(), getString(R.string.google_maps_key));
 
         // Create a new Places client instance
-        placesClient = Places.createClient(this);
+        //placesClient = Places.createClient(this);
 
         // textview for viewing data related to a route
         tvDistance = findViewById(R.id.distance);
@@ -316,13 +319,14 @@ public class MapsActivity extends FragmentActivity implements OnMyLocationButton
 
         int index = 0;
 
+        /*
         List<Place.Field> placeFields = Arrays.asList(Place.Field.LAT_LNG);
         FetchPlaceRequest request = FetchPlaceRequest.newInstance(places.get(0), placeFields);
 
         Task<FetchPlaceResponse> r = null;
         /**
          * For every departure add a marker setting its title to the username
-         */
+
         r = placesClient.fetchPlace(request).addOnSuccessListener((response) -> {
             Place place = response.getPlace();
         }).addOnFailureListener((exception) -> {
@@ -331,7 +335,10 @@ public class MapsActivity extends FragmentActivity implements OnMyLocationButton
             }
         });
 
+
         Toast.makeText(getBaseContext(), Double.toString(r.getResult().getPlace().getLatLng().latitude), Toast.LENGTH_SHORT).show();
+
+         */
 
         /*placesClient.fetchPlace(request).addOnSuccessListener(new OnSuccessListener<FetchPlaceResponse>() {
             @Override
