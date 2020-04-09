@@ -24,4 +24,5 @@
 
     <string name="groupInfo">Group Info</string>
     <string name="vote">Vote</string>
+    <string name="create">Create</string>
 </resources>
