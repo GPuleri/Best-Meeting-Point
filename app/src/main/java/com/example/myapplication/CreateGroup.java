@@ -54,7 +54,36 @@ public class CreateGroup extends AppCompatActivity {
                                     new AsyncCallback<Integer>() {
                                         @Override
                                         public void handleResponse(Integer response) {
+                                            String name = etName.getText().toString().trim();
+                                            TestApplication.group = new Group();
+                                            TestApplication.group.setName(name);
+                                            TestApplication.group.saveAsync(new AsyncCallback<Group>() {
+                                                @Override
+                                                public void handleResponse(Group response) {
+                                                    ArrayList<Group_Place_User> list = new ArrayList<Group_Place_User>();
+                                                    list.add(TestApplication.link);
+                                                    Backendless.Data.of(Group.class).addRelation(response, "group_group", list,
+                                                            new AsyncCallback<Integer>() {
+                                                                @Override
+                                                                public void handleResponse(Integer response) {
+                                                                    TestApplication.groups.add(TestApplication.group);
+                                                                    CreateGroup.this.finish();
+                                                                }
 
+                                                                @Override
+                                                                public void handleFault(BackendlessFault fault) {
+                                                                    Log.e("error group", fault.getMessage());
+                                                                    Toast.makeText(CreateGroup.this, "Error: " + fault.getMessage(), Toast.LENGTH_SHORT).show();
+                                                                }
+                                                            });
+                                                }
+
+                                                @Override
+                                                public void handleFault(BackendlessFault fault) {
+                                                    Log.e("error", fault.getMessage());
+                                                    Toast.makeText(CreateGroup.this, "Error: " + fault.getMessage(), Toast.LENGTH_SHORT).show();
+                                                }
+                                            });
                                         }
 
                                         @Override
@@ -71,38 +100,6 @@ public class CreateGroup extends AppCompatActivity {
                             Toast.makeText(CreateGroup.this, "Error: " + fault.getMessage(), Toast.LENGTH_SHORT).show();
                         }
                     });
-
-                    String name = etName.getText().toString().trim();
-                    TestApplication.group = new Group();
-                    TestApplication.group.setName(name);
-                    TestApplication.group.saveAsync(new AsyncCallback<Group>() {
-                        @Override
-                        public void handleResponse(Group response) {
-                            ArrayList<Group_Place_User> list = new ArrayList<Group_Place_User>();
-                            list.add(TestApplication.link);
-                            Backendless.Data.of(Group.class).addRelation(response, "group_group", list,
-                                    new AsyncCallback<Integer>() {
-                                        @Override
-                                        public void handleResponse(Integer response) {
-                                            TestApplication.groups.add(TestApplication.group);
-                                            CreateGroup.this.finish();
-                                        }
-
-                                        @Override
-                                        public void handleFault(BackendlessFault fault) {
-                                            Log.e("error group", fault.getMessage());
-                                            Toast.makeText(CreateGroup.this, "Error: " + fault.getMessage(), Toast.LENGTH_SHORT).show();
-                                        }
-                                    });
-                        }
-
-                        @Override
-                        public void handleFault(BackendlessFault fault) {
-                            Log.e("error", fault.getMessage());
-                            Toast.makeText(CreateGroup.this, "Error: " + fault.getMessage(), Toast.LENGTH_SHORT).show();
-                        }
-                    });
-
                 }
             }
         });
