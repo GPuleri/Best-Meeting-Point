@@ -26,6 +26,10 @@ public class CreateGroup extends AppCompatActivity {
     EditText etName;
     Button btnNew;
 
+    /**
+     * It creates the Create group activity, inside that you can insert the name of the new group and save it
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
