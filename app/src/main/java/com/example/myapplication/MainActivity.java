@@ -21,18 +21,13 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-//        Intent i = new Intent(MainActivity.this, MapsActivity.class);
-//        startActivity(i);
-
         btnGroups = findViewById(R.id.btnGroups);
         btnInvitationList=findViewById(R.id.btnInvitationList);
 
         btnGroups.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 startActivity(new Intent(MainActivity.this, GroupList.class));
-                MainActivity.this.finish();
             }
         });
 
@@ -42,7 +37,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(MainActivity.this,InvitationList.class));
-                MainActivity.this.finish();
             }
         });
 

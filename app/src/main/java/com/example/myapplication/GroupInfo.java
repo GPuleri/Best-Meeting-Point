@@ -30,7 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GroupInfo extends AppCompatActivity {
-    TextView tvName, tvDescription, tvParticipants;
+    TextView tvName, tvParticipants;
     ImageView ivInvite, ivNavigate, ivDelete, ivEdit;
     LinearLayout llOptions;
     ParticipantAdapter adapter;
@@ -46,7 +46,6 @@ public class GroupInfo extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_group_info);
         tvName = findViewById(R.id.tvName);
-        tvDescription = findViewById(R.id.tvDescription);
         ivInvite = findViewById(R.id.ivInvite);
         ivNavigate = findViewById(R.id.ivNavigate);
         ivDelete = findViewById(R.id.ivDelete);
@@ -198,59 +197,54 @@ public class GroupInfo extends AppCompatActivity {
         ivEdit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                etName.setText(TestApplication.groups.get(index).getName());
-                tvParticipants.setVisibility(View.GONE);
-                lvParticipants.setVisibility(View.GONE);
-                btnSubmit.setVisibility(View.VISIBLE);
-                etName.setVisibility(View.VISIBLE);
+                if (etName.getVisibility() == View.GONE) {
 
+                    etName.setText(TestApplication.groups.get(index).getName());
+                    tvParticipants.setVisibility(View.GONE);
+                    lvParticipants.setVisibility(View.GONE);
+                    btnSubmit.setVisibility(View.VISIBLE);
+                    etName.setVisibility(View.VISIBLE);
 
-                btnSubmit.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        if (etName.getText().toString().isEmpty()) {
-                            Toast.makeText(GroupInfo.this, "Insert all the details  requested!", Toast.LENGTH_SHORT).show();
-                        } else {
-                            TestApplication.groups.get(index).setName(etName.getText().toString().trim());
-                            Backendless.Persistence.save(TestApplication.groups.get(index), new AsyncCallback<Group>() {
-                                @Override
-                                public void handleResponse(Group response) {
-                                    tvName.setText(TestApplication.groups.get(index).getName());
-                                    Toast.makeText(GroupInfo.this, "Updated!", Toast.LENGTH_SHORT).show();
-                                    lvParticipants.setVisibility(View.VISIBLE);
-                                    tvParticipants.setVisibility(View.VISIBLE);
-                                    btnSubmit.setVisibility(View.GONE);
-                                    etName.setVisibility(View.GONE);
-                                }
+                    btnSubmit.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            if (etName.getText().toString().isEmpty()) {
+                                Toast.makeText(GroupInfo.this, "Insert all the details  requested!", Toast.LENGTH_SHORT).show();
+                            } else {
+                                TestApplication.groups.get(index).setName(etName.getText().toString().trim());
+                                Backendless.Persistence.save(TestApplication.groups.get(index), new AsyncCallback<Group>() {
+                                    @Override
+                                    public void handleResponse(Group response) {
+                                        tvName.setText(TestApplication.groups.get(index).getName());
+                                        Toast.makeText(GroupInfo.this, "Updated!", Toast.LENGTH_SHORT).show();
+                                        lvParticipants.setVisibility(View.VISIBLE);
+                                        tvParticipants.setVisibility(View.VISIBLE);
+                                        btnSubmit.setVisibility(View.GONE);
+                                        etName.setVisibility(View.GONE);
+                                    }
 
-                                @Override
-                                public void handleFault(BackendlessFault fault) {
-                                    Toast.makeText(GroupInfo.this, "Error: " + fault.getMessage(), Toast.LENGTH_SHORT).show();
-                                }
-                            });
+                                    @Override
+                                    public void handleFault(BackendlessFault fault) {
+                                        Toast.makeText(GroupInfo.this, "Error: " + fault.getMessage(), Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                            }
+
                         }
-
-                    }
-                });
-
+                    });
+                }
+                else {
+                    tvParticipants.setVisibility(View.VISIBLE);
+                    lvParticipants.setVisibility(View.VISIBLE);
+                    btnSubmit.setVisibility(View.GONE);
+                    etName.setVisibility(View.GONE);
+                }
             }
         });
         ivNavigate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Bundle b = new Bundle();
-                ArrayList<String> users = new ArrayList<>();
-                ArrayList<String> places = new ArrayList<>();
-                users.add("pule");
-                users.add("pule2");
-                places.add("ChIJMSVLoRy8hkcRNZ8Fi-Cgp28");
-                places.add("ChIJnfEj-pPBhkcREvPvegzTxwk");
-
-                b.putStringArrayList("users", users);
-                b.putStringArrayList("places", places);
-
                 Intent intent = new Intent(GroupInfo.this, MapsActivity.class);
-                intent.putExtras(b);
                 startActivityForResult(intent, 1);
             }
         });

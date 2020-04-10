@@ -7,11 +7,9 @@ import com.backendless.BackendlessUser;
 
 import com.example.myapplication.data.Group;
 import com.example.myapplication.data.Group_Place_User;
-
+import com.example.myapplication.data.Place;
 
 import java.util.List;
-
-import com.example.myapplication.data.Place;
 
 public class TestApplication extends Application {
     public static final String APPLICATION_ID = "CC93AEC0-074E-BCAE-FFFE-748FA924E000";
@@ -27,14 +25,9 @@ public class TestApplication extends Application {
     static Group_Place_User link;
     static Group group;
 
-
-
     /**
      * it creates the link with the database
      */
-
-
-
     @Override
     public void onCreate() {
         super.onCreate();

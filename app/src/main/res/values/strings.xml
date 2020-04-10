@@ -3,11 +3,8 @@
     <string name="groups">Groups</string>
     <string name="key_new">New</string>
     <string name="name">Name</string>
-    <string name="descr_invite">Invite new user</string>
-    <string name="delete_group">Delete group</string>
-    <string name="editGroup">edit_group</string>
-    <string name="navigate">navigate</string>
     <string name="submit">Submit</string>
+    <string name="invitationList">Invitation List</string>
 
     <string name="normal">Normal</string>
     <string name="hybrid">Hybrid</string>
@@ -22,7 +19,7 @@
         <item>@string/terrain</item>
     </string-array>
 
-    <string name="groupInfo">Group Info</string>
+    <string name="best">Best Point</string>
     <string name="vote">Vote</string>
     <string name="create">Create</string>
 </resources>

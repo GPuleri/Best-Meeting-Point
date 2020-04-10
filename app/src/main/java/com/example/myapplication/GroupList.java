@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -26,34 +25,22 @@ import java.util.List;
 
 public class GroupList extends AppCompatActivity {
     ListView lvList;
-    Button btnNew;
     GroupAdapter adapter;
-    private Bundle savedInstanceState;
 
     /**
      * It creates an activity where there is the user groups list
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        this.savedInstanceState = savedInstanceState;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_groups);
         lvList = findViewById(R.id.lvList);
-        btnNew = findViewById(R.id.btnNew);
-
 
         lvList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent(GroupList.this, GroupInfo.class);
                 intent.putExtra("index", position);
-                startActivityForResult(intent, 1);
-            }
-        });
-        btnNew.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(GroupList.this, CreateGroup.class);
                 startActivityForResult(intent, 1);
             }
         });
@@ -79,22 +66,20 @@ public class GroupList extends AppCompatActivity {
                         }
                         DataQueryBuilder queryBuilder = DataQueryBuilder.create();
                         queryBuilder.setWhereClause(whereClause.toString());
-//                        queryBuilder.setSortBy( "created");
                         Log.i("query", whereClause.toString());
                         Backendless.Data.of(Group.class).find(queryBuilder, new AsyncCallback<List<Group>>() {
 
                             @Override
                             public void handleResponse(List<Group> response) {
-                                TestApplication.groups = response;
-                                Log.i("group_number", "" + response.size());
-                                adapter = new GroupAdapter(GroupList.this, response);
-                                lvList.setAdapter(adapter);
+                                if (!TestApplication.group_place_users.isEmpty()) {
+                                    TestApplication.groups = response;
+                                    adapter = new GroupAdapter(GroupList.this, response);
+                                    lvList.setAdapter(adapter);
+                                }
                             }
-
 
                             @Override
                             public void handleFault(BackendlessFault fault) {
-                                Log.e("error", fault.getMessage());
                                 Toast.makeText(GroupList.this, "Error: " + fault.getMessage(), Toast.LENGTH_SHORT).show();
                             }
                         });
@@ -102,7 +87,6 @@ public class GroupList extends AppCompatActivity {
 
                     @Override
                     public void handleFault(BackendlessFault fault) {
-                        Log.e("error", fault.getMessage());
                         Toast.makeText(GroupList.this, "Error: " + fault.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });

@@ -1,42 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools"
     android:background="@color/colorPrimaryLight"
     android:orientation="vertical"
-    android:id="@+id/login_form"
     tools:context=".GroupInfo">
-
 
     <TextView
         android:id="@+id/tvName"
-        android:layout_marginTop="15dp"
         android:layout_width="match_parent"
-        android:gravity="center"
         android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:layout_marginBottom="15dp"
         android:layout_gravity="center_horizontal"
-        android:textSize="35sp"
+        android:gravity="center"
         android:text="@string/name"
-        android:textStyle="bold"
-        android:textColor="@color/darkText"
-        />
-
-    <TextView
-        android:id="@+id/tvDescription"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textSize="20sp"
-        android:text="Description"
-        android:layout_marginTop="5dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"/>
+        android:textSize="30sp"
+        android:textColor="@color/darkText"/>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
         android:layout_marginBottom="15dp"
         android:orientation="horizontal"
         android:visibility="visible"
@@ -47,90 +33,77 @@
             android:layout_width="wrap_content"
             android:layout_height="40dp"
             android:layout_weight="1"
-            app:srcCompat="@drawable/add"
-            android:contentDescription="@string/descr_invite"/>
+            app:srcCompat="@drawable/add" />
 
         <ImageView
             android:id="@+id/ivNavigate"
             android:layout_width="wrap_content"
             android:layout_height="40dp"
             android:layout_weight="1"
-            app:srcCompat="@drawable/navigation"
-            android:contentDescription="@string/navigate"/>
+            app:srcCompat="@drawable/navigation" />
 
         <ImageView
             android:id="@+id/ivEdit"
             android:layout_width="wrap_content"
             android:layout_height="40dp"
             android:layout_weight="1"
-            app:srcCompat="@drawable/edit"
-            android:contentDescription="@string/editGroup"/>
+            app:srcCompat="@drawable/edit" />
 
         <ImageView
             android:id="@+id/ivDelete"
             android:layout_width="wrap_content"
             android:layout_height="40dp"
             android:layout_weight="1"
-            app:srcCompat="@drawable/delete"
-            android:contentDescription="@string/delete_group"/>
+            app:srcCompat="@drawable/delete" />
 
     </LinearLayout>
 
     <TextView
         android:id="@+id/tvParticipants"
         android:layout_marginTop="5dp"
-        android:layout_marginBottom="15dp"
+        android:layout_marginBottom="5dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Participants"
-        android:textStyle="bold"
         android:textSize="25sp"
         android:gravity="center"
-        android:background="@color/colorPrimaryMedium"
-        android:textColor="@color/darkText" />
+        android:background="@color/colorPrimaryMedium_transparent"
+        android:textColor="@color/white" />
 
     <ListView
         android:id="@+id/lvParticipants"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"/>
-
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_weight="1" />
 
     <EditText
         android:id="@+id/etName"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@color/white"
         android:ems="10"
         android:inputType="textPersonName"
         android:text="@string/name"
         android:layout_marginTop="100dp"
         android:layout_marginBottom="30dp"
-        android:textSize="30sp"
-        android:gravity="center"
-        android:visibility="gone"/>
-
-    <EditText
-        android:id="@+id/etDescription"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/white"
-        android:text="Description"
-        android:layout_marginTop="30dp"
-        android:layout_marginBottom="30dp"
+        android:layout_gravity="center"
         android:textSize="30sp"
         android:gravity="center"
         android:visibility="gone"/>
 
     <Button
         android:id="@+id/btnSubmit"
-        style="@android:style/Widget.Holo.Button"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="50dp"
+        android:layout_margin="20dp"
+        android:layout_gravity="center"
+        android:background="@drawable/buttons"
         android:text="@string/submit"
         android:textSize="20sp"
+        android:textColor="@color/white"
         android:visibility="gone"/>
-
 
 </LinearLayout>

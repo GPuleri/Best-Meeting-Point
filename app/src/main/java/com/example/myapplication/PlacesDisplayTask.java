@@ -5,11 +5,14 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -17,6 +20,7 @@ public class PlacesDisplayTask extends AsyncTask<Object, Integer, List<HashMap<S
 
     JSONObject googlePlacesJson;
     GoogleMap googleMap;
+    ArrayList<Marker> bestMarkers;
 
     /**
      * takes as input the data in json format and through the Places class it appears
@@ -30,6 +34,7 @@ public class PlacesDisplayTask extends AsyncTask<Object, Integer, List<HashMap<S
         try {
             googleMap = (GoogleMap) inputObj[0];
             googlePlacesJson = new JSONObject((String) inputObj[1]);
+            bestMarkers = (ArrayList<Marker>) inputObj[2];
             googlePlacesList = placeJsonParser.parse(googlePlacesJson);
         } catch (Exception e) {
             Log.d("Exception", e.toString());
@@ -43,7 +48,6 @@ public class PlacesDisplayTask extends AsyncTask<Object, Integer, List<HashMap<S
      */
     @Override
     protected void onPostExecute(List<HashMap<String, String>> list) {
-        googleMap.clear();
         for (int i = 0; i < list.size(); i++) {
             MarkerOptions markerOptions = new MarkerOptions();
             HashMap<String, String> googlePlace = list.get(i);
@@ -54,7 +58,9 @@ public class PlacesDisplayTask extends AsyncTask<Object, Integer, List<HashMap<S
             LatLng latLng = new LatLng(lat, lng);
             markerOptions.position(latLng);
             markerOptions.title(placeName + " : " + vicinity);
-            googleMap.addMarker(markerOptions);
+            markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+            markerOptions.alpha(0.5f);
+            bestMarkers.add(googleMap.addMarker(markerOptions));
 
         }
 

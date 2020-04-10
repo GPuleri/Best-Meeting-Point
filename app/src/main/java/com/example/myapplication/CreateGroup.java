@@ -28,7 +28,6 @@ public class CreateGroup extends AppCompatActivity {
 
     /**
      * It creates the Create group activity, inside that you can insert the name of the new group and save it
-     * @param savedInstanceState
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
