@@ -1,4 +1,4 @@
-package com.example.myapplication;
+package com.example.myapplication.utility;
 
 import android.app.Application;
 
@@ -22,8 +22,8 @@ public class TestApplication extends Application {
     public static List<Group> invitation_group;
     public static List<BackendlessUser> users_active;
     public static List<Place> places_active;
-    static Group_Place_User link;
-    static Group group;
+    public static Group_Place_User link;
+    public static Group group;
 
     /**
      * it creates the link with the database

@@ -1,4 +1,4 @@
-package com.example.myapplication;
+package com.example.myapplication.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -18,6 +18,9 @@ import com.backendless.async.callback.AsyncCallback;
 import com.backendless.exceptions.BackendlessFault;
 import com.backendless.persistence.DataQueryBuilder;
 import com.backendless.persistence.LoadRelationsQueryBuilder;
+import com.example.myapplication.R;
+import com.example.myapplication.utility.TestApplication;
+import com.example.myapplication.adapter.GroupAdapter;
 import com.example.myapplication.data.Group;
 import com.example.myapplication.data.Group_Place_User;
 

@@ -1,9 +1,7 @@
-package com.example.myapplication;
+package com.example.myapplication.activity;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -15,7 +13,8 @@ import com.backendless.Backendless;
 import com.backendless.BackendlessUser;
 import com.backendless.async.callback.AsyncCallback;
 import com.backendless.exceptions.BackendlessFault;
-import com.backendless.servercode.annotation.Async;
+import com.example.myapplication.R;
+import com.example.myapplication.utility.TestApplication;
 import com.example.myapplication.data.Group;
 import com.example.myapplication.data.Group_Place_User;
 

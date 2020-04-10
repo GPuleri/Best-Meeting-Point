@@ -1,4 +1,4 @@
-package com.example.myapplication;
+package com.example.myapplication.parser;
 
 import org.json.JSONArray;
 import org.json.JSONException;

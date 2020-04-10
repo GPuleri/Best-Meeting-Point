@@ -18,7 +18,7 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:name=".TestApplication"
+        android:name=".utility.TestApplication"
         android:theme="@style/AppTheme">
 
         <meta-data
@@ -29,20 +29,20 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
-        <activity android:name=".Register"/>
-        <activity android:name=".Login">
+        <activity android:name=".activity.Register"/>
+        <activity android:name=".activity.Login">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".MapsActivity"/>
-        <activity android:name=".MainActivity"/>
-        <activity android:name=".GroupList" />
-        <activity android:name=".GroupInfo" />
-        <activity android:name=".InvitationList"/>
-        <activity android:name=".CreateGroup"/>
+        <activity android:name=".activity.MapsActivity"/>
+        <activity android:name=".activity.MainActivity"/>
+        <activity android:name=".activity.GroupList" />
+        <activity android:name=".activity.GroupInfo" />
+        <activity android:name=".activity.InvitationList"/>
+        <activity android:name=".activity.CreateGroup"/>
     </application>
 
 </manifest>

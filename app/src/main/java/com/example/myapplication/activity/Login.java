@@ -1,11 +1,9 @@
-package com.example.myapplication;
+package com.example.myapplication.activity;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
-import android.app.Application;
 import android.content.Intent;
-import android.graphics.RegionIterator;
 import android.os.Build;
 //
 import android.os.Bundle;
@@ -22,6 +20,8 @@ import com.backendless.BackendlessUser;
 import com.backendless.async.callback.AsyncCallback;
 import com.backendless.exceptions.BackendlessFault;
 import com.backendless.persistence.local.UserIdStorageFactory;
+import com.example.myapplication.R;
+import com.example.myapplication.utility.TestApplication;
 
 public class Login extends AppCompatActivity {
 

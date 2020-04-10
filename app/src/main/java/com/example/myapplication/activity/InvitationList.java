@@ -1,18 +1,18 @@
-package com.example.myapplication;
+package com.example.myapplication.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.backendless.Backendless;
-import com.backendless.BackendlessUser;
 import com.backendless.async.callback.AsyncCallback;
 import com.backendless.exceptions.BackendlessFault;
-import com.backendless.persistence.DataQueryBuilder;
 import com.backendless.persistence.LoadRelationsQueryBuilder;
+import com.example.myapplication.adapter.InvitationAdapter;
+import com.example.myapplication.R;
+import com.example.myapplication.utility.TestApplication;
 import com.example.myapplication.data.Group;
 
 import java.util.List;

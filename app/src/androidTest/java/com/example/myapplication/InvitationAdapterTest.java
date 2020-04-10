@@ -7,6 +7,7 @@ import android.widget.TextView;
 import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
+import com.example.myapplication.adapter.InvitationAdapter;
 import com.example.myapplication.data.Group;
 
 import org.junit.Before;

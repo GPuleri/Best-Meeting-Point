@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:background="@color/colorPrimaryLight"
     android:orientation="vertical"
-    tools:context=".CreateGroup">
+    tools:context=".activity.CreateGroup">
 
     <TextView
         android:id="@+id/etTitle"

@@ -1,4 +1,4 @@
-package com.example.myapplication;
+package com.example.myapplication.adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -10,6 +10,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.example.myapplication.R;
 import com.example.myapplication.data.Group;
 
 import java.util.List;
@@ -22,7 +23,7 @@ public class GroupAdapter extends ArrayAdapter<Group>
     /**
      * Constructor that receive a context object and a list of groups
      */
-    GroupAdapter(Context context, List<Group> list) {
+    public GroupAdapter(Context context, List<Group> list) {
         super(context, R.layout.row_groups, list);
         this.context = context;
         this.groups = list;

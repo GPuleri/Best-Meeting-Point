@@ -1,9 +1,9 @@
-package com.example.myapplication;
+package com.example.myapplication.utility;
 
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.example.myapplication.parser.Places;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;

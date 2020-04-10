@@ -1,4 +1,4 @@
-package com.example.myapplication;
+package com.example.myapplication.activity;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -22,6 +22,9 @@ import com.backendless.async.callback.AsyncCallback;
 import com.backendless.exceptions.BackendlessFault;
 import com.backendless.persistence.DataQueryBuilder;
 import com.backendless.persistence.LoadRelationsQueryBuilder;
+import com.example.myapplication.adapter.ParticipantAdapter;
+import com.example.myapplication.R;
+import com.example.myapplication.utility.TestApplication;
 import com.example.myapplication.data.Group;
 import com.example.myapplication.data.Group_Place_User;
 import com.example.myapplication.data.Place;
@@ -82,6 +85,7 @@ public class GroupInfo extends AppCompatActivity {
                         }
                         DataQueryBuilder queryBuilder = DataQueryBuilder.create();
                         queryBuilder.setWhereClause(whereClause.toString());
+                        queryBuilder.setSortBy("objectId");
                         Log.i("query", whereClause.toString());
                         Backendless.Data.of(BackendlessUser.class).find(queryBuilder, new AsyncCallback<List<BackendlessUser>>() {
                             @Override
@@ -108,6 +112,7 @@ public class GroupInfo extends AppCompatActivity {
                         }
                         queryBuilder = DataQueryBuilder.create();
                         queryBuilder.setWhereClause(whereClause.toString());
+                        queryBuilder.setSortBy("ownerId");
                         Log.i("query", whereClause.toString());
                         Backendless.Data.of(Place.class).find(queryBuilder, new AsyncCallback<List<Place>>() {
                             @Override
