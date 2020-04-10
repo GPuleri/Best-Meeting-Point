@@ -1,6 +1,7 @@
 package com.example.myapplication.activity;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Address;
@@ -63,10 +64,9 @@ import static com.google.android.gms.maps.GoogleMap.MAP_TYPE_SATELLITE;
 import static com.google.android.gms.maps.GoogleMap.MAP_TYPE_TERRAIN;
 
 /**
- * This Activity allows the user to see other departure points and one or more
+ * Allows the user to see other departure points and one or more
  * best meeting points. Furthermore they can have a detailed look of their routes.
  */
-
 public class MapsActivity extends FragmentActivity implements OnMyLocationButtonClickListener,
         OnMapReadyCallback, AdapterView.OnItemSelectedListener, GoogleMap.OnPolylineClickListener,
         GoogleMap.OnMarkerClickListener, GoogleMap.OnInfoWindowClickListener {
@@ -390,7 +390,7 @@ public class MapsActivity extends FragmentActivity implements OnMyLocationButton
      */
     @Override
     public void onInfoWindowClick(Marker marker) {
-        /* Bundle b_out = new Bundle();
+        Bundle b_out = new Bundle();
         b_out.putDouble("lat", marker.getPosition().latitude);
         b_out.putDouble("lng", marker.getPosition().longitude);
         Intent intent = new Intent(this, StreetViewActivity.class);
@@ -400,9 +400,7 @@ public class MapsActivity extends FragmentActivity implements OnMyLocationButton
             startActivityForResult(intent, 1);
         } catch (Exception e) {
             Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
-        } */
-
-        Toast.makeText(getBaseContext(), "Work in progress", Toast.LENGTH_SHORT).show();
+        }
     }
 
     /**
