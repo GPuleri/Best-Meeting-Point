@@ -5,6 +5,7 @@
     <string name="name">Name</string>
     <string name="submit">Submit</string>
     <string name="invitationList">Invitation List</string>
+    <string name="newGroup">Create Group</string>
 
     <string name="normal">Normal</string>
     <string name="hybrid">Hybrid</string>

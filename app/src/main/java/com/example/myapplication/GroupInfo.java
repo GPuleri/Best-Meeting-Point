@@ -26,7 +26,6 @@ import com.example.myapplication.data.Group;
 import com.example.myapplication.data.Group_Place_User;
 import com.example.myapplication.data.Place;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class GroupInfo extends AppCompatActivity {
@@ -134,7 +133,7 @@ public class GroupInfo extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 final AlertDialog.Builder dialog = new AlertDialog.Builder(GroupInfo.this);
-                dialog.setMessage("Do you want do delete the group?");
+                dialog.setMessage("Do you want to delete this group?");
                 dialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
