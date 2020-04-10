@@ -1,4 +1,4 @@
-package com.example.myapplication;
+package com.example.myapplication.activity;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
@@ -8,47 +8,38 @@ import android.location.Geocoder;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.renderscript.ScriptGroup;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.arch.core.executor.TaskExecutor;
+
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 
-import com.google.android.gms.common.api.ApiException;
+import com.backendless.BackendlessUser;
+import com.example.myapplication.parser.DirectionsJSONParser;
+import com.example.myapplication.utility.GooglePlacesReadTask;
+import com.example.myapplication.R;
+import com.example.myapplication.utility.TestApplication;
+import com.example.myapplication.data.Place;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap.OnMyLocationButtonClickListener;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
-/*
-import com.google.android.gms.tasks.Continuation;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.android.libraries.places.api.Places;
-import com.google.android.libraries.places.api.model.Place;
-import com.google.android.libraries.places.api.net.FetchPlaceRequest;
-import com.google.android.libraries.places.api.net.FetchPlaceResponse;
-import com.google.android.libraries.places.api.net.PlacesClient;
-
- */
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -61,13 +52,10 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.concurrent.Future;
-import java.util.concurrent.FutureTask;
 
 import static com.google.android.gms.maps.GoogleMap.MAP_TYPE_HYBRID;
 import static com.google.android.gms.maps.GoogleMap.MAP_TYPE_NORMAL;
@@ -84,8 +72,6 @@ public class MapsActivity extends FragmentActivity implements OnMyLocationButton
         GoogleMap.OnMarkerClickListener, GoogleMap.OnInfoWindowClickListener {
 
     private GoogleMap mMap; // A generic Google's map
-    private Bundle b_in; // Object used to get parameters from other activities
-    private ArrayList<LatLng> points;
 
     /**
      * Inner class used for storing trip informations.
@@ -125,18 +111,17 @@ public class MapsActivity extends FragmentActivity implements OnMyLocationButton
     private HashMap<Marker, Trip> markersTrips; // A map between a marker and its trip information
 
     private Spinner spinnerMapType; // A spinner used to select the map style
-    private TextView tvDistance; // A textview used to show up the distance of a trip
-    private TextView tvDuration; // A textview used to show up the duration of a trip
-
-    //private PlacesClient placesClient;
+    private LinearLayout llTrip; // A linear layout used to show trip's information
+    private TextView tvDistance; // A textview used to show the distance of a trip
+    private TextView tvDuration; // A textview used to show the duration of a trip
+    private Button btnBestPoint; // A button used to calculate the best point
+    private Button btnVote; // A button used to vote among the best points
 
     /**
      * It handles the creation of the activity initializating the needed objects
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
-        b_in = new Bundle();
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
@@ -155,13 +140,10 @@ public class MapsActivity extends FragmentActivity implements OnMyLocationButton
             mapFragment.getMapAsync(this);
         }
 
-        // Initialize the SDK
-        //Places.initialize(getApplicationContext(), getString(R.string.google_maps_key));
+        llTrip = findViewById(R.id.llTrip);
+        llTrip.setVisibility(View.GONE);
 
-        // Create a new Places client instance
-        //placesClient = Places.createClient(this);
-
-        // textview for viewing data related to a route
+        // textviews for viewing data related to a route
         tvDistance = findViewById(R.id.distance);
         tvDuration = findViewById(R.id.duration);
 
@@ -173,57 +155,25 @@ public class MapsActivity extends FragmentActivity implements OnMyLocationButton
         spinnerMapType.setOnItemSelectedListener(this);
 
         /*
-          Open the GroupInfo Activity
+         * Calculate best meeting point
          */
-        // A button used to switch to the GroupInfo Activity
-        Button btnInfo = findViewById(R.id.btnInfo);
-        btnInfo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                /* Intent intent = new Intent(this, GestioneInvitatiActivity.class);
-                try {
-                    startActivity(intent);
-                } catch (Exception e) {
-                    Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
-                } */
-
-                Toast.makeText(getBaseContext(), "Work in progress", Toast.LENGTH_SHORT).show();
+        btnBestPoint = findViewById(R.id.btnBestpoint);
+        btnBestPoint.setClickable(true);
+        btnBestPoint.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                calculateBestMeetingPoint();
+                btnBestPoint.setClickable(false);
             }
         });
 
         /*
          * Open the Vote Activity
          */
-        Button btnVote = findViewById(R.id.btnVote);
+        btnVote = findViewById(R.id.btnVote);
         btnVote.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                /* Bundle b_out = new Bundle();
-                b_out.putStringArrayList("ID_User", ...);
-                b_out.putStringArrayList("ID_Place", ...);
-                Intent intent = new Intent(this, VoteActivity.class);
-                intent.putExtras(b_out);
-
-                try {
-                    startActivity(intent);
-                } catch (Exception e) {
-                    Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
-                } */
-
                 Toast.makeText(getBaseContext(), "Work in progress", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        final Button button = findViewById(R.id.bestpoint);
-        button.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                try {
-                    bestPointCalculator();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
             }
         });
     }
@@ -234,15 +184,10 @@ public class MapsActivity extends FragmentActivity implements OnMyLocationButton
     @Override
     public void onMapReady(GoogleMap googleMap) {
 
-        b_in = getIntent().getExtras();
-        ArrayList<String> users = b_in.getStringArrayList("users");
-        ArrayList<String> places = b_in.getStringArrayList("places");
-
         mMap = googleMap;
         updateMapType();
 
-        test();
-        //setMap(users, places);
+        createDepartureMarkers();
 
         /*
          * enabling localization and localization button
@@ -252,12 +197,12 @@ public class MapsActivity extends FragmentActivity implements OnMyLocationButton
             mMap.setMyLocationEnabled(true);
         }
 
-        mMap.getUiSettings().setZoomControlsEnabled(true);
         /*
          * disabling toolbar (it is used to continue using this app without having to
          * use the official google maps app)
          */
         mMap.getUiSettings().setMapToolbarEnabled(false);
+
         mMap.setOnInfoWindowClickListener(this);
         mMap.setOnMyLocationButtonClickListener(this);
         mMap.setOnMarkerClickListener(this);
@@ -265,175 +210,130 @@ public class MapsActivity extends FragmentActivity implements OnMyLocationButton
     }
 
     /**
-     * Temporary method for testing the activity
+     * Takes the addresses of the people in the group and transforms them into a LatLng object
+     * using the getLocationFromAddress() function.
+     * Create departure markers adding the username as infoWindow
+     * Marker's caption:
+     * 0.5f --> other best points
+     * 1f --> current best point
      */
-    public void test() {
+    public void createDepartureMarkers() {
 
+        int index = 0;
+
+        List<String> users = new ArrayList<>();
+        List<String> places = new ArrayList<>();
+
+        for (BackendlessUser user : TestApplication.users_active)
+            users.add(user.getProperty("username").toString());
+
+        for (Place place : TestApplication.places_active)
+            places.add(place.getFull_address());
+
+        /*
+         * For every departure add a marker setting its title to the username and alpha to 0.4f
+         */
+        int i = 0;
+        for (String user : users) {
+            if (!user.equals(TestApplication.user.getProperty("username").toString())) {
+                departureMarkers.add(mMap.addMarker(new MarkerOptions()
+                        .position(getLocationFromAddress(places.get(i)))
+                        .title(user)
+                        .alpha(0.4f)));
+            } else {
+                index = i;
+            }
+            i++;
+        }
+
+        /*
+         * marker "You" added later in order to better visualize polylines on the map
+         */
         departureMarkers.add(mMap.addMarker(new MarkerOptions()
-                .position(new LatLng(46, 10))
-                .title("user1")
-                .alpha(0.4f)));
-        departureMarkers.add(mMap.addMarker(new MarkerOptions()
-                .position(new LatLng(46, 9))
-                .title("user2")
-                .alpha(0.4f)));
-        departureMarkers.add(mMap.addMarker(new MarkerOptions()
-                .position(new LatLng(45, 10))
-                .title("user3")
-                .alpha(0.4f)));
-        departureMarkers.add(mMap.addMarker(new MarkerOptions()
-                .position(new LatLng(45, 9))
+                .position(getLocationFromAddress(places.get(index)))
                 .title("You")
                 .alpha(0.99f)));
 
-        // calculateBestMeetingPoint();
-        bestMarkers.add(mMap.addMarker(new MarkerOptions()
-                .position(new LatLng(45.5, 9.5))
-                .title("best")
-                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))));
 
-        bestMarkers.add(mMap.addMarker(new MarkerOptions()
-                .position(new LatLng(45.6, 9.5))
-                .title("best 2")
-                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
-                .alpha(0.5f)));
-
-        bestMarkers.get(0).showInfoWindow();
-        drawDirections(departureMarkers, bestMarkers.get(0));
-
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(bestMarkers.get(0).getPosition()));
-        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(bestMarkers.get(0).getPosition(), 15);
+        departureMarkers.get(departureMarkers.size() - 1).showInfoWindow();
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(
+                departureMarkers.get(departureMarkers.size() - 1).getPosition()));
+        CameraUpdate cameraUpdate =
+                CameraUpdateFactory.newLatLngZoom(
+                        departureMarkers.get(departureMarkers.size() - 1).getPosition(), 13);
         mMap.animateCamera(cameraUpdate);
     }
 
     /**
-     * Set the map by creating markers, drawing routes and calculating best meeting points
-     * Marker's caption:
-     * 0.4f --> departures of the friends
-     * 0.99f --> my departure
-     * 0.5f --> other best points
-     * 1f --> current best point
+     * Calculate the best meeting point and retrieve close points to it.
      */
+    public void calculateBestMeetingPoint() {
+        try {
+            searchBestPoints(bestPointCalculator());
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
 
-    public void setMap(ArrayList<String> users, ArrayList<String> places) {
+    /**
+     * once it has all the coordinates in Latlng format of each participant in the group it
+     * calculates the latitude and longitude at the center (best point).
+     */
+    private LatLng bestPointCalculator() {
 
-        int index = 0;
+        double latitude = 0.0;
+        double longitude = 0.0;
 
-        /*
-        List<Place.Field> placeFields = Arrays.asList(Place.Field.LAT_LNG);
-        FetchPlaceRequest request = FetchPlaceRequest.newInstance(places.get(0), placeFields);
-
-        Task<FetchPlaceResponse> r = null;
-        /**
-         * For every departure add a marker setting its title to the username
-
-        r = placesClient.fetchPlace(request).addOnSuccessListener((response) -> {
-            Place place = response.getPlace();
-        }).addOnFailureListener((exception) -> {
-            if (exception instanceof ApiException) {
-                ApiException apiException = (ApiException) exception;
-            }
-        });
-
-
-        Toast.makeText(getBaseContext(), Double.toString(r.getResult().getPlace().getLatLng().latitude), Toast.LENGTH_SHORT).show();
-
-         */
-
-        /*placesClient.fetchPlace(request).addOnSuccessListener(new OnSuccessListener<FetchPlaceResponse>() {
-            @Override
-            public void onSuccess(FetchPlaceResponse response) {
-                for (int i = 0; i < places.size(); i++) {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                        if (!users.get(i).equals(TestApplication.user.getProperty("username").toString())) {
-                            departureMarkers.add(mMap.addMarker(new MarkerOptions()
-                                    .position(new LatLng(Objects.requireNonNull(response.getPlace().getLatLng()).latitude,
-                                            Objects.requireNonNull(response.getPlace().getLatLng()).longitude))
-                                    .title(users.get(i))
-                                    .alpha(0.4f)));
-                        } else
-                            departureMarkers.add(mMap.addMarker(new MarkerOptions()
-                                    .position(new LatLng(Objects.requireNonNull(response.getPlace().getLatLng()).latitude,
-                                            Objects.requireNonNull(response.getPlace().getLatLng()).longitude))
-                                    .title("You")
-                                    .alpha(0.99f)));
-                    }
-                }
-
-
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception exception) {
-                if (exception instanceof ApiException) {
-                    ApiException apiException = (ApiException) exception;
-                    Toast.makeText(MapsActivity.this.getBaseContext(), "Place not found", apiException.getStatusCode()).show();
-                }
-            }
-        }).continueWithTask(new Continuation<FetchPlaceResponse, Task<FetchPlaceResponse>>() {
-            @Override
-            public FetchPlaceResponse then(@NonNull Task<FetchPlaceResponse> task) {
-
-            }
-        }));
-
-
-        Task<FetchPlaceResponse> ra = placesClient.fetchPlace(request);
-        Toast.makeText(getBaseContext(), Double.toString(ra.getResult().getPlace().getLatLng().latitude), Toast.LENGTH_SHORT).show();
-
-
-
-
-
-
-
-
-
-        /**
-         * For every departure add a marker setting its title to the username and alpha to 0.4f
-         */
-      /*for (int i = 0; i < places.size(); i++) {
-            if (!users.get(i).getProperty("username").toString()
-                    .equals(TestApplication.user.getProperty("username").toString())) {
-
-                departureMarkers.add(mMap.addMarker(new MarkerOptions()
-                        .position(new LatLng(places.get(i).getLatLng()))
-                        .title(users.get(i).getProperty("username").toString())
-                        .alpha(0.4f)));
-            } else
-                index = i;
+        for (int i = 0; i < departureMarkers.size(); i++) {
+            latitude = latitude + departureMarkers.get(i).getPosition().latitude;
+            longitude = longitude + departureMarkers.get(i).getPosition().longitude;
         }
 
-        departureMarkers.add(mMap.addMarker(new MarkerOptions()
-                .position(new LatLng(places.get(index).getLatLng()))
-                .title("You")
-                .alpha(0.99f)));*/
+        latitude = latitude / departureMarkers.size();
+        longitude = longitude / departureMarkers.size();
 
 
-        // calculateBestMeetingPoint();
-        bestMarkers.add(mMap.addMarker(new MarkerOptions()
-                .position(new LatLng(45.5, 9.5))
-                .title("best")
-                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))));
-
-        bestMarkers.add(mMap.addMarker(new MarkerOptions()
-                .position(new LatLng(45.6, 9.5))
-                .title("best 2")
-                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
-                .alpha(0.5f)));
-
-        bestMarkers.get(0).showInfoWindow();
-        drawDirections(departureMarkers, bestMarkers.get(0));
-
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(bestMarkers.get(0).getPosition()));
-        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(bestMarkers.get(0).getPosition(), 15);
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(latitude, longitude)));
+        CameraUpdate cameraUpdate =
+                CameraUpdateFactory.newLatLngZoom(new LatLng(latitude, longitude), 13);
         mMap.animateCamera(cameraUpdate);
+
+        return new LatLng(latitude, longitude);
+    }
+
+    /**
+     * Search close points to best meeting point and create markers of them.
+     * the function makes a url request to look for "restaurant" type places
+     * close to the coordinated one within 3km.
+     * after which, through the GooglePlacesReadTask class, it displays the Places found on the map,
+     * displaying the name of the restaurant and the street.
+     */
+    private void searchBestPoints(LatLng best) throws IOException, JSONException {
+
+        // creo la custom string per la richiesta url dei places
+        StringBuilder googlePlacesUrl = new StringBuilder("https://maps.googleapis.com/maps/api/place/nearbysearch/json?");
+        googlePlacesUrl.append("location=" + best.latitude + "," + best.longitude);
+        googlePlacesUrl.append("&radius=" + 1000);
+        googlePlacesUrl.append("&types=" + "restaurant");
+        googlePlacesUrl.append("&key=" + getString(R.string.google_maps_key));
+
+        // eseguo la classe GooglePlacesReadTask per visualizzare i place sulla mappa
+        GooglePlacesReadTask googlePlacesReadTask = new GooglePlacesReadTask();
+        Object[] toPass = new Object[3];
+        toPass[0] = mMap;
+        toPass[1] = googlePlacesUrl.toString();
+        toPass[2] = bestMarkers;
+        googlePlacesReadTask.execute(toPass);
     }
 
     /**
      * For every departure it asks Google Maps for getting the routes to best
      */
     public void drawDirections(ArrayList<Marker> departures, Marker best) {
+
+        llTrip.setVisibility(View.VISIBLE);
         for (Marker departure : departures) {
             // Getting URL to the Google Directions API
             String url = getDirectionsUrl(departure.getPosition(), best.getPosition());
@@ -471,13 +371,16 @@ public class MapsActivity extends FragmentActivity implements OnMyLocationButton
             trips.clear();
             drawDirections(departureMarkers, marker);
         } else if (marker.getAlpha() == 0.4f || marker.getAlpha() == 0.99f) { // if is user departure
-            changePolyline(markersPolylines.get(marker));
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                setTextView(Objects.requireNonNull(markersTrips.get(marker)));
+            if (!btnBestPoint.isClickable()) {
+                changePolyline(markersPolylines.get(marker));
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                    setTextView(Objects.requireNonNull(markersTrips.get(marker)));
+                }
             }
         }
         if (marker.getAlpha() == 1f)
-            Toast.makeText(getBaseContext(), "Work in progress (RECENSIONE)", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(getBaseContext(), "Work in progress (RECENSIONE)", Toast.LENGTH_SHORT).show();
+            ;
         marker.showInfoWindow();
         return true;
     }
@@ -515,6 +418,33 @@ public class MapsActivity extends FragmentActivity implements OnMyLocationButton
                 setTextView(Objects.requireNonNull(markersTrips.get(m)));
             }
         }
+    }
+
+    /**
+     * method that takes as input the string "strAddress" which represents a person's address and returns a LatLng object containing the latitude and longitude of that address
+     */
+    public LatLng getLocationFromAddress(String strAddress) {
+
+        Geocoder coder = new Geocoder(this);
+        List<Address> address;
+        LatLng p1 = null;
+
+        try {
+            // May throw an IOException
+            address = coder.getFromLocationName(strAddress, 5);
+            if (address == null) {
+                return null;
+            }
+
+            Address location = address.get(0);
+            p1 = new LatLng(location.getLatitude(), location.getLongitude());
+
+        } catch (IOException ex) {
+
+            ex.printStackTrace();
+        }
+
+        return p1;
     }
 
     /**
@@ -824,85 +754,4 @@ public class MapsActivity extends FragmentActivity implements OnMyLocationButton
 
     }
 
-    /**
-     * takes the addresses of the people in the group and transforms them into a LatLng object using the getLocationFromAddress() function.
-     * once it has all the coordinates in Latlng format of each participant in the group it calculates the latitude and longitude at the center (best point).
-     * found the best point, the function makes a url request to look for "restaurant" type places close to the coordinated one within 3km.
-     * after which, through the GooglePlacesReadTask class, it displays the Places found on the map, displaying the name of the restaurant and the street.
-     */
-    private void bestPointCalculator()  throws IOException, JSONException {
-
-        points = new ArrayList<LatLng>();
-
-        // indirizzi fittizi, prendere gli indirizzi veri tramite intent
-        ArrayList<String> indirizzi = new ArrayList<>();
-        indirizzi.add("Roma piazza di trevi italia");
-        indirizzi.add("Milan, italy");
-        indirizzi.add("Venice, italy");
-
-        // prendo l'array di indirizzi e li trasformo in LatLng
-        for (int i=0; i<indirizzi.size(); i++){
-            LatLng point = getLocationFromAddress(indirizzi.get(i));
-            points.add(point);
-        }
-
-        // calcolo best point
-        double latitude = 0.0;
-        double longitude = 0.0;
-
-        for (int i = 0; i<points.size(); i++){
-            latitude = latitude + points.get(i).latitude;
-            longitude = longitude + points.get(i).longitude;
-        }
-
-        latitude = latitude/points.size();
-        longitude = longitude/points.size();
-
-        // metto un marker sul best point trovato
-        LatLng bestPoint = new LatLng(latitude, longitude);
-        mMap.addMarker(new MarkerOptions().position(bestPoint).title("Best Point"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(bestPoint, 10));
-
-        // creo la custom string per la richiesta url dei places
-        StringBuilder googlePlacesUrl = new StringBuilder("https://maps.googleapis.com/maps/api/place/nearbysearch/json?");
-        googlePlacesUrl.append("location=" + latitude + "," + longitude);
-        googlePlacesUrl.append("&radius=" + 3000);
-        googlePlacesUrl.append("&types=" + "restaurant");
-        googlePlacesUrl.append("&key=" + "AIzaSyByyPXoo6la_E0E5MR7kLUL6Vh_YKgrLLg");
-
-        // eseguo la classe GooglePlacesReadTask per visualizzare i place sulla mappa
-        GooglePlacesReadTask googlePlacesReadTask = new GooglePlacesReadTask();
-        Object[] toPass = new Object[2];
-        toPass[0] = mMap;
-        toPass[1] = googlePlacesUrl.toString();
-        googlePlacesReadTask.execute(toPass);
-
-    }
-
-    /**
-     * method that takes as input the string "strAddress" which represents a person's address and returns a LatLng object containing the latitude and longitude of that address
-     */
-    public LatLng getLocationFromAddress(String strAddress) {
-
-        Geocoder coder = new Geocoder(this);
-        List<Address> address;
-        LatLng p1 = null;
-
-        try {
-            // May throw an IOException
-            address = coder.getFromLocationName(strAddress, 5);
-            if (address == null) {
-                return null;
-            }
-
-            Address location = address.get(0);
-            p1 = new LatLng(location.getLatitude(), location.getLongitude() );
-
-        } catch (IOException ex) {
-
-            ex.printStackTrace();
-        }
-
-        return p1;
-    }
 }

@@ -1,4 +1,4 @@
-package com.example.myapplication;
+package com.example.myapplication.utility;
 
 import android.app.Application;
 
@@ -7,11 +7,9 @@ import com.backendless.BackendlessUser;
 
 import com.example.myapplication.data.Group;
 import com.example.myapplication.data.Group_Place_User;
-
+import com.example.myapplication.data.Place;
 
 import java.util.List;
-
-import com.example.myapplication.data.Place;
 
 public class TestApplication extends Application {
     public static final String APPLICATION_ID = "CC93AEC0-074E-BCAE-FFFE-748FA924E000";
@@ -24,17 +22,12 @@ public class TestApplication extends Application {
     public static List<Group> invitation_group;
     public static List<BackendlessUser> users_active;
     public static List<Place> places_active;
-    static Group_Place_User link;
-    static Group group;
-
-
+    public static Group_Place_User link;
+    public static Group group;
 
     /**
      * it creates the link with the database
      */
-
-
-
     @Override
     public void onCreate() {
         super.onCreate();

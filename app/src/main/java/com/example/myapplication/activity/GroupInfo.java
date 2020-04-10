@@ -1,4 +1,4 @@
-package com.example.myapplication;
+package com.example.myapplication.activity;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -22,15 +22,17 @@ import com.backendless.async.callback.AsyncCallback;
 import com.backendless.exceptions.BackendlessFault;
 import com.backendless.persistence.DataQueryBuilder;
 import com.backendless.persistence.LoadRelationsQueryBuilder;
+import com.example.myapplication.adapter.ParticipantAdapter;
+import com.example.myapplication.R;
+import com.example.myapplication.utility.TestApplication;
 import com.example.myapplication.data.Group;
 import com.example.myapplication.data.Group_Place_User;
 import com.example.myapplication.data.Place;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class GroupInfo extends AppCompatActivity {
-    TextView tvName, tvDescription, tvParticipants;
+    TextView tvName, tvParticipants;
     ImageView ivInvite, ivNavigate, ivDelete, ivEdit;
     LinearLayout llOptions;
     ParticipantAdapter adapter;
@@ -46,7 +48,6 @@ public class GroupInfo extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_group_info);
         tvName = findViewById(R.id.tvName);
-        tvDescription = findViewById(R.id.tvDescription);
         ivInvite = findViewById(R.id.ivInvite);
         ivNavigate = findViewById(R.id.ivNavigate);
         ivDelete = findViewById(R.id.ivDelete);
@@ -84,6 +85,7 @@ public class GroupInfo extends AppCompatActivity {
                         }
                         DataQueryBuilder queryBuilder = DataQueryBuilder.create();
                         queryBuilder.setWhereClause(whereClause.toString());
+                        queryBuilder.setSortBy("objectId");
                         Log.i("query", whereClause.toString());
                         Backendless.Data.of(BackendlessUser.class).find(queryBuilder, new AsyncCallback<List<BackendlessUser>>() {
                             @Override
@@ -110,6 +112,7 @@ public class GroupInfo extends AppCompatActivity {
                         }
                         queryBuilder = DataQueryBuilder.create();
                         queryBuilder.setWhereClause(whereClause.toString());
+                        queryBuilder.setSortBy("ownerId");
                         Log.i("query", whereClause.toString());
                         Backendless.Data.of(Place.class).find(queryBuilder, new AsyncCallback<List<Place>>() {
                             @Override
@@ -135,7 +138,7 @@ public class GroupInfo extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 final AlertDialog.Builder dialog = new AlertDialog.Builder(GroupInfo.this);
-                dialog.setMessage("Do you want do delete the group?");
+                dialog.setMessage("Do you want to delete this group?");
                 dialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -198,59 +201,54 @@ public class GroupInfo extends AppCompatActivity {
         ivEdit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                etName.setText(TestApplication.groups.get(index).getName());
-                tvParticipants.setVisibility(View.GONE);
-                lvParticipants.setVisibility(View.GONE);
-                btnSubmit.setVisibility(View.VISIBLE);
-                etName.setVisibility(View.VISIBLE);
+                if (etName.getVisibility() == View.GONE) {
 
+                    etName.setText(TestApplication.groups.get(index).getName());
+                    tvParticipants.setVisibility(View.GONE);
+                    lvParticipants.setVisibility(View.GONE);
+                    btnSubmit.setVisibility(View.VISIBLE);
+                    etName.setVisibility(View.VISIBLE);
 
-                btnSubmit.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        if (etName.getText().toString().isEmpty()) {
-                            Toast.makeText(GroupInfo.this, "Insert all the details  requested!", Toast.LENGTH_SHORT).show();
-                        } else {
-                            TestApplication.groups.get(index).setName(etName.getText().toString().trim());
-                            Backendless.Persistence.save(TestApplication.groups.get(index), new AsyncCallback<Group>() {
-                                @Override
-                                public void handleResponse(Group response) {
-                                    tvName.setText(TestApplication.groups.get(index).getName());
-                                    Toast.makeText(GroupInfo.this, "Updated!", Toast.LENGTH_SHORT).show();
-                                    lvParticipants.setVisibility(View.VISIBLE);
-                                    tvParticipants.setVisibility(View.VISIBLE);
-                                    btnSubmit.setVisibility(View.GONE);
-                                    etName.setVisibility(View.GONE);
-                                }
+                    btnSubmit.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            if (etName.getText().toString().isEmpty()) {
+                                Toast.makeText(GroupInfo.this, "Insert all the details  requested!", Toast.LENGTH_SHORT).show();
+                            } else {
+                                TestApplication.groups.get(index).setName(etName.getText().toString().trim());
+                                Backendless.Persistence.save(TestApplication.groups.get(index), new AsyncCallback<Group>() {
+                                    @Override
+                                    public void handleResponse(Group response) {
+                                        tvName.setText(TestApplication.groups.get(index).getName());
+                                        Toast.makeText(GroupInfo.this, "Updated!", Toast.LENGTH_SHORT).show();
+                                        lvParticipants.setVisibility(View.VISIBLE);
+                                        tvParticipants.setVisibility(View.VISIBLE);
+                                        btnSubmit.setVisibility(View.GONE);
+                                        etName.setVisibility(View.GONE);
+                                    }
 
-                                @Override
-                                public void handleFault(BackendlessFault fault) {
-                                    Toast.makeText(GroupInfo.this, "Error: " + fault.getMessage(), Toast.LENGTH_SHORT).show();
-                                }
-                            });
+                                    @Override
+                                    public void handleFault(BackendlessFault fault) {
+                                        Toast.makeText(GroupInfo.this, "Error: " + fault.getMessage(), Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                            }
+
                         }
-
-                    }
-                });
-
+                    });
+                }
+                else {
+                    tvParticipants.setVisibility(View.VISIBLE);
+                    lvParticipants.setVisibility(View.VISIBLE);
+                    btnSubmit.setVisibility(View.GONE);
+                    etName.setVisibility(View.GONE);
+                }
             }
         });
         ivNavigate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Bundle b = new Bundle();
-                ArrayList<String> users = new ArrayList<>();
-                ArrayList<String> places = new ArrayList<>();
-                users.add("pule");
-                users.add("pule2");
-                places.add("ChIJMSVLoRy8hkcRNZ8Fi-Cgp28");
-                places.add("ChIJnfEj-pPBhkcREvPvegzTxwk");
-
-                b.putStringArrayList("users", users);
-                b.putStringArrayList("places", places);
-
                 Intent intent = new Intent(GroupInfo.this, MapsActivity.class);
-                intent.putExtras(b);
                 startActivityForResult(intent, 1);
             }
         });

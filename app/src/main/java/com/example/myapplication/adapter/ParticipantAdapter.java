@@ -1,4 +1,4 @@
-package com.example.myapplication;
+package com.example.myapplication.adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -12,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.backendless.BackendlessUser;
+import com.example.myapplication.R;
 
 import java.util.List;
 
@@ -26,7 +27,7 @@ public class ParticipantAdapter extends ArrayAdapter<BackendlessUser> {
     /**
      * Constructor that receives a Context object and a list of users
      */
-    ParticipantAdapter(Context context, List<BackendlessUser> list) {
+    public ParticipantAdapter(Context context, List<BackendlessUser> list) {
         super(context, R.layout.row_groups, list);
         this.context = context;
         this.users = list;

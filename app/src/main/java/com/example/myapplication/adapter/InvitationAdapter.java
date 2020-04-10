@@ -1,4 +1,4 @@
-package com.example.myapplication;
+package com.example.myapplication.adapter;
 
 import android.content.Context;
 import android.util.Log;
@@ -18,13 +18,13 @@ import com.backendless.BackendlessUser;
 import com.backendless.async.callback.AsyncCallback;
 import com.backendless.exceptions.BackendlessFault;
 import com.backendless.persistence.DataQueryBuilder;
-import com.backendless.persistence.LoadRelationsQueryBuilder;
+import com.example.myapplication.R;
+import com.example.myapplication.utility.TestApplication;
 import com.example.myapplication.data.Group;
 import com.example.myapplication.data.Group_Place_User;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 
 public class InvitationAdapter extends ArrayAdapter<Group> {
@@ -41,7 +41,7 @@ public class InvitationAdapter extends ArrayAdapter<Group> {
      *
      */
     public InvitationAdapter (Context context, List <Group> list){
-        super(context,R.layout.row_layout_invitation,list);
+        super(context, R.layout.row_layout_invitation,list);
         this.context=context;
         this.groups=list;
     }

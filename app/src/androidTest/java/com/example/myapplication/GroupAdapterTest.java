@@ -4,11 +4,10 @@ import android.content.Context;
 import android.view.View;
 import android.widget.TextView;
 
-import androidx.test.espresso.Espresso;
-import androidx.test.espresso.idling.CountingIdlingResource;
 import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
+import com.example.myapplication.adapter.GroupAdapter;
 import com.example.myapplication.data.Group;
 
 import org.junit.Before;
