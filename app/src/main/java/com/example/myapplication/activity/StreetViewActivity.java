@@ -5,7 +5,6 @@ import com.google.android.gms.maps.OnStreetViewPanoramaReadyCallback;
 import com.google.android.gms.maps.StreetViewPanorama;
 import com.google.android.gms.maps.SupportStreetViewPanoramaFragment;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.StreetViewPanoramaLocation;
 
 import android.app.Activity;
 import android.content.Intent;
