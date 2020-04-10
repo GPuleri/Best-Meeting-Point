@@ -82,6 +82,7 @@ public class GroupInfo extends AppCompatActivity {
                         }
                         DataQueryBuilder queryBuilder = DataQueryBuilder.create();
                         queryBuilder.setWhereClause(whereClause.toString());
+                        queryBuilder.setSortBy("objectId");
                         Log.i("query", whereClause.toString());
                         Backendless.Data.of(BackendlessUser.class).find(queryBuilder, new AsyncCallback<List<BackendlessUser>>() {
                             @Override
@@ -108,6 +109,7 @@ public class GroupInfo extends AppCompatActivity {
                         }
                         queryBuilder = DataQueryBuilder.create();
                         queryBuilder.setWhereClause(whereClause.toString());
+                        queryBuilder.setSortBy("ownerId");
                         Log.i("query", whereClause.toString());
                         Backendless.Data.of(Place.class).find(queryBuilder, new AsyncCallback<List<Place>>() {
                             @Override
