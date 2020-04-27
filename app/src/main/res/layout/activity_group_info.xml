@@ -13,12 +13,19 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
-        android:layout_marginBottom="15dp"
         android:layout_gravity="center_horizontal"
         android:gravity="center"
         android:text="@string/name"
         android:textSize="30sp"
         android:textColor="@color/darkText"/>
+
+    <TextView
+        android:id="@+id/tvType"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        android:textSize="15sp"
+        android:text="" />
 
     <LinearLayout
         android:layout_width="match_parent"

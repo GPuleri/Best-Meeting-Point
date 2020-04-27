@@ -32,7 +32,7 @@ import com.example.myapplication.data.Place;
 import java.util.List;
 
 public class GroupInfo extends AppCompatActivity {
-    TextView tvName, tvParticipants;
+    TextView tvName, tvParticipants, tvType;
     ImageView ivInvite, ivNavigate, ivDelete, ivEdit;
     LinearLayout llOptions;
     ParticipantAdapter adapter;
@@ -57,10 +57,13 @@ public class GroupInfo extends AppCompatActivity {
         btnSubmit = findViewById(R.id.btnSubmit);
         ivEdit = findViewById(R.id.ivEdit);
         tvParticipants = findViewById(R.id.tvParticipants);
+        tvType = findViewById(R.id.tvType);
 
         final int index = getIntent().getIntExtra("index", 0);
 
         tvName.setText(TestApplication.groups.get(index).getName());
+        tvType.setText(TestApplication.kinds[java.util.Arrays.binarySearch(TestApplication.kind_codes,
+                TestApplication.groups.get(index).getType())]);
         if (TestApplication.user.getObjectId().equals(TestApplication.groups.get(index).getOwnerId())) {
             llOptions.setVisibility(View.VISIBLE);
         }
@@ -236,8 +239,7 @@ public class GroupInfo extends AppCompatActivity {
 
                         }
                     });
-                }
-                else {
+                } else {
                     tvParticipants.setVisibility(View.VISIBLE);
                     lvParticipants.setVisibility(View.VISIBLE);
                     btnSubmit.setVisibility(View.GONE);
