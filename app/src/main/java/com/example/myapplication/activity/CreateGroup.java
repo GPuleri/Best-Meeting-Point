@@ -5,8 +5,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.backendless.Backendless;
@@ -24,6 +26,7 @@ public class CreateGroup extends AppCompatActivity {
 
     EditText etName;
     Button btnNew;
+    Spinner dropdown;
 
     /**
      * It creates the Create group activity, inside that you can insert the name of the new group and save it
@@ -34,6 +37,10 @@ public class CreateGroup extends AppCompatActivity {
         setContentView(R.layout.activity_create_group);
         btnNew = findViewById(R.id.btnNewGroup);
         etName = findViewById(R.id.etNameGroup);
+        dropdown = findViewById(R.id.spnGroupType);
+        ArrayAdapter<String> adapterTypes = new ArrayAdapter<String>(CreateGroup.this,
+                android.R.layout.simple_spinner_dropdown_item, TestApplication.kinds);
+        dropdown.setAdapter(adapterTypes);
 
         btnNew.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -55,6 +62,9 @@ public class CreateGroup extends AppCompatActivity {
                                             String name = etName.getText().toString().trim();
                                             TestApplication.group = new Group();
                                             TestApplication.group.setName(name);
+                                            int kindsIndex = java.util.Arrays.binarySearch(TestApplication.kinds,
+                                                    dropdown.getSelectedItem().toString());
+                                            TestApplication.group.setType(TestApplication.kind_codes[kindsIndex]);
                                             TestApplication.group.saveAsync(new AsyncCallback<Group>() {
                                                 @Override
                                                 public void handleResponse(Group response) {

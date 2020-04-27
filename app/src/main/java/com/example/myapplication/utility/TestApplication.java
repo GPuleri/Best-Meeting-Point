@@ -9,6 +9,7 @@ import com.example.myapplication.data.Group;
 import com.example.myapplication.data.Group_Place_User;
 import com.example.myapplication.data.Place;
 
+import java.util.HashMap;
 import java.util.List;
 
 public class TestApplication extends Application {
@@ -24,6 +25,8 @@ public class TestApplication extends Application {
     public static List<Place> places_active;
     public static Group_Place_User link;
     public static Group group;
+    public static final String[] kind_codes = {"bar", "cafe", "movie_theater", "night_club", "park", "restaurant"};
+    public static final String[] kinds = {"Bar", "Cafe", "Movie Theater", "Night Club", "Park", "Restaurant"};
 
     /**
      * it creates the link with the database
@@ -32,10 +35,10 @@ public class TestApplication extends Application {
     public void onCreate() {
         super.onCreate();
 
-        Backendless.setUrl( SERVER_URL );
-        Backendless.initApp( getApplicationContext(),
+        Backendless.setUrl(SERVER_URL);
+        Backendless.initApp(getApplicationContext(),
                 APPLICATION_ID,
-                API_KEY );
+                API_KEY);
     }
 
 }
