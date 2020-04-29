@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:background="@color/colorPrimaryLight"
     android:orientation="vertical"
-    tools:context=".activity.CreateGroup">
+    tools:context=".fragment.CreateGroup">
 
     <TextView
         android:id="@+id/etTitle"
@@ -19,35 +19,28 @@
         android:textSize="30sp"
         android:textColor="@color/darkText" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
+    <EditText
+        android:id="@+id/etNameGroup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:gravity="center"
-        android:layout_weight="1">
+        android:hint="group name"
+        android:ems="15"
+        android:inputType="text"
+        android:layout_marginTop="100dp"
+        android:layout_marginBottom="30dp"
+        android:layout_gravity="center"
+        android:textSize="20sp" />
 
-        <EditText
-            android:id="@+id/etNameGroup"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="20dp"
-            android:gravity="center"
-            android:hint="Insert the title of the group"
-            android:ems="10"
-            android:inputType="text" />
-
-    </LinearLayout>
     <Button
         android:id="@+id/btnNewGroup"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="end"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="50dp"
-        android:layout_marginRight="50dp"
-        android:layout_marginBottom="50dp"
-        android:padding="20dp"
         android:text="@string/create"
         android:textColor="@color/white"
-        android:background="@color/colorPrimaryMedium"/>
+        android:background="@drawable/buttons2"
+        android:layout_margin="20dp"
+        android:layout_gravity="center"
+        android:textSize="20sp" />
 
 </LinearLayout>

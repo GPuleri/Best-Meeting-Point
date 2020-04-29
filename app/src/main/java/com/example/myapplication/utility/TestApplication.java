@@ -17,6 +17,7 @@ public class TestApplication extends Application {
     public static final String SERVER_URL = "https://api.backendless.com";
 
     public static BackendlessUser user;
+    public static Place place;
     public static List<Group_Place_User> group_place_users;
     public static List<Group> groups;
     public static List<Group> invitation_group;

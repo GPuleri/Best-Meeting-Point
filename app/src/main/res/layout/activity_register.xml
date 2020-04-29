@@ -46,7 +46,7 @@
             android:layout_marginTop="30dp"
             android:ems="10"
             android:gravity="center_horizontal"
-            android:hint="please enter your name"
+            android:hint="name"
             android:inputType="textPersonName" />
 
         <EditText
@@ -58,7 +58,7 @@
             android:layout_marginTop="10dp"
             android:ems="10"
             android:gravity="center_horizontal"
-            android:hint="please enter your surname"
+            android:hint="surname"
             android:inputType="textPersonName" />
 
         <EditText
@@ -70,7 +70,7 @@
             android:layout_marginTop="10dp"
             android:ems="10"
             android:gravity="center_horizontal"
-            android:hint="please enter your email address"
+            android:hint="email"
             android:inputType="textEmailAddress" />
 
         <EditText
@@ -82,7 +82,7 @@
             android:layout_marginRight="20dp"
             android:ems="10"
             android:gravity="center_horizontal"
-            android:hint="please enter your user-name"
+            android:hint="user-name"
             android:inputType="textEmailAddress" />
 
         <EditText
@@ -119,7 +119,7 @@
             android:layout_marginTop="10dp"
             android:ems="10"
             android:gravity="center_horizontal"
-            android:hint="please enter your password"
+            android:hint="password"
             android:inputType="textPassword" />
 
         <EditText
@@ -131,7 +131,7 @@
             android:layout_marginTop="10dp"
             android:ems="10"
             android:gravity="center_horizontal"
-            android:hint="please re-enter your password"
+            android:hint="re-enter password"
             android:inputType="textPassword" />
 
         <Button

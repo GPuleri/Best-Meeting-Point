@@ -1,11 +1,17 @@
 <resources>
     <string name="app_name">BMP</string>
     <string name="groups">Groups</string>
-    <string name="key_new">New</string>
     <string name="name">Name</string>
     <string name="submit">Submit</string>
+    <string name="menu_groups">Groups</string>
+    <string name="menu_invitations">Invitations</string>
     <string name="invitationList">Invitation List</string>
     <string name="newGroup">Create Group</string>
+    <string name="best">Best Point</string>
+    <string name="vote">Vote</string>
+    <string name="create">Create</string>
+    <string name="confirm">Confirm</string>
+    <string name="delete">Delete</string>
 
     <string name="normal">Normal</string>
     <string name="hybrid">Hybrid</string>
@@ -20,7 +26,4 @@
         <item>@string/terrain</item>
     </string-array>
 
-    <string name="best">Best Point</string>
-    <string name="vote">Vote</string>
-    <string name="create">Create</string>
 </resources>
