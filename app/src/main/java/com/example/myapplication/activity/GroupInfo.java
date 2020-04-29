@@ -250,6 +250,7 @@ public class GroupInfo extends AppCompatActivity {
         ivNavigate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                TestApplication.group = TestApplication.groups.get(index);
                 Intent intent = new Intent(GroupInfo.this, MapsActivity.class);
                 startActivityForResult(intent, 1);
             }

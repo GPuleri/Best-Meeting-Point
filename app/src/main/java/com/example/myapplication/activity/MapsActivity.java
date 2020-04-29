@@ -316,7 +316,7 @@ public class MapsActivity extends FragmentActivity implements OnMyLocationButton
         StringBuilder googlePlacesUrl = new StringBuilder("https://maps.googleapis.com/maps/api/place/nearbysearch/json?");
         googlePlacesUrl.append("location=" + best.latitude + "," + best.longitude);
         googlePlacesUrl.append("&radius=" + 1000);
-        googlePlacesUrl.append("&types=" + "restaurant");
+        googlePlacesUrl.append("&types=" + TestApplication.group.getType());
         googlePlacesUrl.append("&key=" + getString(R.string.google_maps_key));
 
         // eseguo la classe GooglePlacesReadTask per visualizzare i place sulla mappa
