@@ -42,13 +42,11 @@ public class MainActivity extends AppCompatActivity {
         TextView name = header.findViewById(R.id.tvName);
         TextView surname = header.findViewById(R.id.tvSurname);
         TextView email = header.findViewById(R.id.tvEmail);
-        TextView address = header.findViewById(R.id.tvAddress);
 
         username.setText(TestApplication.user.getProperty("username").toString());
         name.setText(TestApplication.user.getProperty("name").toString());
         surname.setText(TestApplication.user.getProperty("surname").toString());
         email.setText(TestApplication.user.getProperty("email").toString());
-        address.setText(TestApplication.place.getFull_address());
 
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.

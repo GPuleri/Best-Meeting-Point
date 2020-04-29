@@ -91,29 +91,6 @@ public class Login extends AppCompatActivity {
 
                             TestApplication.user = response;
 
-                            LoadRelationsQueryBuilder<Place> loadRelationsQueryBuilder;
-                            loadRelationsQueryBuilder = LoadRelationsQueryBuilder.of(Place.class);
-                            loadRelationsQueryBuilder.setRelationName("user_place");
-
-                            Backendless.Data.of(BackendlessUser.class).loadRelations(TestApplication.user.getObjectId(),
-                                    loadRelationsQueryBuilder,
-                                    new AsyncCallback<List<Place>>() {
-
-                                        @Override
-                                        public void handleResponse(List<Place> place) {
-                                            TestApplication.place = place.get(0);
-                                            Log.i("DIOCANE", place.toString());
-                                        }
-
-                                        @Override
-                                        public void handleFault( BackendlessFault fault )
-                                        {
-                                            Log.e( "MYAPP", "server reported an error - " + fault.getMessage() );
-                                        }
-
-                                    });
-
-
                             Toast.makeText(Login.this, "Logged in successfully!", Toast.LENGTH_SHORT).show();
                             startActivity(new Intent(Login.this, MainActivity.class));
                             Login.this.finish();
@@ -185,12 +162,10 @@ public class Login extends AppCompatActivity {
         });
 
 
+        tvLoad.setText("Checking login credentials...please wait...");
         /**
          * check if the last login is still valid. If yes, I login directly without requesting insertion
          */
-
-        tvLoad.setText("Checking login credentials...please wait...");
-
         Backendless.UserService.isValidLogin(new AsyncCallback<Boolean>() {
             @Override
             public void handleResponse(Boolean response) {
@@ -234,12 +209,8 @@ public class Login extends AppCompatActivity {
             }
         });
 
-
-
         //fine login automatico
     }
-
-
 
     /**
      * Shows the progress UI and hides the login form.
