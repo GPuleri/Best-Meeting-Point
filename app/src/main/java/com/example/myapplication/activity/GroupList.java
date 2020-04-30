@@ -24,6 +24,7 @@ import com.example.myapplication.adapter.GroupAdapter;
 import com.example.myapplication.data.Group;
 import com.example.myapplication.data.Group_Place_User;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -68,27 +69,28 @@ public class GroupList extends AppCompatActivity {
 
                     @Override
                     public void handleResponse(List<Group_Place_User> response) {
-                        TestApplication.group_place_users = response;
                         StringBuilder whereClause = new StringBuilder();
-                        for (int i = 0; i < TestApplication.group_place_users.size(); i++) {
-                            whereClause.append("group_group");
-                            whereClause.append(".objectId='").append(TestApplication.group_place_users.get(i).getObjectId()).append("'");
-                            if (i != TestApplication.group_place_users.size() - 1) {
-                                whereClause.append(" or ");
+                        TestApplication.group_place_users = response;
+                        if (!response.isEmpty()) {
+                            for (int i = 0; i < TestApplication.group_place_users.size(); i++) {
+                                whereClause.append("group_group");
+                                whereClause.append(".objectId='").append(TestApplication.group_place_users.get(i).getObjectId()).append("'");
+                                if (i != TestApplication.group_place_users.size() - 1) {
+                                    whereClause.append(" or ");
+                                }
                             }
-                        }
+
+
                         DataQueryBuilder queryBuilder = DataQueryBuilder.create();
                         queryBuilder.setWhereClause(whereClause.toString());
-                        Log.i("query", whereClause.toString());
+                        Log.i("query_group_group", whereClause.toString());
                         Backendless.Data.of(Group.class).find(queryBuilder, new AsyncCallback<List<Group>>() {
 
                             @Override
                             public void handleResponse(List<Group> response) {
-                                if (!TestApplication.group_place_users.isEmpty()) {
-                                    TestApplication.groups = response;
-                                    adapter = new GroupAdapter(GroupList.this, response);
-                                    lvList.setAdapter(adapter);
-                                }
+                                TestApplication.groups = response;
+                                adapter = new GroupAdapter(GroupList.this, TestApplication.groups);
+                                lvList.setAdapter(adapter);
                             }
 
                             @Override
@@ -96,6 +98,11 @@ public class GroupList extends AppCompatActivity {
                                 Toast.makeText(GroupList.this, "Error: " + fault.getMessage(), Toast.LENGTH_SHORT).show();
                             }
                         });
+                        } else {
+                            TestApplication.groups = new ArrayList<Group>();
+                            adapter = new GroupAdapter(GroupList.this, TestApplication.groups);
+                            lvList.setAdapter(adapter);
+                        }
                     }
 
                     @Override

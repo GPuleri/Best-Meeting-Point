@@ -29,6 +29,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.util.List;
+import java.util.concurrent.atomic.LongAdder;
 
 import static androidx.test.espresso.Espresso.onData;
 import static androidx.test.espresso.Espresso.onView;
@@ -56,7 +57,7 @@ import static org.hamcrest.Matchers.allOf;
 @LargeTest
 public class CreateGroupTest {
 
-    private CountingIdlingResource idlingResource = new CountingIdlingResource("DATA_LOADER");
+    private final CountingIdlingResource idlingResource = new CountingIdlingResource("data_loaded");
     private DataLoaderHelperTest test = new DataLoaderHelperTest();
 
     @Rule
@@ -67,9 +68,11 @@ public class CreateGroupTest {
     @Before
     public void loadData() {
         idlingResource.increment();
-        test.loadTestData();
+        test.loadCreateGroupData();
         idlingResource.decrement();
+
     }
+
 
     @Test
     public void CreationOfGroup() throws InterruptedException {
@@ -91,6 +94,8 @@ public class CreateGroupTest {
 
     @After
     public void deleteData() {
-
+        idlingResource.increment();
+        test.deleteGroups();
+        idlingResource.decrement();
     }
 }

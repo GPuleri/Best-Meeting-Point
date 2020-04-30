@@ -7,6 +7,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.test.espresso.idling.CountingIdlingResource;
 
 import com.backendless.Backendless;
 import com.backendless.BackendlessUser;
@@ -29,57 +30,14 @@ import java.util.ListIterator;
 
 public class DataLoaderHelperTest {
 
-    public void loadTestData() {
+
+    public void loadCreateGroupData() {
         Backendless.UserService.login("test@test.it", "test", new AsyncCallback<BackendlessUser>() {
             @Override
             public void handleResponse(BackendlessUser response) {
                 TestApplication.user = response;
-                Log.e("user", TestApplication.user.toString());
-                LoadRelationsQueryBuilder<Group_Place_User> loadRelationsQueryBuilder;
-                loadRelationsQueryBuilder = LoadRelationsQueryBuilder.of(Group_Place_User.class);
-                loadRelationsQueryBuilder.setRelationName("group_user");
-
-                Backendless.Data.of(BackendlessUser.class).loadRelations(TestApplication.user.getObjectId(),
-                        loadRelationsQueryBuilder,
-                        new AsyncCallback<List<Group_Place_User>>() {
-
-                            @Override
-                            public void handleResponse(List<Group_Place_User> response) {
-                                TestApplication.group_place_users = response;
-                                Log.i("group_place", "utente creato");
-
-                                StringBuilder whereClause = new StringBuilder();
-                                for (int i = 0; i < TestApplication.group_place_users.size(); i++) {
-                                    whereClause.append("group_group");
-                                    whereClause.append(".objectId='").append(TestApplication.group_place_users.get(i).getObjectId()).append("'");
-                                    if (i != TestApplication.group_place_users.size() - 1) {
-                                        whereClause.append(" or ");
-                                    }
-                                }
-                                DataQueryBuilder queryBuilder = DataQueryBuilder.create();
-                                queryBuilder.setWhereClause(whereClause.toString());
-                                Log.i("query", whereClause.toString());
-                                Backendless.Data.of(Group.class).find(queryBuilder, new AsyncCallback<List<Group>>() {
-
-                                    @Override
-                                    public void handleResponse(List<Group> response) {
-                                        if (!TestApplication.group_place_users.isEmpty()) {
-                                            TestApplication.groups = response;
-                                            Log.i("groups", "utente creato");
-
-                                        }
-                                    }
-
-                                    @Override
-                                    public void handleFault(BackendlessFault fault) {
-                                    }
-                                });
-                            }
-
-                            @Override
-                            public void handleFault(BackendlessFault fault) {
-                            }
-                        });
+                TestApplication.groups = new ArrayList<>();
+                TestApplication.group_place_users = new ArrayList<>();
             }
 
             @Override
@@ -89,7 +47,30 @@ public class DataLoaderHelperTest {
 
     }
 
+
     public void deleteGroups() {
-//        TestApplication.user.
+        Backendless.Data.of(Group_Place_User.class).remove(TestApplication.group_place_users.get(0), new AsyncCallback<Long>() {
+            @Override
+            public void handleResponse(Long response) {
+                Log.i("Group_place_user", response.toString());
+
+                Backendless.Data.of(Group.class).remove(TestApplication.groups.get(0), new AsyncCallback<Long>() {
+                    @Override
+                    public void handleResponse(Long response) {
+                    Log.i("Group", response.toString());
+                    }
+
+                    @Override
+                    public void handleFault(BackendlessFault fault) {
+
+                    }
+                });
+            }
+
+            @Override
+            public void handleFault(BackendlessFault fault) {
+
+            }
+        });
     }
 }

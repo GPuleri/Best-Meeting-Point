@@ -53,6 +53,7 @@ public class CreateGroup extends AppCompatActivity {
                         @Override
                         public void handleResponse(Group_Place_User response) {
                             TestApplication.link = response;
+                            TestApplication.group_place_users.add(TestApplication.link);
                             ArrayList<Group_Place_User> list = new ArrayList<Group_Place_User>();
                             list.add(response);
                             Backendless.Data.of(BackendlessUser.class).addRelation(TestApplication.user, "group_user", list,
