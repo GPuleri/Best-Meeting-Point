@@ -1,8 +1,8 @@
 package com.example.myapplication.activity;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.myapplication.R;
@@ -42,11 +42,21 @@ public class MainActivity extends AppCompatActivity {
         TextView name = header.findViewById(R.id.tvName);
         TextView surname = header.findViewById(R.id.tvSurname);
         TextView email = header.findViewById(R.id.tvEmail);
+        ImageView settings = header.findViewById(R.id.ivSettings);
+        ImageView logout = header.findViewById(R.id.ivLogout);
 
         username.setText(TestApplication.user.getProperty("username").toString());
         name.setText(TestApplication.user.getProperty("name").toString());
         surname.setText(TestApplication.user.getProperty("surname").toString());
         email.setText(TestApplication.user.getProperty("email").toString());
+
+        settings.setOnClickListener(v -> {
+
+        });
+
+        logout.setOnClickListener(v -> {
+
+        });
 
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.

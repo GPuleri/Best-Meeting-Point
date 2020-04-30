@@ -24,10 +24,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:hint="group name"
+        android:hint="@string/hint_group_name"
+        android:autofillHints="@string/hint_group_name"
         android:ems="15"
         android:inputType="text"
-        android:layout_marginTop="100dp"
+        android:layout_marginTop="150dp"
         android:layout_marginBottom="30dp"
         android:layout_gravity="center"
         android:textSize="20sp" />

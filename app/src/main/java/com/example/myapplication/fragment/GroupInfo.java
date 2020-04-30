@@ -70,7 +70,7 @@ public class GroupInfo extends Fragment {
         ivEdit = view.findViewById(R.id.ivEdit);
         tvParticipants = view.findViewById(R.id.tvParticipants);
 
-        final int index = Objects.requireNonNull(getArguments()).getInt("index");
+        final int index = requireArguments().getInt("index");
 
         tvName.setText(TestApplication.groups.get(index).getName());
         if (TestApplication.user.getObjectId().equals(TestApplication.groups.get(index).getOwnerId())) {
@@ -104,13 +104,13 @@ public class GroupInfo extends Fragment {
                             public void handleResponse(List<BackendlessUser> response) {
                                 Log.i("empty", "" + response.isEmpty());
                                 TestApplication.users_active = response;
-                                adapter = new ParticipantAdapter(getActivity(), response);
+                                adapter = new ParticipantAdapter(getContext(), response);
                                 lvParticipants.setAdapter(adapter);
                             }
 
                             @Override
                             public void handleFault(BackendlessFault fault) {
-                                Toast.makeText(getActivity(), "Error: " + fault.getMessage(), Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getContext(), "Error: " + fault.getMessage(), Toast.LENGTH_SHORT).show();
                             }
                         });
 
@@ -135,148 +135,127 @@ public class GroupInfo extends Fragment {
 
                             @Override
                             public void handleFault(BackendlessFault fault) {
-                                Toast.makeText(getActivity(), "Error: " + fault.getMessage(), Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getContext(), "Error: " + fault.getMessage(), Toast.LENGTH_SHORT).show();
                             }
                         });
                     }
 
                     @Override
                     public void handleFault(BackendlessFault fault) {
-                        Toast.makeText(getActivity(), "Error: " + fault.getMessage(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(), "Error: " + fault.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
 
-        ivDelete.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                final AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
-                dialog.setMessage("Do you want to delete this group?");
-                dialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        LoadRelationsQueryBuilder<Group_Place_User> loadRelationsQueryBuilder;
-                        loadRelationsQueryBuilder = LoadRelationsQueryBuilder.of(Group_Place_User.class);
-                        loadRelationsQueryBuilder.setRelationName("group_group");
+        ivDelete.setOnClickListener(v -> {
+            final AlertDialog.Builder dialog = new AlertDialog.Builder(requireActivity());
+            dialog.setMessage("Do you want to delete this group?");
+            dialog.setPositiveButton("Yes", (dialog1, which) -> {
+                LoadRelationsQueryBuilder<Group_Place_User> loadRelationsQueryBuilder1;
+                loadRelationsQueryBuilder1 = LoadRelationsQueryBuilder.of(Group_Place_User.class);
+                loadRelationsQueryBuilder1.setRelationName("group_group");
 
-                        Backendless.Data.of(Group.class).loadRelations(TestApplication.groups.get(index).getObjectId(),
-                                loadRelationsQueryBuilder,
-                                new AsyncCallback<List<Group_Place_User>>() {
+                Backendless.Data.of(Group.class).loadRelations(TestApplication.groups.get(index).getObjectId(),
+                        loadRelationsQueryBuilder1,
+                        new AsyncCallback<List<Group_Place_User>>() {
 
-                                    @Override
-                                    public void handleResponse(List<Group_Place_User> response) {
-                                        for (final Group_Place_User toDelete : response) {
-
-                                            Backendless.Persistence.of(Group_Place_User.class).remove(toDelete, new AsyncCallback<Long>() {
-                                                @Override
-                                                public void handleResponse(Long response) {
-                                                    TestApplication.group_place_users.remove(toDelete);
-                                                }
-
-                                                @Override
-                                                public void handleFault(BackendlessFault fault) {
-                                                    Toast.makeText(getActivity(), "Error: " + fault.getMessage(), Toast.LENGTH_SHORT).show();
-                                                }
-                                            });
-                                        }
-                                    }
-
-                                    @Override
-                                    public void handleFault(BackendlessFault fault) {
-                                        Toast.makeText(getActivity(), "Error:" + fault.getMessage(), Toast.LENGTH_SHORT).show();
-                                    }
-                                });
-                        Backendless.Persistence.of(Group.class).remove(TestApplication.groups.get(index), new AsyncCallback<Long>() {
                             @Override
-                            public void handleResponse(Long response) {
-                                TestApplication.groups.remove(index);
-                                Toast.makeText(getActivity(), "Group deleted", Toast.LENGTH_SHORT).show();
-                                getActivity().setResult(RESULT_OK);
-                                GroupList dest = new GroupList();
-                                FragmentManager fragmentManager = Objects.requireNonNull(getActivity()).getSupportFragmentManager();
-                                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                                fragmentTransaction.replace(getId(), dest);
-                                fragmentTransaction.addToBackStack(null);
-                                fragmentTransaction.commit();
+                            public void handleResponse(List<Group_Place_User> response) {
+                                for (final Group_Place_User toDelete : response) {
+
+                                    Backendless.Persistence.of(Group_Place_User.class).remove(toDelete, new AsyncCallback<Long>() {
+                                        @Override
+                                        public void handleResponse(Long response) {
+                                            TestApplication.group_place_users.remove(toDelete);
+                                        }
+
+                                        @Override
+                                        public void handleFault(BackendlessFault fault) {
+                                            Toast.makeText(getContext(), "Error: " + fault.getMessage(), Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
+                                }
                             }
 
                             @Override
                             public void handleFault(BackendlessFault fault) {
-                                Toast.makeText(getActivity(), "Error: " + fault.getMessage(), Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getContext(), "Error:" + fault.getMessage(), Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                Backendless.Persistence.of(Group.class).remove(TestApplication.groups.get(index), new AsyncCallback<Long>() {
+                    @Override
+                    public void handleResponse(Long response) {
+                        TestApplication.groups.remove(index);
+                        Toast.makeText(getContext(), "Group deleted", Toast.LENGTH_SHORT).show();
+                        requireActivity().setResult(RESULT_OK);
+                        GroupList dest = new GroupList();
+                        FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
+                        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                        fragmentTransaction.replace(getId(), dest);
+                        fragmentTransaction.addToBackStack(null);
+                        fragmentTransaction.commit();
+                    }
+
+                    @Override
+                    public void handleFault(BackendlessFault fault) {
+                        Toast.makeText(getContext(), "Error: " + fault.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+            });
+            dialog.setNegativeButton("No", (dialog12, which) -> {
+
+            });
+            dialog.show();
+        });
+        ivEdit.setOnClickListener(v -> {
+            if (etName.getVisibility() == View.GONE) {
+
+                etName.setText(TestApplication.groups.get(index).getName());
+                tvParticipants.setVisibility(View.GONE);
+                lvParticipants.setVisibility(View.GONE);
+                btnSubmit.setVisibility(View.VISIBLE);
+                etName.setVisibility(View.VISIBLE);
+
+                btnSubmit.setOnClickListener(v1 -> {
+                    if (etName.getText().toString().isEmpty()) {
+                        Toast.makeText(getContext(), "Insert all the details requested!", Toast.LENGTH_SHORT).show();
+                    } else {
+                        TestApplication.groups.get(index).setName(etName.getText().toString().trim());
+                        Backendless.Persistence.save(TestApplication.groups.get(index), new AsyncCallback<Group>() {
+                            @Override
+                            public void handleResponse(Group response) {
+                                tvName.setText(TestApplication.groups.get(index).getName());
+                                Toast.makeText(getContext(), "Updated!", Toast.LENGTH_SHORT).show();
+                                lvParticipants.setVisibility(View.VISIBLE);
+                                tvParticipants.setVisibility(View.VISIBLE);
+                                btnSubmit.setVisibility(View.GONE);
+                                etName.setVisibility(View.GONE);
+                            }
+
+                            @Override
+                            public void handleFault(BackendlessFault fault) {
+                                Toast.makeText(getContext(), "Error: " + fault.getMessage(), Toast.LENGTH_SHORT).show();
                             }
                         });
                     }
+
                 });
-                dialog.setNegativeButton("No", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-
-                    }
-                });
-                dialog.show();
             }
-        });
-        ivEdit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (etName.getVisibility() == View.GONE) {
-
-                    etName.setText(TestApplication.groups.get(index).getName());
-                    tvParticipants.setVisibility(View.GONE);
-                    lvParticipants.setVisibility(View.GONE);
-                    btnSubmit.setVisibility(View.VISIBLE);
-                    etName.setVisibility(View.VISIBLE);
-
-                    btnSubmit.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            if (etName.getText().toString().isEmpty()) {
-                                Toast.makeText(getActivity(), "Insert all the details requested!", Toast.LENGTH_SHORT).show();
-                            } else {
-                                TestApplication.groups.get(index).setName(etName.getText().toString().trim());
-                                Backendless.Persistence.save(TestApplication.groups.get(index), new AsyncCallback<Group>() {
-                                    @Override
-                                    public void handleResponse(Group response) {
-                                        tvName.setText(TestApplication.groups.get(index).getName());
-                                        Toast.makeText(getActivity(), "Updated!", Toast.LENGTH_SHORT).show();
-                                        lvParticipants.setVisibility(View.VISIBLE);
-                                        tvParticipants.setVisibility(View.VISIBLE);
-                                        btnSubmit.setVisibility(View.GONE);
-                                        etName.setVisibility(View.GONE);
-                                    }
-
-                                    @Override
-                                    public void handleFault(BackendlessFault fault) {
-                                        Toast.makeText(getActivity(), "Error: " + fault.getMessage(), Toast.LENGTH_SHORT).show();
-                                    }
-                                });
-                            }
-
-                        }
-                    });
-                }
-                else {
-                    tvParticipants.setVisibility(View.VISIBLE);
-                    lvParticipants.setVisibility(View.VISIBLE);
-                    btnSubmit.setVisibility(View.GONE);
-                    etName.setVisibility(View.GONE);
-                }
+            else {
+                tvParticipants.setVisibility(View.VISIBLE);
+                lvParticipants.setVisibility(View.VISIBLE);
+                btnSubmit.setVisibility(View.GONE);
+                etName.setVisibility(View.GONE);
             }
         });
 
-        ivNavigate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), MapsActivity.class);
-                startActivityForResult(intent, 1);
-            }
+        ivNavigate.setOnClickListener(v -> {
+            Intent intent = new Intent(getContext(), MapsActivity.class);
+            startActivityForResult(intent, 1);
         });
 
-        ivInvite.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //Intent intent = new Intent(getActivity(), MapsActivity.class);
-                //startActivityForResult(intent, 1);
-            }
+        ivInvite.setOnClickListener(v -> {
+            //Intent intent = new Intent(getContext(), MapsActivity.class);
+            //startActivityForResult(intent, 1);
         });
 
         return view;

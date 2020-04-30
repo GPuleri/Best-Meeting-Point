@@ -50,33 +50,27 @@ public class GroupList extends Fragment {
         lvList = view.findViewById(R.id.lvList);
         fab = view.findViewById(R.id.fab);
 
-        lvList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Bundle bundle = new Bundle();
-                bundle.putInt("index", position);
+        lvList.setOnItemClickListener((parent, view1, position, id) -> {
+            Bundle bundle = new Bundle();
+            bundle.putInt("index", position);
 
-                GroupInfo dest = new GroupInfo();
-                dest.setArguments(bundle);
+            GroupInfo dest = new GroupInfo();
+            dest.setArguments(bundle);
 
-                FragmentManager fragmentManager = Objects.requireNonNull(getActivity()).getSupportFragmentManager();
-                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                fragmentTransaction.replace(getId(), dest);
-                fragmentTransaction.addToBackStack(null);
-                fragmentTransaction.commit();
-            }
+            FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            fragmentTransaction.replace(getId(), dest);
+            fragmentTransaction.addToBackStack(null);
+            fragmentTransaction.commit();
         });
 
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                CreateGroup dest = new CreateGroup();
-                FragmentManager fragmentManager = Objects.requireNonNull(getActivity()).getSupportFragmentManager();
-                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                fragmentTransaction.replace(getId(), dest);
-                fragmentTransaction.addToBackStack(null);
-                fragmentTransaction.commit();
-            }
+        fab.setOnClickListener(view12 -> {
+            CreateGroup dest = new CreateGroup();
+            FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            fragmentTransaction.replace(getId(), dest);
+            fragmentTransaction.addToBackStack(null);
+            fragmentTransaction.commit();
         });
 
         LoadRelationsQueryBuilder<Group_Place_User> loadRelationsQueryBuilder;
@@ -107,24 +101,23 @@ public class GroupList extends Fragment {
                             public void handleResponse(List<Group> response) {
                                 if (!TestApplication.group_place_users.isEmpty()) {
                                     TestApplication.groups = response;
-                                    adapter = new GroupAdapter(getActivity(), response);
+                                    adapter = new GroupAdapter(getContext(), response);
                                     lvList.setAdapter(adapter);
                                 }
                             }
 
                             @Override
                             public void handleFault(BackendlessFault fault) {
-                                Toast.makeText(getActivity(), "Error: " + fault.getMessage(), Toast.LENGTH_SHORT).show();
+                                Log.i("error", "Error: " + fault.getMessage());
                             }
                         });
                     }
 
                     @Override
                     public void handleFault(BackendlessFault fault) {
-                        Toast.makeText(getActivity(), "Error: " + fault.getMessage(), Toast.LENGTH_SHORT).show();
+                        Log.i("error", "Error: " + fault.getMessage());
                     }
                 });
-
 
         return view;
     }
