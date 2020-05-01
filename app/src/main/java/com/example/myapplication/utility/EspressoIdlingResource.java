@@ -4,6 +4,9 @@ package com.example.myapplication.utility;
 import androidx.test.espresso.IdlingResource;
 import androidx.test.espresso.idling.CountingIdlingResource;
 
+/**
+ * Class of a global CountingIdlingResource
+ */
 public class EspressoIdlingResource {
     private static final String RESOURCE = "GLOBAL";
     private static CountingIdlingResource idlingResource = new CountingIdlingResource(RESOURCE);

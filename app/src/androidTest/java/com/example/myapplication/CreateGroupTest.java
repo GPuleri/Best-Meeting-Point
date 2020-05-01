@@ -46,7 +46,6 @@ import static org.hamcrest.Matchers.allOf;
 @LargeTest
 public class CreateGroupTest {
 
-//    public final static CountingIdlingResource idlingResource = new CountingIdlingResource("data_loaded");
     private DataLoaderHelperTest test = new DataLoaderHelperTest();
 
     @Rule
