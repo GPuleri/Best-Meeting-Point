@@ -44,7 +44,7 @@ public class DataLoaderHelperTest {
             @Override
             public void handleResponse(Long response) {
                 Log.i("Group", response.toString());
-
+                EspressoIdlingResource.decrement();
             }
 
             @Override
