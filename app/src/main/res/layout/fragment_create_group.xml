@@ -19,19 +19,42 @@
         android:textSize="30sp"
         android:textColor="@color/darkText" />
 
-    <EditText
-        android:id="@+id/etNameGroup"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:hint="@string/hint_group_name"
-        android:autofillHints="@string/hint_group_name"
-        android:ems="15"
-        android:inputType="text"
-        android:layout_marginTop="150dp"
-        android:layout_marginBottom="30dp"
-        android:layout_gravity="center"
-        android:textSize="20sp" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:gravity="center">
+
+        <EditText
+            android:id="@+id/etNameGroup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+            android:ems="15"
+            android:gravity="center"
+            android:inputType="text"
+            android:hint="@string/hint_group_name"
+            android:autofillHints="@string/hint_group_name"
+            android:textSize="20sp"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:gravity="center">
+
+        <Spinner
+            android:id="@+id/spnGroupType"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+            android:ems="15"
+            android:gravity="center"
+            android:spinnerMode="dropdown"
+            android:textSize="20sp" />
+    </LinearLayout>
 
     <Button
         android:id="@+id/btnNewGroup"

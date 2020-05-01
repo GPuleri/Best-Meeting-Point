@@ -83,39 +83,45 @@ public class GroupList extends Fragment {
 
                     @Override
                     public void handleResponse(List<Group_Place_User> response) {
-                        TestApplication.group_place_users = response;
                         StringBuilder whereClause = new StringBuilder();
-                        for (int i = 0; i < TestApplication.group_place_users.size(); i++) {
-                            whereClause.append("group_group");
-                            whereClause.append(".objectId='").append(TestApplication.group_place_users.get(i).getObjectId()).append("'");
-                            if (i != TestApplication.group_place_users.size() - 1) {
-                                whereClause.append(" or ");
+                        TestApplication.group_place_users = response;
+                        if (!response.isEmpty()) {
+                            for (int i = 0; i < TestApplication.group_place_users.size(); i++) {
+                                whereClause.append("group_group");
+                                whereClause.append(".objectId='").append(TestApplication.group_place_users.get(i).getObjectId()).append("'");
+                                if (i != TestApplication.group_place_users.size() - 1) {
+                                    whereClause.append(" or ");
+                                }
                             }
-                        }
-                        DataQueryBuilder queryBuilder = DataQueryBuilder.create();
-                        queryBuilder.setWhereClause(whereClause.toString());
-                        Log.i("query", whereClause.toString());
-                        Backendless.Data.of(Group.class).find(queryBuilder, new AsyncCallback<List<Group>>() {
 
-                            @Override
-                            public void handleResponse(List<Group> response) {
-                                if (!TestApplication.group_place_users.isEmpty()) {
+
+                            DataQueryBuilder queryBuilder = DataQueryBuilder.create();
+                            queryBuilder.setWhereClause(whereClause.toString());
+                            Log.i("query_group_group", whereClause.toString());
+                            Backendless.Data.of(Group.class).find(queryBuilder, new AsyncCallback<List<Group>>() {
+
+                                @Override
+                                public void handleResponse(List<Group> response) {
                                     TestApplication.groups = response;
                                     adapter = new GroupAdapter(getContext(), response);
                                     lvList.setAdapter(adapter);
                                 }
-                            }
 
-                            @Override
-                            public void handleFault(BackendlessFault fault) {
-                                Log.i("error", "Error: " + fault.getMessage());
-                            }
-                        });
+                                @Override
+                                public void handleFault(BackendlessFault fault) {
+                                    Log.e("error", "Error: " + fault.getMessage());
+                                }
+                            });
+                        } else {
+                            TestApplication.groups = new ArrayList<Group>();
+                            adapter = new GroupAdapter(getContext(), TestApplication.groups);
+                            lvList.setAdapter(adapter);
+                        }
                     }
 
                     @Override
                     public void handleFault(BackendlessFault fault) {
-                        Log.i("error", "Error: " + fault.getMessage());
+                        Log.e("error", "Error: " + fault.getMessage());
                     }
                 });
 

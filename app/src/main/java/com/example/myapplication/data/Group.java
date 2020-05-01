@@ -12,19 +12,35 @@ import java.util.Date;
 
 public class Group
 {
-  private String objectId;
   private Date created;
-  private String name;
+  private String type;
   private Date updated;
   private String ownerId;
-  public String getObjectId()
-  {
-    return objectId;
-  }
-
+  private String name;
+  private String objectId;
   public Date getCreated()
   {
     return created;
+  }
+
+  public String getType()
+  {
+    return type;
+  }
+
+  public void setType( String type )
+  {
+    this.type = type;
+  }
+
+  public Date getUpdated()
+  {
+    return updated;
+  }
+
+  public String getOwnerId()
+  {
+    return ownerId;
   }
 
   public String getName()
@@ -37,16 +53,12 @@ public class Group
     this.name = name;
   }
 
-  public Date getUpdated()
+  public String getObjectId()
   {
-    return updated;
+    return objectId;
   }
 
-  public String getOwnerId()
-  {
-    return ownerId;
-  }
-                                                    
+
   public Group save()
   {
     return Backendless.Data.of( Group.class ).save( this );
