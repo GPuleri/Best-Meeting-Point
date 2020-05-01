@@ -1,24 +1,17 @@
 package com.example.myapplication;
 
-import android.content.Intent;
-import android.util.Log;
-import android.widget.Toast;
 
 import androidx.test.espresso.Espresso;
-import androidx.test.espresso.IdlingRegistry;
-import androidx.test.espresso.idling.CountingIdlingResource;
+
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.LargeTest;
 import androidx.test.rule.ActivityTestRule;
 
-import com.backendless.Backendless;
-import com.backendless.BackendlessUser;
-import com.backendless.async.callback.AsyncCallback;
-import com.backendless.exceptions.BackendlessFault;
+
 import com.example.myapplication.activity.CreateGroup;
-import com.example.myapplication.data.Group;
-import com.example.myapplication.data.Group_Place_User;
-import com.example.myapplication.data.Place;
+
+import com.example.myapplication.utility.DataLoaderHelperTest;
+import com.example.myapplication.utility.EspressoIdlingResource;
 import com.example.myapplication.utility.TestApplication;
 
 import org.junit.After;
@@ -28,19 +21,15 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.util.List;
-import java.util.concurrent.atomic.LongAdder;
+
 
 import static androidx.test.espresso.Espresso.onData;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.typeText;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
-import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withSpinnerText;
-import static androidx.test.espresso.matcher.ViewMatchers.withText;
-import static org.hamcrest.Matchers.anything;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
@@ -57,7 +46,7 @@ import static org.hamcrest.Matchers.allOf;
 @LargeTest
 public class CreateGroupTest {
 
-    private final CountingIdlingResource idlingResource = new CountingIdlingResource("data_loaded");
+//    public final static CountingIdlingResource idlingResource = new CountingIdlingResource("data_loaded");
     private DataLoaderHelperTest test = new DataLoaderHelperTest();
 
     @Rule
@@ -67,10 +56,8 @@ public class CreateGroupTest {
 
     @Before
     public void loadData() {
-        idlingResource.increment();
-        test.loadCreateGroupData();
-        idlingResource.decrement();
-
+        EspressoIdlingResource.increment();
+        test.loadUserData();
     }
 
 
@@ -94,8 +81,9 @@ public class CreateGroupTest {
 
     @After
     public void deleteData() {
-        idlingResource.increment();
+        EspressoIdlingResource.increment();
+        EspressoIdlingResource.increment();
         test.deleteGroups();
-        idlingResource.decrement();
+
     }
 }
