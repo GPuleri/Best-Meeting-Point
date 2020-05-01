@@ -20,13 +20,13 @@ public class DataLoaderHelperTest {
      * Load the TestUser and instantiates groups and group_place_users as empty lists
      */
     public void loadUserData() {
+
         Backendless.UserService.login("test@test.it", "test", new AsyncCallback<BackendlessUser>() {
             @Override
             public void handleResponse(BackendlessUser response) {
                 TestApplication.user = response;
                 TestApplication.groups = new ArrayList<>();
                 TestApplication.group_place_users = new ArrayList<>();
-                EspressoIdlingResource.decrement();
             }
 
             @Override

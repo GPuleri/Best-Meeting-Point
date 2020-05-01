@@ -8,8 +8,7 @@ import androidx.test.filters.LargeTest;
 import androidx.test.rule.ActivityTestRule;
 
 
-import com.example.myapplication.activity.CreateGroup;
-
+import com.example.myapplication.activity.MainActivity;
 import com.example.myapplication.utility.DataLoaderHelperTest;
 import com.example.myapplication.utility.EspressoIdlingResource;
 import com.example.myapplication.utility.TestApplication;
@@ -49,19 +48,22 @@ public class CreateGroupTest {
     private DataLoaderHelperTest test = new DataLoaderHelperTest();
 
     @Rule
-    public ActivityTestRule<CreateGroup> activityRule =
-            new ActivityTestRule<>(CreateGroup.class);
+    public ActivityTestRule<MainActivity> activityRule =
+            new ActivityTestRule<>(MainActivity.class, true, false);
 
 
     @Before
-    public void loadData() {
-        EspressoIdlingResource.increment();
+    public void loadData() throws InterruptedException {
         test.loadUserData();
+        activityRule.launchActivity(null);
+
+        Thread.sleep(5000);
     }
 
 
     @Test
     public void CreationOfGroup() throws InterruptedException {
+        onView(withId(R.id.fab)).perform(click());
         onView(withId(R.id.etNameGroup)).perform(typeText("TestGroup"));
         Espresso.closeSoftKeyboard();
         onView(withId(R.id.spnGroupType)).perform(click());

@@ -42,7 +42,7 @@ import static android.app.Activity.RESULT_OK;
 
 public class GroupInfo extends Fragment {
 
-    private TextView tvName, tvParticipants;
+    private TextView tvName, tvParticipants, tvType;
     private ParticipantAdapter adapter;
     private ListView lvParticipants;
     private EditText etName;
@@ -69,10 +69,14 @@ public class GroupInfo extends Fragment {
         btnSubmit = view.findViewById(R.id.btnSubmit);
         ivEdit = view.findViewById(R.id.ivEdit);
         tvParticipants = view.findViewById(R.id.tvParticipants);
+        tvType = view.findViewById(R.id.tvType);
+
 
         final int index = requireArguments().getInt("index");
 
         tvName.setText(TestApplication.groups.get(index).getName());
+        tvType.setText(TestApplication.kinds[java.util.Arrays.binarySearch(TestApplication.kind_codes,
+                TestApplication.groups.get(index).getType())]);
         if (TestApplication.user.getObjectId().equals(TestApplication.groups.get(index).getOwnerId())) {
             llOptions.setVisibility(View.VISIBLE);
         }
