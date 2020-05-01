@@ -1,45 +1,48 @@
-package com.example.myapplication.activity;
-
-import androidx.appcompat.app.AppCompatActivity;
+package com.example.myapplication.fragment;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ListView;
+
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
 
 import com.backendless.Backendless;
 import com.backendless.async.callback.AsyncCallback;
 import com.backendless.exceptions.BackendlessFault;
 import com.backendless.persistence.LoadRelationsQueryBuilder;
-import com.example.myapplication.adapter.InvitationAdapter;
 import com.example.myapplication.R;
-import com.example.myapplication.utility.TestApplication;
+import com.example.myapplication.adapter.InvitationAdapter;
 import com.example.myapplication.data.Group;
+import com.example.myapplication.utility.TestApplication;
 
 import java.util.List;
 
-public class InvitationList extends AppCompatActivity {
+public class InvitationList extends Fragment {
 
     ListView lvList;
-
     InvitationAdapter adapter;
 
     /**
      * this method is performed when the InvitationList activity is created and allows you to load
      * the list of invitations from the databse with the possibility to confirm or refit the invitation
      */
-    @Override
-    protected void onCreate(Bundle savedInstanceState){
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_invitation_list); //I set the xml file to be used for the layouts of this activity
+    public View onCreateView(@NonNull LayoutInflater inflater,
+                             ViewGroup container, Bundle savedInstanceState) {
 
-        lvList=findViewById(R.id.lvList);
+        View view = inflater.inflate(R.layout.fragment_invitation_list, container, false);
+
+        lvList = view.findViewById(R.id.lvList);
 
         // I prepare the query and set the name of the relationship (foreign key)
         LoadRelationsQueryBuilder<Group> loadRelationsQueryBuilder;
         loadRelationsQueryBuilder = LoadRelationsQueryBuilder.of( Group.class );
         loadRelationsQueryBuilder.setRelationName( "myInvitation" );
 
-        //For the logged in user I recover all the groups I have been invited to
+        // For the logged in user I retrieve all the groups I have been invited to
         Backendless.Data.of( "Users" ).loadRelations( TestApplication.user.getObjectId(),
                 loadRelationsQueryBuilder,
                 new AsyncCallback<List<Group>>()
@@ -52,9 +55,8 @@ public class InvitationList extends AppCompatActivity {
 
                         TestApplication.invitation_group=group;
                         //I set the adapter to use in the ListView
-                        adapter = new InvitationAdapter(InvitationList.this, group);
+                        adapter = new InvitationAdapter(getActivity(), group);
                         lvList.setAdapter(adapter);
-
 
                     }
 
@@ -65,29 +67,6 @@ public class InvitationList extends AppCompatActivity {
                     }
                 } );
 
-        /*
-        String where= "name = 'Pizzata'";
-        DataQueryBuilder queryBuilder = DataQueryBuilder.create();
-        queryBuilder.setWhereClause(where);
-       // queryBuilder.setGroupBy("name");
-
-        Backendless.Persistence.of(Group.class).find(queryBuilder, new AsyncCallback<List<Group>>() {
-            @Override
-            public void handleResponse(List<Group> response) {
-                TestApplication.invitation_group=response;
-               // Log.i("FABIO", String.valueOf(response.size()));
-
-                adapter = new InvitationAdapter(InvitationList.this, response);
-                lvList.setAdapter(adapter);
-            }
-
-            @Override
-            public void handleFault(BackendlessFault fault) {
-                Toast.makeText(InvitationList.this, fault.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        });
-
-
-         */
+        return view;
     }
 }

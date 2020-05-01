@@ -1,46 +1,81 @@
 package com.example.myapplication.activity;
 
-import androidx.appcompat.app.AppCompatActivity;
-
-
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.example.myapplication.R;
+import com.example.myapplication.utility.TestApplication;
+import com.google.android.material.navigation.NavigationView;
 
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+import androidx.navigation.ui.AppBarConfiguration;
+import androidx.navigation.ui.NavigationUI;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+
+/**
+ * Allows the user to see the menu on the left. It contains the user details and a list
+ * of the fragments available
+ */
 public class MainActivity extends AppCompatActivity {
 
-    Button btnGroups;
-    Button btnInvitationList;
+    private AppBarConfiguration mAppBarConfiguration;
 
     /**
-     * this is the page where there are all te links
+     * It handles the creation of the activity initializating the needed objects
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        NavigationView navigationView = findViewById(R.id.nav_view);
 
-        btnGroups = findViewById(R.id.btnGroups);
-        btnInvitationList=findViewById(R.id.btnInvitationList);
+        View header = navigationView.getHeaderView(0);
+        TextView username = header.findViewById(R.id.tvUsername);
+        TextView name = header.findViewById(R.id.tvName);
+        TextView surname = header.findViewById(R.id.tvSurname);
+        TextView email = header.findViewById(R.id.tvEmail);
+        ImageView settings = header.findViewById(R.id.ivSettings);
+        ImageView logout = header.findViewById(R.id.ivLogout);
 
-        btnGroups.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(MainActivity.this, GroupList.class));
-            }
+        username.setText(TestApplication.user.getProperty("username").toString());
+        name.setText(TestApplication.user.getProperty("name").toString());
+        surname.setText(TestApplication.user.getProperty("surname").toString());
+        email.setText(TestApplication.user.getProperty("email").toString());
+
+        settings.setOnClickListener(v -> {
+
         });
 
+        logout.setOnClickListener(v -> {
 
-
-        btnInvitationList.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this,InvitationList.class));
-            }
         });
 
+        // Passing each menu ID as a set of Ids because each
+        // menu should be considered as top level destinations.
+        mAppBarConfiguration = new AppBarConfiguration.Builder(
+                R.id.nav_groups, R.id.nav_invitations)
+                .setDrawerLayout(drawer)
+                .build();
+        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
+        NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
+        NavigationUI.setupWithNavController(navigationView, navController);
+    }
+
+    /**
+     * It handles the navigation among the fragments
+     */
+    @Override
+    public boolean onSupportNavigateUp() {
+        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
+        return NavigationUI.navigateUp(navController, mAppBarConfiguration)
+                || super.onSupportNavigateUp();
     }
 }

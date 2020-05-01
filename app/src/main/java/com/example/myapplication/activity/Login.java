@@ -5,8 +5,9 @@ import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.content.Intent;
 import android.os.Build;
-//
+
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -19,9 +20,17 @@ import com.backendless.Backendless;
 import com.backendless.BackendlessUser;
 import com.backendless.async.callback.AsyncCallback;
 import com.backendless.exceptions.BackendlessFault;
+import com.backendless.persistence.DataQueryBuilder;
+import com.backendless.persistence.LoadRelationsQueryBuilder;
 import com.backendless.persistence.local.UserIdStorageFactory;
 import com.example.myapplication.R;
+import com.example.myapplication.adapter.GroupAdapter;
+import com.example.myapplication.data.Group;
+import com.example.myapplication.data.Group_Place_User;
+import com.example.myapplication.data.Place;
 import com.example.myapplication.utility.TestApplication;
+
+import java.util.List;
 
 public class Login extends AppCompatActivity {
 
@@ -81,6 +90,7 @@ public class Login extends AppCompatActivity {
                         public void handleResponse(BackendlessUser response) {
 
                             TestApplication.user = response;
+
                             Toast.makeText(Login.this, "Logged in successfully!", Toast.LENGTH_SHORT).show();
                             startActivity(new Intent(Login.this, MainActivity.class));
                             Login.this.finish();
@@ -152,12 +162,10 @@ public class Login extends AppCompatActivity {
         });
 
 
+        tvLoad.setText("Checking login credentials...please wait...");
         /**
          * check if the last login is still valid. If yes, I login directly without requesting insertion
          */
-
-        tvLoad.setText("Checking login credentials...please wait...");
-
         Backendless.UserService.isValidLogin(new AsyncCallback<Boolean>() {
             @Override
             public void handleResponse(Boolean response) {
@@ -201,12 +209,8 @@ public class Login extends AppCompatActivity {
             }
         });
 
-
-
         //fine login automatico
     }
-
-
 
     /**
      * Shows the progress UI and hides the login form.
