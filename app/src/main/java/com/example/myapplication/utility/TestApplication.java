@@ -27,6 +27,7 @@ public class TestApplication extends Application {
     public static Group group;
     public static final String[] kind_codes = {"bar", "cafe", "movie_theater", "night_club", "park", "restaurant"};
     public static final String[] kinds = {"Bar", "Cafe", "Movie Theater", "Night Club", "Park", "Restaurant"};
+    public static int position_selected_group;
 
     /**
      * it creates the link with the database
@@ -42,3 +43,4 @@ public class TestApplication extends Application {
     }
 
 }
+
