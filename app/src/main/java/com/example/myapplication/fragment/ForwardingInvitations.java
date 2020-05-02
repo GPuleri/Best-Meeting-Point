@@ -1,14 +1,15 @@
-package com.example.myapplication.activity;
+package com.example.myapplication.fragment;
 
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
 
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.util.Log;
-import android.widget.ArrayAdapter;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.SearchView;
-import android.widget.Toast;
 
 import com.backendless.Backendless;
 import com.backendless.BackendlessUser;
@@ -24,7 +25,7 @@ import com.example.myapplication.adapter.ForwardingInvitationAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ForwardingInvitations extends AppCompatActivity {
+public class ForwardingInvitations extends Fragment {
 
     SearchView searchView;
     ListView listView;
@@ -36,12 +37,12 @@ public class ForwardingInvitations extends AppCompatActivity {
      * The users returned are those not belonging to the group or not yet invited. it is possible to filter them
      */
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_forwarding_invitations);
+    public View onCreateView(@NonNull LayoutInflater inflater,
+                             ViewGroup container, Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_forwarding_invitations, container, false);
 
-        searchView = (SearchView) findViewById(R.id.searchView);
-        listView = (ListView) findViewById(R.id.lv1);
+        searchView = (SearchView) view.findViewById(R.id.searchView);
+        listView = (ListView) view.findViewById(R.id.lv1);
 
         String where= "";
         DataQueryBuilder queryBuilder = DataQueryBuilder.create();
@@ -90,7 +91,7 @@ public class ForwardingInvitations extends AppCompatActivity {
                 }
 
                 //I set the adapter to use in the ListView
-                adapter= new ForwardingInvitationAdapter(ForwardingInvitations.this, listuser);
+                adapter= new ForwardingInvitationAdapter(getContext(), listuser);
                 listView.setAdapter(adapter);
 
 
@@ -119,6 +120,6 @@ public class ForwardingInvitations extends AppCompatActivity {
             }
         });
 
-
+        return view;
     }
 }

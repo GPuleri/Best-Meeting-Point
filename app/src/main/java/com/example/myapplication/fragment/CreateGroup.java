@@ -20,12 +20,15 @@ import com.backendless.Backendless;
 import com.backendless.BackendlessUser;
 import com.backendless.async.callback.AsyncCallback;
 import com.backendless.exceptions.BackendlessFault;
+import com.backendless.persistence.DataQueryBuilder;
 import com.example.myapplication.R;
 import com.example.myapplication.data.Group;
 import com.example.myapplication.data.Group_Place_User;
+import com.example.myapplication.data.Place;
 import com.example.myapplication.utility.TestApplication;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class CreateGroup extends Fragment {
@@ -84,7 +87,33 @@ public class CreateGroup extends Fragment {
                                                             public void handleResponse(Integer response) {
                                                                 TestApplication.groups.add(TestApplication.group);
                                                                 Toast.makeText(getContext(), "Group created!", Toast.LENGTH_SHORT).show();
-                                                                requireActivity().getSupportFragmentManager().popBackStack();
+                                                                //requireActivity().getSupportFragmentManager().popBackStack();
+
+                                                                String where= "ownerId='"+TestApplication.user.getObjectId()+"'";
+                                                                DataQueryBuilder queryBuilder = DataQueryBuilder.create();
+                                                                queryBuilder.setWhereClause(where);
+                                                                Backendless.Persistence.of(Place.class).find(queryBuilder, new AsyncCallback<List<Place>>() {
+                                                                    @Override
+                                                                    public void handleResponse(List<Place> response) {
+                                                                        Log.i("posto",response.get(0).getFull_address());
+                                                                        Backendless.Data.of(Place.class).addRelation(response.get(0), "group_place", list, new AsyncCallback<Integer>() {
+                                                                            @Override
+                                                                            public void handleResponse(Integer response) {
+                                                                                requireActivity().getSupportFragmentManager().popBackStack();
+                                                                            }
+
+                                                                            @Override
+                                                                            public void handleFault(BackendlessFault fault) {
+                                                                                Log.e( "MYAPP", "server reported an error - " + fault.getMessage() );
+                                                                            }
+                                                                        });
+                                                                    }
+
+                                                                    @Override
+                                                                    public void handleFault(BackendlessFault fault) {
+                                                                        Log.e( "MYAPP", "server reported an error - " + fault.getMessage() );
+                                                                    }
+                                                                });
                                                             }
 
                                                             @Override

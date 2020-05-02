@@ -19,6 +19,7 @@ import com.backendless.async.callback.AsyncCallback;
 import com.backendless.exceptions.BackendlessFault;
 import com.backendless.persistence.DataQueryBuilder;
 import com.example.myapplication.R;
+import com.example.myapplication.data.Place;
 import com.example.myapplication.utility.TestApplication;
 import com.example.myapplication.data.Group;
 import com.example.myapplication.data.Group_Place_User;
@@ -105,14 +106,14 @@ public class InvitationAdapter extends ArrayAdapter<Group> {
                 Backendless.Data.of(Group_Place_User.class).save(gpu, new AsyncCallback<Group_Place_User>() {
                     @Override
                     public void handleResponse(Group_Place_User response) {
-
+                        Log.i("MYAPP", "creato group place user");
                         ArrayList l= new ArrayList<Group_Place_User>();
                         l.add(response);
                         Backendless.Data.of(Group.class).addRelation(groups.get(position), "group_group", l,
                                 new AsyncCallback<Integer>() {
                                     @Override
                                     public void handleResponse(Integer response) {
-                                        Log.i("MYAPP", "aggiunta group_group fatta in group");
+                                        Log.i("MYAPP", "aggiunta relation a group");
                                     }
 
                                     @Override
@@ -121,6 +122,34 @@ public class InvitationAdapter extends ArrayAdapter<Group> {
                                     }
                                 });
 
+                        //Log.i("MYAPP", "aggiunta group_group fatta in group");
+
+                        String where= "ownerId='"+TestApplication.user.getObjectId()+"'";
+                        DataQueryBuilder queryBuilder = DataQueryBuilder.create();
+                        queryBuilder.setWhereClause(where);
+
+                        Backendless.Persistence.of(Place.class).find(queryBuilder, new AsyncCallback<List<Place>>() {
+                            @Override
+                            public void handleResponse(List<Place> response) {
+                                Log.i("posto",response.get(0).getFull_address());
+                                Backendless.Data.of(Place.class).addRelation(response.get(0), "group_place", l, new AsyncCallback<Integer>() {
+                                    @Override
+                                    public void handleResponse(Integer response) {
+
+                                    }
+
+                                    @Override
+                                    public void handleFault(BackendlessFault fault) {
+                                        Log.e( "MYAPP", "server reported an error - " + fault.getMessage() );
+                                    }
+                                });
+                            }
+
+                            @Override
+                            public void handleFault(BackendlessFault fault) {
+                                Log.e( "MYAPP", "server reported an error - " + fault.getMessage() );
+                            }
+                        });
 
 
 
@@ -155,7 +184,6 @@ public class InvitationAdapter extends ArrayAdapter<Group> {
                                         Log.e( "MYAPP", "server reported an error - " + fault.getMessage() );
                                     }
                                 });
-
 
 
                     }

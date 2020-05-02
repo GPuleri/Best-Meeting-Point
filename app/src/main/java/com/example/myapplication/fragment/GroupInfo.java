@@ -1,6 +1,5 @@
 package com.example.myapplication.fragment;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -36,7 +35,6 @@ import com.example.myapplication.data.Place;
 import com.example.myapplication.utility.TestApplication;
 
 import java.util.List;
-import java.util.Objects;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -73,6 +71,7 @@ public class GroupInfo extends Fragment {
 
 
         final int index = requireArguments().getInt("index");
+        TestApplication.position_selected_group=index;
 
         tvName.setText(TestApplication.groups.get(index).getName());
         tvType.setText(TestApplication.kinds[java.util.Arrays.binarySearch(TestApplication.kind_codes,
@@ -258,8 +257,12 @@ public class GroupInfo extends Fragment {
         });
 
         ivInvite.setOnClickListener(v -> {
-            //Intent intent = new Intent(getContext(), MapsActivity.class);
-            //startActivityForResult(intent, 1);
+            ForwardingInvitations dest = new ForwardingInvitations();
+            FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            fragmentTransaction.replace(getId(), dest);
+            fragmentTransaction.addToBackStack(null);
+            fragmentTransaction.commit();
         });
 
         return view;

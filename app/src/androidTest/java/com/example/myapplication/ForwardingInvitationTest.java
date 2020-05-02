@@ -63,7 +63,7 @@ public class ForwardingInvitationTest {
 
     @Rule
     public ActivityTestRule<MainActivity> activityRule =
-            new ActivityTestRule<>(MainActivity.class);
+            new ActivityTestRule<>(MainActivity.class,true, false);
 
 
     @Before
@@ -81,20 +81,20 @@ public class ForwardingInvitationTest {
             }
         });
 
-        //activityRule.launchActivity(null);
-
+        Thread.sleep(5000);
+        activityRule.launchActivity(null);
         Thread.sleep(5000);
     }
 
     @Test
     public void ForwardingInvitation() throws InterruptedException {
-        onView(withId(R.id.btnGroups)).perform(click());
-        onView(withId(R.id.btnNew)).perform(click());
+        //onView(withId(R.id.btnGroups)).perform(click());
+        onView(withId(R.id.fab)).perform(click());
         onView(withId(R.id.etNameGroup)).perform(typeText("TestGroup"));
         Espresso.closeSoftKeyboard();
         onView(withId(R.id.btnNewGroup)).perform(click());
 
-        Thread.sleep(5000);
+        Thread.sleep(6000);
 
         // check that the group has been created
         Assert.assertEquals(TestApplication.groups.get(0).getName(), "TestGroup");
