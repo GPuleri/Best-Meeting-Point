@@ -59,6 +59,7 @@ public class GroupInfo extends AppCompatActivity {
         tvParticipants = findViewById(R.id.tvParticipants);
 
         final int index = getIntent().getIntExtra("index", 0);
+        TestApplication.position_selected_group=index;
 
         tvName.setText(TestApplication.groups.get(index).getName());
         if (TestApplication.user.getObjectId().equals(TestApplication.groups.get(index).getOwnerId())) {
@@ -250,6 +251,19 @@ public class GroupInfo extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(GroupInfo.this, MapsActivity.class);
                 startActivityForResult(intent, 1);
+            }
+        });
+
+        ivInvite.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(GroupInfo.this,ForwardingInvitations.class));
+                /*
+                Intent intent = new Intent(GroupInfo.this, ForwardingInvitations.class);
+                intent.putExtra("index", index);
+                startActivityForResult(intent, 1);
+
+                 */
             }
         });
 
