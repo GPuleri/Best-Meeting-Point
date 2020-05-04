@@ -1,10 +1,14 @@
 package com.example.myapplication.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.backendless.Backendless;
+import com.backendless.async.callback.AsyncCallback;
+import com.backendless.exceptions.BackendlessFault;
 import com.example.myapplication.R;
 import com.example.myapplication.utility.TestApplication;
 import com.google.android.material.navigation.NavigationView;
@@ -55,7 +59,21 @@ public class MainActivity extends AppCompatActivity {
         });
 
         logout.setOnClickListener(v -> {
+            Backendless.UserService.logout(new AsyncCallback<Void>()
+            {
+                public void handleResponse( Void response )
+                {
+                    // user has been logged out.
+                    Intent i = new Intent(MainActivity.this, Login.class);
+                    finish();
+                    startActivity(i);
+                }
 
+                public void handleFault( BackendlessFault fault )
+                {
+                    // something went wrong and logout failed, to get the error code call fault.getCode()
+                }
+            });
         });
 
         // Passing each menu ID as a set of Ids because each
