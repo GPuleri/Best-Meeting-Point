@@ -55,9 +55,9 @@ public class CreateGroupTest {
     @Before
     public void loadData() throws InterruptedException {
         test.loadUserData();
-        activityRule.launchActivity(null);
-
         Thread.sleep(5000);
+
+        activityRule.launchActivity(null);
     }
 
 
