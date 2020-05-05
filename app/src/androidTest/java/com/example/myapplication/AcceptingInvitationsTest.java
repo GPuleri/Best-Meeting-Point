@@ -23,7 +23,6 @@ import com.example.myapplication.utility.TestApplication;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -42,6 +41,7 @@ import static androidx.test.espresso.matcher.ViewMatchers.isAssignableFrom;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.allOf;
+import static org.hamcrest.Matchers.is;
 import static org.hamcrest.core.IsNot.not;
 
 @RunWith(AndroidJUnit4.class)
@@ -140,14 +140,14 @@ public class AcceptingInvitationsTest {
         Thread.sleep(2000);
 
         //check the invitation
-        onView(withId(R.id.lvList))
+        onView(withId(R.id.lvListInvitation))
                 .check(matches(hasDescendant(withText("TestGroup"))));
 
         onView(withId(R.id.btnConfirm)).perform(click());
 
         Thread.sleep(2500);
 
-        onView(withId(R.id.lvList))
+        onView(withId(R.id.lvListInvitation))
                 .check(matches(not(hasDescendant(withText("TestGroup")))));
 
         onView(withId(R.id.drawer_layout))
@@ -162,6 +162,7 @@ public class AcceptingInvitationsTest {
         onView(withId(R.id.lvList))
                 .check(matches(hasDescendant(withText("TestGroup"))));
 
+        Thread.sleep(2000);
 
 
     }

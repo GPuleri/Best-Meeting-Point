@@ -69,7 +69,7 @@ public class RegistrationTest {
 
         onView(withId(R.id.etPassword)).perform(typeText("psw"));
         Espresso.closeSoftKeyboard();
-        onView(withId(R.id.etReEnter)).perform(typeText("psw"));
+        onView(withId(R.id.etConfirmPassword)).perform(typeText("psw"));
         Espresso.closeSoftKeyboard();
         onView(withId(R.id.btnRegister)).perform(click());
         Thread.sleep(2000);

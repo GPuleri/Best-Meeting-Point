@@ -106,13 +106,18 @@ public class CreateGroup extends Fragment {
                                                                         Backendless.Data.of(Place.class).addRelation(response.get(0), "group_place", list, new AsyncCallback<Integer>() {
                                                                             @Override
                                                                             public void handleResponse(Integer response) {
+                                                                                requireActivity().getSupportFragmentManager().popBackStack();
+                                                                                /*
                                                                                 GroupList dest = new GroupList();
                                                                                 FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
                                                                                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                                                                                 fragmentTransaction.replace(getId(), dest);
                                                                                 fragmentTransaction.addToBackStack(null);
                                                                                 fragmentTransaction.commit();
-                                                                                view.setVisibility(View.GONE);                                                                            }
+                                                                                view.setVisibility(View.GONE);
+
+                                                                                 */
+                                                                            }
 
                                                                             @Override
                                                                             public void handleFault(BackendlessFault fault) {

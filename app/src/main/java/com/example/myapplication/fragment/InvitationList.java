@@ -35,7 +35,7 @@ public class InvitationList extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_invitation_list, container, false);
 
-        lvList = view.findViewById(R.id.lvList);
+        lvList = view.findViewById(R.id.lvListInvitation);
 
         // I prepare the query and set the name of the relationship (foreign key)
         LoadRelationsQueryBuilder<Group> loadRelationsQueryBuilder;
