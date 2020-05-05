@@ -1,6 +1,7 @@
 package com.example.myapplication.fragment;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -14,7 +15,9 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -40,7 +43,8 @@ import static android.app.Activity.RESULT_OK;
 
 public class GroupInfo extends Fragment {
 
-    private TextView tvName, tvParticipants, tvType;
+    private TextView tvName;
+    private TextView tvParticipants;
     private ParticipantAdapter adapter;
     private ListView lvParticipants;
     private EditText etName;
@@ -49,6 +53,7 @@ public class GroupInfo extends Fragment {
     /**
      * it creates a view where there are the group details, it also contains the list of the participants
      */
+    @RequiresApi(api = Build.VERSION_CODES.M)
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
@@ -67,7 +72,7 @@ public class GroupInfo extends Fragment {
         btnSubmit = view.findViewById(R.id.btnSubmit);
         ivEdit = view.findViewById(R.id.ivEdit);
         tvParticipants = view.findViewById(R.id.tvParticipants);
-        tvType = view.findViewById(R.id.tvType);
+        TextView tvType = view.findViewById(R.id.tvType);
 
 
         final int index = requireArguments().getInt("index");
@@ -76,6 +81,7 @@ public class GroupInfo extends Fragment {
         tvName.setText(TestApplication.groups.get(index).getName());
         tvType.setText(TestApplication.kinds[java.util.Arrays.binarySearch(TestApplication.kind_codes,
                 TestApplication.groups.get(index).getType())]);
+        TestApplication.group = TestApplication.groups.get(index);
         if (TestApplication.user.getObjectId().equals(TestApplication.groups.get(index).getOwnerId())) {
             llOptions.setVisibility(View.VISIBLE);
         }
@@ -196,6 +202,7 @@ public class GroupInfo extends Fragment {
                         fragmentTransaction.replace(getId(), dest);
                         fragmentTransaction.addToBackStack(null);
                         fragmentTransaction.commit();
+                        view.setVisibility(View.GONE);
                     }
 
                     @Override
@@ -219,6 +226,7 @@ public class GroupInfo extends Fragment {
                 etName.setVisibility(View.VISIBLE);
 
                 btnSubmit.setOnClickListener(v1 -> {
+                    TestApplication.hideSoftKeyboard(requireActivity());
                     if (etName.getText().toString().isEmpty()) {
                         Toast.makeText(getContext(), "Insert all the details requested!", Toast.LENGTH_SHORT).show();
                     } else {
@@ -244,6 +252,7 @@ public class GroupInfo extends Fragment {
                 });
             }
             else {
+                TestApplication.hideSoftKeyboard(requireActivity());
                 tvParticipants.setVisibility(View.VISIBLE);
                 lvParticipants.setVisibility(View.VISIBLE);
                 btnSubmit.setVisibility(View.GONE);
@@ -264,6 +273,22 @@ public class GroupInfo extends Fragment {
             fragmentTransaction.addToBackStack(null);
             fragmentTransaction.commit();
         });
+
+        // This callback will only be called when MyFragment is at least Started.
+        OnBackPressedCallback callback = new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                requireActivity().setResult(RESULT_OK);
+                GroupList dest = new GroupList();
+                FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                fragmentTransaction.replace(getId(), dest);
+                fragmentTransaction.addToBackStack(null);
+                fragmentTransaction.commit();
+                view.setVisibility(View.GONE);
+            }
+        };
+        requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), callback);
 
         return view;
     }

@@ -1,5 +1,7 @@
 package com.example.myapplication.activity;
 
+import android.annotation.SuppressLint;
+import android.os.Build;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -21,6 +23,13 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import android.view.Gravity;
+import com.example.myapplication.fragment.EditUser;
+import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+
 /**
  * Allows the user to see the menu on the left. It contains the user details and a list
  * of the fragments available
@@ -32,6 +41,8 @@ public class MainActivity extends AppCompatActivity {
     /**
      * It handles the creation of the activity initializating the needed objects
      */
+    @SuppressLint("RtlHardcoded")
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,7 +66,13 @@ public class MainActivity extends AppCompatActivity {
         email.setText(TestApplication.user.getProperty("email").toString());
 
         settings.setOnClickListener(v -> {
-
+            EditUser dest = new EditUser();
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            fragmentTransaction.replace(R.id.nav_host_fragment, dest);
+            fragmentTransaction.addToBackStack(null);
+            fragmentTransaction.commit();
+            drawer.closeDrawer(Gravity.LEFT);
         });
 
         logout.setOnClickListener(v -> {
@@ -74,6 +91,29 @@ public class MainActivity extends AppCompatActivity {
                     // something went wrong and logout failed, to get the error code call fault.getCode()
                 }
             });
+
+        });
+
+        drawer.addDrawerListener(new DrawerLayout.DrawerListener() {
+            @Override
+            public void onDrawerSlide(@NonNull View drawerView, float slideOffset) {
+                TestApplication.hideSoftKeyboard(MainActivity.this);
+            }
+
+            @Override
+            public void onDrawerOpened(@NonNull View drawerView) {
+
+            }
+
+            @Override
+            public void onDrawerClosed(@NonNull View drawerView) {
+
+            }
+
+            @Override
+            public void onDrawerStateChanged(int newState) {
+
+            }
         });
 
         // Passing each menu ID as a set of Ids because each

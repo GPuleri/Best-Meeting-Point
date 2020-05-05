@@ -5,6 +5,7 @@
     android:layout_height="match_parent"
     android:background="@color/colorPrimaryLight"
     android:orientation="vertical"
+    android:id="@+id/createGroup"
     tools:context=".fragment.CreateGroup">
 
     <TextView
@@ -19,42 +20,28 @@
         android:textSize="30sp"
         android:textColor="@color/darkText" />
 
-    <LinearLayout
+    <EditText
+        android:id="@+id/etNameGroup"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:gravity="center">
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:ems="10"
+        android:hint="@string/hint_group_name"
+        android:autofillHints="@string/hint_group_name"
+        android:inputType="text"
+        android:textSize="20sp" />
 
-        <EditText
-            android:id="@+id/etNameGroup"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="20dp"
-            android:ems="15"
-            android:gravity="center"
-            android:inputType="text"
-            android:hint="@string/hint_group_name"
-            android:autofillHints="@string/hint_group_name"
-            android:textSize="20sp"/>
-
-    </LinearLayout>
-
-    <LinearLayout
+    <Spinner
+        android:id="@+id/spnGroupType"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:gravity="center">
-
-        <Spinner
-            android:id="@+id/spnGroupType"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="20dp"
-            android:ems="15"
-            android:gravity="center"
-            android:spinnerMode="dropdown"
-            android:textSize="20sp" />
-    </LinearLayout>
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        android:ems="15"
+        android:gravity="center"
+        android:spinnerMode="dropdown"
+        android:textSize="20sp" />
 
     <Button
         android:id="@+id/btnNewGroup"
@@ -63,7 +50,7 @@
         android:text="@string/create"
         android:textColor="@color/white"
         android:background="@drawable/buttons2"
-        android:layout_margin="20dp"
+        android:layout_margin="10dp"
         android:layout_gravity="center"
         android:textSize="20sp" />
 

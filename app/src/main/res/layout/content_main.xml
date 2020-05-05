@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     android:background="@color/colorPrimaryLight"
     android:paddingTop="?attr/actionBarSize"
+    android:id="@+id/groupList"
     tools:showIn="@layout/app_bar_main">
 
     <fragment

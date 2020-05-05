@@ -23,8 +23,8 @@ import java.util.List;
 
 public class InvitationList extends Fragment {
 
-    ListView lvList;
-    InvitationAdapter adapter;
+    private ListView lvList;
+    private InvitationAdapter adapter;
 
     /**
      * this method is performed when the InvitationList activity is created and allows you to load
@@ -55,7 +55,7 @@ public class InvitationList extends Fragment {
 
                         TestApplication.invitation_group=group;
                         //I set the adapter to use in the ListView
-                        adapter = new InvitationAdapter(getActivity(), group);
+                        adapter = new InvitationAdapter(getContext(), group);
                         lvList.setAdapter(adapter);
 
                     }

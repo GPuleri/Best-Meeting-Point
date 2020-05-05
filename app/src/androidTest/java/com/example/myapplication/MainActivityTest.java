@@ -14,8 +14,8 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.LargeTest;
 import androidx.test.rule.ActivityTestRule;
 
-import com.backendless.BackendlessUser;
 import com.example.myapplication.activity.MainActivity;
+import com.example.myapplication.utility.DataLoaderHelperTest;
 import com.example.myapplication.utility.TestApplication;
 
 import static androidx.test.espresso.Espresso.onView;
@@ -29,23 +29,21 @@ import static androidx.test.espresso.matcher.ViewMatchers.withText;
 @LargeTest
 public class MainActivityTest {
 
+    private DataLoaderHelperTest test = new DataLoaderHelperTest();
+
     @Rule
     public ActivityTestRule<MainActivity> activityRule
             = new ActivityTestRule<>(MainActivity.class, true, false);
 
     @Before
-    public void setUp() {
-        TestApplication.user = new BackendlessUser();
-        TestApplication.user.setProperty("objectId", "ID");
-        TestApplication.user.setProperty("username", "mariorossi");
-        TestApplication.user.setProperty("name", "Mario");
-        TestApplication.user.setProperty("surname", "Rossi");
-        TestApplication.user.setProperty("email", "mariorossi@gmail.com");
+    public void setUp() throws InterruptedException {
+        test.loadUserData("test@test.it", "test");
+        Thread.sleep(5000);
         activityRule.launchActivity(null);
     }
 
     @Test
-    public void testNavigateInvitations() {
+    public void testNavigateInvitations() throws InterruptedException {
         // Open Drawer to click on navigation.
         onView(withId(R.id.drawer_layout))
                 .check(matches(isClosed(Gravity.LEFT))) // Left Drawer should be closed.
@@ -53,10 +51,11 @@ public class MainActivityTest {
 
         onView(withId(R.id.nav_view))
                 .perform(NavigationViewActions.navigateTo(R.id.nav_invitations));
+        Thread.sleep(2000);
     }
 
     @Test
-    public void testNavigateInvitationsAndGroup() {
+    public void testNavigateInvitationsAndGroup() throws InterruptedException {
 
         // Open Drawer to click on navigation.
         onView(withId(R.id.drawer_layout))
@@ -73,11 +72,11 @@ public class MainActivityTest {
 
         onView(withId(R.id.nav_view))
                 .perform(NavigationViewActions.navigateTo(R.id.nav_groups));
-
+        Thread.sleep(2000);
     }
 
     @Test
-    public void testUserDetails() {
+    public void testUserDetails() throws InterruptedException {
         onView(withId(R.id.tvUsername))
                 .check(matches(withText(TestApplication.user.getProperty("username").toString())));
         onView(withId(R.id.tvName))
@@ -86,26 +85,29 @@ public class MainActivityTest {
                 .check(matches(withText(TestApplication.user.getProperty("surname").toString())));
         onView(withId(R.id.tvEmail))
                 .check(matches(withText(TestApplication.user.getProperty("email").toString())));
+        Thread.sleep(2000);
     }
 
     @Test
-    public void clickSettings () {
+    public void testClickSettings() throws InterruptedException {
         // Open Drawer to click on navigation.
         onView(withId(R.id.drawer_layout))
                 .check(matches(isClosed(Gravity.LEFT))) // Left Drawer should be closed.
                 .perform(DrawerActions.open()); // Open Drawer
         onView(withId(R.id.ivSettings))
                 .perform(ViewActions.click());
+        Thread.sleep(2000);
     }
 
     @Test
-    public void clickLogOut () {
+    public void testClickLogOut() throws InterruptedException {
         // Open Drawer to click on navigation.
         onView(withId(R.id.drawer_layout))
                 .check(matches(isClosed(Gravity.LEFT))) // Left Drawer should be closed.
                 .perform(DrawerActions.open()); // Open Drawer
         onView(withId(R.id.ivLogout))
                 .perform(click());
+        Thread.sleep(2000);
     }
 
 }

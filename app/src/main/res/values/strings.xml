@@ -1,7 +1,6 @@
 <resources>
     <string name="app_name">BMP</string>
     <string name="groups">Groups</string>
-    <string name="name">Name</string>
     <string name="submit">Submit</string>
     <string name="invitations">Invitations</string>
     <string name="newGroup">Create Group</string>
@@ -23,6 +22,15 @@
     <string name="login">Login</string>
     <string name="forgot_password">Forgot Password? Reset here.</string>
     <string name="register">Register</string>
+    <string name="name">name</string>
+    <string name="surname">surname</string>
+    <string name="email">email</string>
+    <string name="username">username</string>
+    <string name="address">address</string>
+    <string name="password">password</string>
+    <string name="confirm_password">confirm password</string>
+    <string name="edit">edit</string>
+    <string name="newpassword">new password</string>
 
     <string-array name="layers_array">
         <item>@string/normal</item>

@@ -6,9 +6,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -31,12 +29,10 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 public class GroupList extends Fragment {
 
     private ListView lvList;
-    private FloatingActionButton fab;
     private GroupAdapter adapter;
 
     /**
@@ -49,7 +45,7 @@ public class GroupList extends Fragment {
         View view = inflater.inflate(R.layout.fragment_group_list, container, false);
 
         lvList = view.findViewById(R.id.lvList);
-        fab = view.findViewById(R.id.fab);
+        FloatingActionButton fab = view.findViewById(R.id.fab);
 
         lvList.setOnItemClickListener((parent, view1, position, id) -> {
             Bundle bundle = new Bundle();
@@ -58,11 +54,14 @@ public class GroupList extends Fragment {
             GroupInfo dest = new GroupInfo();
             dest.setArguments(bundle);
 
+
             FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
             fragmentTransaction.replace(getId(), dest);
             fragmentTransaction.addToBackStack(null);
             fragmentTransaction.commit();
+            view.setVisibility(View.GONE);
+
         });
 
         fab.setOnClickListener(view12 -> {
@@ -72,6 +71,8 @@ public class GroupList extends Fragment {
             fragmentTransaction.replace(getId(), dest);
             fragmentTransaction.addToBackStack(null);
             fragmentTransaction.commit();
+            view.setVisibility(View.GONE);
+
         });
 
         LoadRelationsQueryBuilder<Group_Place_User> loadRelationsQueryBuilder;
@@ -114,7 +115,7 @@ public class GroupList extends Fragment {
                                 }
                             });
                         } else {
-                            TestApplication.groups = new ArrayList<Group>();
+                            TestApplication.groups = new ArrayList<>();
                             adapter = new GroupAdapter(getContext(), TestApplication.groups);
                             lvList.setAdapter(adapter);
                         }
@@ -138,5 +139,10 @@ public class GroupList extends Fragment {
         if (requestCode == 1) {
             adapter.notifyDataSetChanged();
         }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
     }
 }

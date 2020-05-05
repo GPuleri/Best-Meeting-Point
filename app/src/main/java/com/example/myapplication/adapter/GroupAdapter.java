@@ -36,7 +36,7 @@ public class GroupAdapter extends ArrayAdapter<Group>
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
 
-        LayoutInflater inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         convertView = inflater.inflate(R.layout.row_groups, parent, false);
 //        TextView tvChar = convertView.findViewById(R.id.tvChar);
         TextView tvName = convertView.findViewById(R.id.tvName);
