@@ -22,6 +22,7 @@ import com.example.myapplication.utility.EspressoIdlingResource;
 import com.example.myapplication.utility.TestApplication;
 
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -38,6 +39,7 @@ import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.contrib.DrawerMatchers.isClosed;
 import static androidx.test.espresso.matcher.ViewMatchers.hasDescendant;
 import static androidx.test.espresso.matcher.ViewMatchers.isAssignableFrom;
+import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.allOf;
@@ -79,21 +81,16 @@ public class AcceptingInvitationsTest {
         Espresso.closeSoftKeyboard();
         onView(withId(R.id.btnNewGroup)).perform(click());
 
-        Thread.sleep(5000);
-        onView(withId(R.id.drawer_layout))
-                .check(matches(isClosed(Gravity.LEFT))) // Left Drawer should be closed.
-                .perform(DrawerActions.open());
+        Thread.sleep(7000);
 
-        // Start the screen of your activity.
-        onView(withId(R.id.nav_view))
-                .perform(NavigationViewActions.navigateTo(R.id.nav_groups));
-        Thread.sleep(3000);
+        // check that the group has been created
+        Assert.assertEquals(TestApplication.groups.get(0).getName(), "TestGroup");
 
         onData(allOf())
                 .inAdapterView(withId(R.id.lvList))
                 .atPosition(0)
+                .check(matches(isDisplayed()))
                 .perform(click());
-
 
         Thread.sleep(4000);
 
