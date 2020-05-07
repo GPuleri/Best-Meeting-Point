@@ -8,6 +8,7 @@ import androidx.test.espresso.Espresso;
 import androidx.test.espresso.IdlingRegistry;
 import androidx.test.espresso.contrib.DrawerActions;
 import androidx.test.espresso.contrib.NavigationViewActions;
+import androidx.test.espresso.matcher.ViewMatchers;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.rule.ActivityTestRule;
 
@@ -42,6 +43,7 @@ import static androidx.test.espresso.contrib.DrawerMatchers.isClosed;
 import static androidx.test.espresso.matcher.ViewMatchers.hasDescendant;
 import static androidx.test.espresso.matcher.ViewMatchers.isAssignableFrom;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static androidx.test.espresso.matcher.ViewMatchers.withEffectiveVisibility;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withSpinnerText;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
@@ -78,39 +80,27 @@ public class ForwardingInvitationTest {
 
         Thread.sleep(5000);
         activityRule.launchActivity(null);
-        Thread.sleep(5000);
+        //Thread.sleep(5000);
     }
 
     @Test
     public void ForwardingInvitation() throws InterruptedException {
-        //onView(withId(R.id.btnGroups)).perform(click());
+
         onView(withId(R.id.fab)).perform(click());
         onView(withId(R.id.etNameGroup)).perform(typeText("TestGroup"));
         Espresso.closeSoftKeyboard();
         onView(withId(R.id.btnNewGroup)).perform(click());
 
-        Thread.sleep(5000);
-        onView(withId(R.id.drawer_layout))
-                .check(matches(isClosed(Gravity.LEFT))) // Left Drawer should be closed.
-                .perform(DrawerActions.open());
-
-        // Start the screen of your activity.
-        onView(withId(R.id.nav_view))
-                .perform(NavigationViewActions.navigateTo(R.id.nav_groups));
-        Thread.sleep(3000);
+        Thread.sleep(7000);
 
         // check that the group has been created
         Assert.assertEquals(TestApplication.groups.get(0).getName(), "TestGroup");
 
-        onView(withId(R.id.lvList))
-                .check(matches(isDisplayed()));
-
-
         onData(allOf())
                 .inAdapterView(withId(R.id.lvList))
                 .atPosition(0)
+                .check(matches(isDisplayed()))
                 .perform(click());
-
 
         Thread.sleep(4000);
 
@@ -128,12 +118,12 @@ public class ForwardingInvitationTest {
 
         // check that the user you are looking for is in the list
         onData(anything())
-                .inAdapterView(withId(R.id.lv1))
+                .inAdapterView(withId(R.id.lvForwarding))
                 .atPosition(0)
                 .onChildView(withId(R.id.tvUsername))
                 .check(matches(withText(containsString("cimmo"))));
 
-        onView(withId(R.id.lv1))
+        onView(withId(R.id.lvForwarding))
                 .check(matches(hasDescendant(withText("cimmo"))));
 
 
@@ -143,7 +133,7 @@ public class ForwardingInvitationTest {
         Thread.sleep(3000);
 
         // check that the searched user has been deleted from the list
-        onView(withId(R.id.lv1))
+        onView(withId(R.id.lvForwarding))
                 .check(matches(not(hasDescendant(withText("cimmo")))));
 
         LoadRelationsQueryBuilder<Group> loadRelationsQueryBuilder;
@@ -166,13 +156,7 @@ public class ForwardingInvitationTest {
                 });
 
             Thread.sleep(3000);
-
-
-
     }
-
-
-
 
     @After
     public void deleteGroups() throws InterruptedException {

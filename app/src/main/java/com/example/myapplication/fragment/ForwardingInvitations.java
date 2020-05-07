@@ -1,7 +1,10 @@
 package com.example.myapplication.fragment;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -27,13 +30,12 @@ import java.util.List;
 
 public class ForwardingInvitations extends Fragment {
 
-    SearchView searchView;
-    ListView listView;
-    ForwardingInvitationAdapter adapter;
+    private ListView listView;
+    private ForwardingInvitationAdapter adapter;
 
     /**
      * This method is performed when the ForwardingInvitations activity is created and allows you to load
-     * the list of users from the databse with the possibility to invite them.
+     * the list of users from the database with the possibility to invite them.
      * The users returned are those not belonging to the group or not yet invited. it is possible to filter them
      */
     @Override
@@ -41,15 +43,15 @@ public class ForwardingInvitations extends Fragment {
                              ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_forwarding_invitations, container, false);
 
-        searchView = (SearchView) view.findViewById(R.id.searchView);
-        listView = (ListView) view.findViewById(R.id.lv1);
+        SearchView searchView = view.findViewById(R.id.searchView);
+        listView = view.findViewById(R.id.lvForwarding);
 
-        String where= "";
+        String where = "";
         DataQueryBuilder queryBuilder = DataQueryBuilder.create();
 
-        for (int i=0; i< TestApplication.users_active.size(); i++){
+        for (int i = 0; i < TestApplication.users_active.size(); i++){
             where += "objectId != '" + TestApplication.users_active.get(i).getObjectId()+"'";
-            if (i < TestApplication.users_active.size() -1)
+            if (i < TestApplication.users_active.size() - 1)
                 where += " and ";
         }
         queryBuilder.setWhereClause(where);
@@ -58,14 +60,13 @@ public class ForwardingInvitations extends Fragment {
         LoadRelationsQueryBuilder<Group> loadRelationsQueryBuilder;
         loadRelationsQueryBuilder = LoadRelationsQueryBuilder.of( Group.class );
         loadRelationsQueryBuilder.setRelationName( "myInvitation" );
-        List<BackendlessUser> listuser= new ArrayList<BackendlessUser>();
+        List<BackendlessUser> listuser= new ArrayList<>();
 
         // I search for users (excluding those already belonging to the group), after which I filter
         // them further excluding users who have already been invited
         Backendless.Persistence.of(BackendlessUser.class).find(queryBuilder, new AsyncCallback<List<BackendlessUser>>() {
             @Override
             public void handleResponse(List<BackendlessUser> response) {
-
 
                 for ( BackendlessUser us : response) {
                     Backendless.Data.of("Users").loadRelations(us.getObjectId(), loadRelationsQueryBuilder,
@@ -91,11 +92,8 @@ public class ForwardingInvitations extends Fragment {
                 }
 
                 //I set the adapter to use in the ListView
-                adapter= new ForwardingInvitationAdapter(getContext(), listuser);
+                adapter = new ForwardingInvitationAdapter(getContext(), listuser);
                 listView.setAdapter(adapter);
-
-
-
             }
 
             @Override
@@ -104,21 +102,45 @@ public class ForwardingInvitations extends Fragment {
             }
         });
 
-
-
         // When the query in the search bar changes, I filter the users contained in the listView
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
-            public boolean onQueryTextSubmit(String query) {
-                return false;
-            }
+            public boolean onQueryTextSubmit(String query) { return false; }
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                adapter.getFilter().filter(newText);
+                if (!newText.isEmpty())
+                    adapter.getFilter().filter(newText);
+                else
+                    adapter.getFilter().filter("######");
+
                 return false;
             }
         });
+
+        /*searchView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                adapter.getFilter().filter("######");
+                listView.setAdapter(adapter);
+            }
+        });*/
+
+        // This callback will only be called when MyFragment is at least Started.
+        OnBackPressedCallback callback = new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                view.setVisibility(View.GONE);
+
+                FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                fragmentTransaction.addToBackStack(null);
+                fragmentTransaction.commit();
+
+                requireActivity().getSupportFragmentManager().popBackStack();
+            }
+        };
+        requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), callback);
 
         return view;
     }

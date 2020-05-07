@@ -27,9 +27,9 @@
                 android:textStyle="bold" />
 
             <LinearLayout
-                android:layout_width="53dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="8"
+                android:layout_weight="2"
                 android:orientation="vertical">
 
                 <TextView
@@ -61,20 +61,20 @@
                     <Button
                         android:id="@+id/btnConfirm"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_height="40dp"
                         android:layout_weight="1"
                         android:layout_margin="5dp"
-                        android:background="@drawable/buttons2"
+                        android:background="@drawable/buttons_orange"
                         android:textColor="@color/white"
                         android:text="@string/confirm" />
 
                     <Button
                         android:id="@+id/btnDelete"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_height="40dp"
                         android:layout_weight="1"
                         android:layout_margin="5dp"
-                        android:background="@drawable/buttons2"
+                        android:background="@drawable/buttons_orange"
                         android:textColor="@color/white"
                         android:text="@string/delete" />
                 </LinearLayout>

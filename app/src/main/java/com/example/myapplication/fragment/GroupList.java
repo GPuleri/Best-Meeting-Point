@@ -47,32 +47,29 @@ public class GroupList extends Fragment {
         lvList = view.findViewById(R.id.lvList);
         FloatingActionButton fab = view.findViewById(R.id.fab);
 
+        FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
+        fragmentManager.addOnBackStackChangedListener(() -> {
+            view.setVisibility(View.VISIBLE);
+            adapter.notifyDataSetChanged();
+        });
+
         lvList.setOnItemClickListener((parent, view1, position, id) -> {
+            view.setVisibility(View.GONE);
             Bundle bundle = new Bundle();
             bundle.putInt("index", position);
-
             GroupInfo dest = new GroupInfo();
             dest.setArguments(bundle);
-
-
-            FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            fragmentTransaction.replace(getId(), dest);
-            fragmentTransaction.addToBackStack(null);
+            fragmentTransaction.replace(R.id.nav_host_fragment, dest);
             fragmentTransaction.commit();
-            view.setVisibility(View.GONE);
-
         });
 
         fab.setOnClickListener(view12 -> {
-            CreateGroup dest = new CreateGroup();
-            FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
-            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            fragmentTransaction.replace(getId(), dest);
-            fragmentTransaction.addToBackStack(null);
-            fragmentTransaction.commit();
             view.setVisibility(View.GONE);
-
+            CreateGroup dest = new CreateGroup();
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            fragmentTransaction.replace(R.id.nav_host_fragment, dest);
+            fragmentTransaction.commit();
         });
 
         LoadRelationsQueryBuilder<Group_Place_User> loadRelationsQueryBuilder;

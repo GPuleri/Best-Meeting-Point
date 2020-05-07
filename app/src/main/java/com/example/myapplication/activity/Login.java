@@ -80,9 +80,9 @@ public class Login extends AppCompatActivity {
                 String email = etMail.getText().toString().trim();
                 String password = etPassword.getText().toString().trim();
 
+                TestApplication.hideSoftKeyboard(Login.this);
                 showProgress(true);
                 tvLoad.setText("Busy logging you in...please wait...");
-                TestApplication.hideSoftKeyboard(Login.this);
 
                 Backendless.UserService.login(email, password, new AsyncCallback<BackendlessUser>() {
                     @Override

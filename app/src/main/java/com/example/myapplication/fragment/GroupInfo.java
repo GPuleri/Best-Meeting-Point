@@ -1,5 +1,6 @@
 package com.example.myapplication.fragment;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -38,6 +39,7 @@ import com.example.myapplication.data.Place;
 import com.example.myapplication.utility.TestApplication;
 
 import java.util.List;
+import java.util.Objects;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -49,10 +51,12 @@ public class GroupInfo extends Fragment {
     private ListView lvParticipants;
     private EditText etName;
     private Button btnSubmit;
+    private LinearLayout llEdit;
 
     /**
      * it creates a view where there are the group details, it also contains the list of the participants
      */
+    @SuppressLint("SetTextI18n")
     @RequiresApi(api = Build.VERSION_CODES.M)
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -73,7 +77,7 @@ public class GroupInfo extends Fragment {
         ivEdit = view.findViewById(R.id.ivEdit);
         tvParticipants = view.findViewById(R.id.tvParticipants);
         TextView tvType = view.findViewById(R.id.tvType);
-
+        llEdit = view.findViewById(R.id.llEdit);
 
         final int index = requireArguments().getInt("index");
         TestApplication.position_selected_group=index;
@@ -195,14 +199,15 @@ public class GroupInfo extends Fragment {
                     public void handleResponse(Long response) {
                         TestApplication.groups.remove(index);
                         Toast.makeText(getContext(), "Group deleted", Toast.LENGTH_SHORT).show();
-                        requireActivity().setResult(RESULT_OK);
-                        GroupList dest = new GroupList();
+
+                        view.setVisibility(View.GONE);
+
                         FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
                         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                        fragmentTransaction.replace(getId(), dest);
                         fragmentTransaction.addToBackStack(null);
                         fragmentTransaction.commit();
-                        view.setVisibility(View.GONE);
+
+                        requireActivity().getSupportFragmentManager().popBackStack();
                     }
 
                     @Override
@@ -216,14 +221,15 @@ public class GroupInfo extends Fragment {
             });
             dialog.show();
         });
+
         ivEdit.setOnClickListener(v -> {
-            if (etName.getVisibility() == View.GONE) {
+            if (llEdit.getVisibility() == View.GONE) {
 
                 etName.setText(TestApplication.groups.get(index).getName());
-                tvParticipants.setVisibility(View.GONE);
+                tvParticipants.setText(R.string.editname);
                 lvParticipants.setVisibility(View.GONE);
-                btnSubmit.setVisibility(View.VISIBLE);
-                etName.setVisibility(View.VISIBLE);
+                llEdit.setVisibility(View.VISIBLE);
+                //etName.setVisibility(View.VISIBLE);
 
                 btnSubmit.setOnClickListener(v1 -> {
                     TestApplication.hideSoftKeyboard(requireActivity());
@@ -237,9 +243,10 @@ public class GroupInfo extends Fragment {
                                 tvName.setText(TestApplication.groups.get(index).getName());
                                 Toast.makeText(getContext(), "Updated!", Toast.LENGTH_SHORT).show();
                                 lvParticipants.setVisibility(View.VISIBLE);
-                                tvParticipants.setVisibility(View.VISIBLE);
-                                btnSubmit.setVisibility(View.GONE);
-                                etName.setVisibility(View.GONE);
+                                tvParticipants.setText(R.string.participants);
+                                llEdit.setVisibility(View.GONE);
+                                //btnSubmit.setVisibility(View.GONE);
+                                //etName.setVisibility(View.GONE);
                             }
 
                             @Override
@@ -253,10 +260,11 @@ public class GroupInfo extends Fragment {
             }
             else {
                 TestApplication.hideSoftKeyboard(requireActivity());
-                tvParticipants.setVisibility(View.VISIBLE);
+                tvParticipants.setText(R.string.participants);
                 lvParticipants.setVisibility(View.VISIBLE);
-                btnSubmit.setVisibility(View.GONE);
-                etName.setVisibility(View.GONE);
+                //btnSubmit.setVisibility(View.GONE);
+                //etName.setVisibility(View.GONE);
+                llEdit.setVisibility(View.GONE);
             }
         });
 
@@ -266,26 +274,37 @@ public class GroupInfo extends Fragment {
         });
 
         ivInvite.setOnClickListener(v -> {
+            //view.setVisibility(View.GONE);
             ForwardingInvitations dest = new ForwardingInvitations();
             FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            fragmentTransaction.replace(getId(), dest);
-            fragmentTransaction.addToBackStack(null);
+            fragmentTransaction.replace(getId(), dest, "groupinfo");
+            //fragmentTransaction.addToBackStack("groupinfo");
             fragmentTransaction.commit();
         });
+
+        /*FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
+        fragmentManager.addOnBackStackChangedListener(() -> {
+            view.setVisibility(View.VISIBLE);
+            //adapter.notifyDataSetChanged();
+        });*/
 
         // This callback will only be called when MyFragment is at least Started.
         OnBackPressedCallback callback = new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
-                requireActivity().setResult(RESULT_OK);
-                GroupList dest = new GroupList();
-                FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
-                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                fragmentTransaction.replace(getId(), dest);
-                fragmentTransaction.addToBackStack(null);
-                fragmentTransaction.commit();
-                view.setVisibility(View.GONE);
+                if (llEdit.getVisibility() == View.VISIBLE)
+                    ivEdit.performClick();
+                else {
+                    view.setVisibility(View.GONE);
+
+                    FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
+                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                    fragmentTransaction.addToBackStack(null);
+                    fragmentTransaction.commit();
+
+                    requireActivity().getSupportFragmentManager().popBackStack();
+                }
             }
         };
         requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), callback);

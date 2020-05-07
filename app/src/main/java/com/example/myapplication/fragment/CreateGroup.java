@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -25,6 +26,7 @@ import com.backendless.async.callback.AsyncCallback;
 import com.backendless.exceptions.BackendlessFault;
 import com.backendless.persistence.DataQueryBuilder;
 import com.example.myapplication.R;
+import com.example.myapplication.adapter.GroupAdapter;
 import com.example.myapplication.data.Group;
 import com.example.myapplication.data.Group_Place_User;
 import com.example.myapplication.data.Place;
@@ -40,7 +42,6 @@ public class CreateGroup extends Fragment {
 
     private EditText etName;
     private Spinner dropdown;
-
 
     /**
      * It creates the Create group activity, inside that you can insert the name of the new group and save it
@@ -94,7 +95,6 @@ public class CreateGroup extends Fragment {
                                                             public void handleResponse(Integer response) {
                                                                 TestApplication.groups.add(TestApplication.group);
                                                                 Toast.makeText(getContext(), "Group created!", Toast.LENGTH_SHORT).show();
-                                                                //requireActivity().getSupportFragmentManager().popBackStack();
 
                                                                 String where= "ownerId='"+TestApplication.user.getObjectId()+"'";
                                                                 DataQueryBuilder queryBuilder = DataQueryBuilder.create();
@@ -106,17 +106,14 @@ public class CreateGroup extends Fragment {
                                                                         Backendless.Data.of(Place.class).addRelation(response.get(0), "group_place", list, new AsyncCallback<Integer>() {
                                                                             @Override
                                                                             public void handleResponse(Integer response) {
-                                                                                requireActivity().getSupportFragmentManager().popBackStack();
-                                                                                /*
-                                                                                GroupList dest = new GroupList();
-                                                                                FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
-                                                                                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                                                                                fragmentTransaction.replace(getId(), dest);
-                                                                                fragmentTransaction.addToBackStack(null);
-                                                                                fragmentTransaction.commit();
                                                                                 view.setVisibility(View.GONE);
 
-                                                                                 */
+                                                                                FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
+                                                                                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                                                                                fragmentTransaction.addToBackStack(null);
+                                                                                fragmentTransaction.commit();
+
+                                                                                requireActivity().getSupportFragmentManager().popBackStack();
                                                                             }
 
                                                                             @Override
@@ -170,14 +167,14 @@ public class CreateGroup extends Fragment {
         OnBackPressedCallback callback = new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
-                requireActivity().setResult(RESULT_OK);
-                GroupList dest = new GroupList();
+                view.setVisibility(View.GONE);
+
                 FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                fragmentTransaction.replace(getId(), dest);
                 fragmentTransaction.addToBackStack(null);
                 fragmentTransaction.commit();
-                view.setVisibility(View.GONE);
+
+                requireActivity().getSupportFragmentManager().popBackStack();
             }
         };
         requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), callback);

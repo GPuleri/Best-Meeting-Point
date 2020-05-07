@@ -31,6 +31,9 @@
     <string name="confirm_password">confirm password</string>
     <string name="edit">edit</string>
     <string name="newpassword">new password</string>
+    <string name="invite">Invite</string>
+    <string name="participants">Participants</string>
+    <string name="editname">Edit name</string>
 
     <string-array name="layers_array">
         <item>@string/normal</item>

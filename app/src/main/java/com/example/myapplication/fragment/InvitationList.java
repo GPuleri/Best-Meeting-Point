@@ -7,8 +7,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.backendless.Backendless;
 import com.backendless.async.callback.AsyncCallback;
@@ -18,6 +21,8 @@ import com.example.myapplication.R;
 import com.example.myapplication.adapter.InvitationAdapter;
 import com.example.myapplication.data.Group;
 import com.example.myapplication.utility.TestApplication;
+import com.google.android.material.internal.NavigationMenu;
+import com.google.android.material.navigation.NavigationView;
 
 import java.util.List;
 
@@ -66,6 +71,21 @@ public class InvitationList extends Fragment {
                         Log.e( "MYAPP", "server reported an error - " + fault.getMessage() );
                     }
                 } );
+
+        // This callback will only be called when MyFragment is at least Started.
+        OnBackPressedCallback callback = new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                view.setVisibility(View.GONE);
+
+                FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                fragmentTransaction.commit();
+
+                requireActivity().getSupportFragmentManager().popBackStack();
+            }
+        };
+        requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), callback);
 
         return view;
     }
