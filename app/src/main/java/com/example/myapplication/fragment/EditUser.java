@@ -174,7 +174,7 @@ public class EditUser extends Fragment {
                             .find(queryBuilder, new AsyncCallback<List<com.example.myapplication.data.Place>>() {
                                 @Override
                                 public void handleResponse(List<com.example.myapplication.data.Place> place) {
-                                    Log.i("update", "Loaded object. Address- " + place.get(0).getAddress());
+                                    Log.i("update", "Loaded object. Address- " + place.get(0).getFull_address());
 
                                     Backendless.Data.of(com.example.myapplication.data.Place.class)
                                             .save(p1, new AsyncCallback<com.example.myapplication.data.Place>() {

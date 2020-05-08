@@ -24,7 +24,14 @@ import android.widget.Toast;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 
+import com.backendless.Backendless;
 import com.backendless.BackendlessUser;
+import com.backendless.async.callback.AsyncCallback;
+import com.backendless.exceptions.BackendlessFault;
+import com.backendless.persistence.DataQueryBuilder;
+import com.backendless.persistence.LoadRelationsQueryBuilder;
+import com.example.myapplication.data.Group;
+import com.example.myapplication.data.Group_Place_User;
 import com.example.myapplication.parser.DirectionsJSONParser;
 import com.example.myapplication.utility.GooglePlacesReadTask;
 import com.example.myapplication.R;
@@ -158,11 +165,59 @@ public class MapsActivity extends FragmentActivity implements OnMyLocationButton
          * Calculate best meeting point
          */
         btnBestPoint = findViewById(R.id.btnBestpoint);
-        btnBestPoint.setClickable(true);
+        btnBestPoint.setEnabled(false);
+
+
+        //Only if every user already accepted the invitation
+        StringBuilder whereClause = new StringBuilder();
+        whereClause.append("myInvitation.objectId='").append(TestApplication.group.getObjectId()).append("'");
+        DataQueryBuilder queryBuilder = DataQueryBuilder.create();
+        queryBuilder.setWhereClause(whereClause.toString());
+        Backendless.Data.of(BackendlessUser.class).find(queryBuilder, new AsyncCallback<List<BackendlessUser>>() {
+            @Override
+            public void handleResponse(List<BackendlessUser> response) {
+                if (response.isEmpty()) {
+                    LoadRelationsQueryBuilder<Place> loadRelationsQueryBuilder;
+                    loadRelationsQueryBuilder = LoadRelationsQueryBuilder.of(Place.class);
+                    loadRelationsQueryBuilder.setRelationName("places");
+                    Backendless.Data.of(Group.class).loadRelations(TestApplication.group.getObjectId(),
+                            loadRelationsQueryBuilder,
+                            new AsyncCallback<List<Place>>() {
+                                @Override
+                                public void handleResponse(List<Place> response) {
+                                    if(response.isEmpty())
+                                        btnBestPoint.setEnabled(true);
+                                    Log.i("place_count", "Invitations number:" + response.size());
+
+                                }
+
+                                @Override
+                                public void handleFault(BackendlessFault fault) {
+                                    Log.e("error_places", fault.getMessage());
+                                }
+                            });
+
+
+                } else {
+                    Toast.makeText(MapsActivity.this, "There are still invitations unresolved", Toast.LENGTH_LONG).show();
+                }
+                Log.i("inv_count", "Invitations number:" + response.size());
+            }
+
+            @Override
+            public void handleFault(BackendlessFault fault) {
+                Log.e("Error_invitation", fault.getMessage());
+            }
+        });
+
+
         btnBestPoint.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                calculateBestMeetingPoint();
-                btnBestPoint.setClickable(false);
+                if(btnBestPoint.isEnabled()){
+                    calculateBestMeetingPoint();
+                    btnBestPoint.setEnabled(false);
+                } else
+                    Toast.makeText(MapsActivity.this, "Disabled", Toast.LENGTH_LONG).show();
             }
         });
 
@@ -371,7 +426,7 @@ public class MapsActivity extends FragmentActivity implements OnMyLocationButton
             trips.clear();
             drawDirections(departureMarkers, marker);
         } else if (marker.getAlpha() == 0.4f || marker.getAlpha() == 0.99f) { // if is user departure
-            if (!btnBestPoint.isClickable()) {
+            if (!btnBestPoint.isEnabled()) {
                 changePolyline(markersPolylines.get(marker));
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
                     setTextView(Objects.requireNonNull(markersTrips.get(marker)));

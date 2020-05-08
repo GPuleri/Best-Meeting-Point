@@ -13,12 +13,29 @@ import java.util.Date;
 public class Group_Place_User
 {
   private Date updated;
-  private String objectId;
   private String ownerId;
+  private Boolean voted;
+  private String objectId;
+  private Boolean participating;
   private Date created;
   public Date getUpdated()
   {
     return updated;
+  }
+
+  public String getOwnerId()
+  {
+    return ownerId;
+  }
+
+  public Boolean getVoted()
+  {
+    return voted;
+  }
+
+  public void setVoted( Boolean voted )
+  {
+    this.voted = voted;
   }
 
   public String getObjectId()
@@ -26,9 +43,14 @@ public class Group_Place_User
     return objectId;
   }
 
-  public String getOwnerId()
+  public Boolean getParticipating()
   {
-    return ownerId;
+    return participating;
+  }
+
+  public void setParticipating( Boolean participating )
+  {
+    this.participating = participating;
   }
 
   public Date getCreated()
