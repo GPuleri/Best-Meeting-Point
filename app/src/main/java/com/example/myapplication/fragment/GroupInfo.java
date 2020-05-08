@@ -30,6 +30,7 @@ import com.backendless.exceptions.BackendlessFault;
 import com.backendless.persistence.DataQueryBuilder;
 import com.backendless.persistence.LoadRelationsQueryBuilder;
 import com.example.myapplication.R;
+import com.example.myapplication.activity.ChatRoomActivity;
 import com.example.myapplication.activity.MapsActivity;
 import com.example.myapplication.adapter.ParticipantAdapter;
 import com.example.myapplication.data.Group;
@@ -59,7 +60,7 @@ public class GroupInfo extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_group_info, container, false);
 
-        ImageView ivInvite, ivNavigate, ivDelete, ivEdit;
+        ImageView ivInvite, ivNavigate, ivDelete, ivEdit, ivChat;
         LinearLayout llOptions;
 
         tvName = view.findViewById(R.id.tvName);
@@ -73,6 +74,7 @@ public class GroupInfo extends Fragment {
         ivEdit = view.findViewById(R.id.ivEdit);
         tvParticipants = view.findViewById(R.id.tvParticipants);
         TextView tvType = view.findViewById(R.id.tvType);
+        ivChat= view.findViewById(R.id.ivChat);
 
 
         final int index = requireArguments().getInt("index");
@@ -272,6 +274,12 @@ public class GroupInfo extends Fragment {
             fragmentTransaction.replace(getId(), dest);
             fragmentTransaction.addToBackStack(null);
             fragmentTransaction.commit();
+        });
+
+        ivChat.setOnClickListener(v -> {
+            Intent intent = new Intent(getContext(), ChatRoomActivity.class);
+            intent.putExtra("name", TestApplication.user.getProperty("username").toString());
+            startActivityForResult(intent, 1);
         });
 
         // This callback will only be called when MyFragment is at least Started.
