@@ -29,7 +29,7 @@ public class LoginTest {
     public ActivityTestRule<Login> activityRule = new ActivityTestRule<>(Login.class);
 
     @Test
-    public void tesLogin() throws InterruptedException {
+    public void testLogin() throws InterruptedException {
         onView(withId(R.id.etMail)).perform(typeText("test@test.it"));
         Espresso.closeSoftKeyboard();
         onView(withId(R.id.etPassword)).perform(typeText("test"));

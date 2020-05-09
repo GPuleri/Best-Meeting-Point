@@ -46,15 +46,19 @@ public class ForwardingInvitations extends Fragment {
         SearchView searchView = view.findViewById(R.id.searchView);
         listView = view.findViewById(R.id.lvForwarding);
 
-        String where = "";
+        final int index = requireArguments().getInt("index");
+
+        StringBuilder where = new StringBuilder();
         DataQueryBuilder queryBuilder = DataQueryBuilder.create();
 
         for (int i = 0; i < TestApplication.users_active.size(); i++){
-            where += "objectId != '" + TestApplication.users_active.get(i).getObjectId()+"'";
+            where.append("objectId != '")
+                    .append(TestApplication.users_active.get(i).getObjectId())
+                    .append("'");
             if (i < TestApplication.users_active.size() - 1)
-                where += " and ";
+                where.append(" and ");
         }
-        queryBuilder.setWhereClause(where);
+        queryBuilder.setWhereClause(where.toString());
 
         // I prepare the query and set the name of the relationship (foreign key)
         LoadRelationsQueryBuilder<Group> loadRelationsQueryBuilder;
@@ -76,7 +80,7 @@ public class ForwardingInvitations extends Fragment {
 
                                     boolean flag = false;
                                     for (int i = 0; i < response.size(); i++) {
-                                        if (response.get(i).getName().equals(TestApplication.groups.get(TestApplication.position_selected_group).getName()))
+                                        if (response.get(i).getName().equals(TestApplication.groups.get(index).getName()))
                                             flag = true;
                                     }
                                     if (!flag)
@@ -92,7 +96,7 @@ public class ForwardingInvitations extends Fragment {
                 }
 
                 //I set the adapter to use in the ListView
-                adapter = new ForwardingInvitationAdapter(getContext(), listuser);
+                adapter = new ForwardingInvitationAdapter(getContext(), listuser, index);
                 listView.setAdapter(adapter);
             }
 
@@ -126,7 +130,7 @@ public class ForwardingInvitations extends Fragment {
             }
         });*/
 
-        // This callback will only be called when MyFragment is at least Started.
+
         OnBackPressedCallback callback = new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {

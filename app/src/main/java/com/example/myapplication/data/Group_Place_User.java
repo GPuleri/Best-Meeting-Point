@@ -16,6 +16,8 @@ public class Group_Place_User
   private String objectId;
   private String ownerId;
   private Date created;
+  private boolean participating = true;
+
   public Date getUpdated()
   {
     return updated;
@@ -36,7 +38,14 @@ public class Group_Place_User
     return created;
   }
 
-                                                    
+  public boolean isParticipating() {
+    return participating;
+  }
+
+  public void setParticipating(boolean participating) {
+    this.participating = participating;
+  }
+
   public Group_Place_User save()
   {
     return Backendless.Data.of( Group_Place_User.class ).save( this );

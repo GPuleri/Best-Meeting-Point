@@ -35,13 +35,10 @@ import com.example.myapplication.activity.MapsActivity;
 import com.example.myapplication.adapter.ParticipantAdapter;
 import com.example.myapplication.data.Group;
 import com.example.myapplication.data.Group_Place_User;
-import com.example.myapplication.data.Place;
 import com.example.myapplication.utility.TestApplication;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-
-import static android.app.Activity.RESULT_OK;
 
 public class GroupInfo extends Fragment {
 
@@ -64,13 +61,11 @@ public class GroupInfo extends Fragment {
         View view = inflater.inflate(R.layout.fragment_group_info, container, false);
 
         ImageView ivInvite, ivNavigate, ivDelete, ivEdit;
-        LinearLayout llOptions;
 
         tvName = view.findViewById(R.id.tvName);
         ivInvite = view.findViewById(R.id.ivInvite);
         ivNavigate = view.findViewById(R.id.ivNavigate);
         ivDelete = view.findViewById(R.id.ivDelete);
-        llOptions = view.findViewById(R.id.llOptions);
         lvParticipants = view.findViewById(R.id.lvParticipants);
         etName = view.findViewById(R.id.etName);
         btnSubmit = view.findViewById(R.id.btnSubmit);
@@ -80,70 +75,44 @@ public class GroupInfo extends Fragment {
         llEdit = view.findViewById(R.id.llEdit);
 
         final int index = requireArguments().getInt("index");
-        TestApplication.position_selected_group=index;
 
         tvName.setText(TestApplication.groups.get(index).getName());
         tvType.setText(TestApplication.kinds[java.util.Arrays.binarySearch(TestApplication.kind_codes,
                 TestApplication.groups.get(index).getType())]);
         TestApplication.group = TestApplication.groups.get(index);
-        if (TestApplication.user.getObjectId().equals(TestApplication.groups.get(index).getOwnerId())) {
-            llOptions.setVisibility(View.VISIBLE);
-        }
 
         LoadRelationsQueryBuilder<Group_Place_User> loadRelationsQueryBuilder;
         loadRelationsQueryBuilder = LoadRelationsQueryBuilder.of(Group_Place_User.class);
         loadRelationsQueryBuilder.setRelationName("group_group");
+        loadRelationsQueryBuilder.setSortBy("ownerId");
 
-        Backendless.Data.of(Group.class).loadRelations(TestApplication.groups.get(index).getObjectId(),
+        Backendless.Data.of(Group.class).loadRelations(TestApplication.group.getObjectId(),
                 loadRelationsQueryBuilder,
                 new AsyncCallback<List<Group_Place_User>>() {
                     @Override
                     public void handleResponse(List<Group_Place_User> response) {
-                        TestApplication.group_place_users = response;
+                        TestApplication.participating = new ArrayList<>();
                         StringBuilder whereClause = new StringBuilder();
-                        for (int i = 0; i < TestApplication.group_place_users.size(); i++) {
+                        for (int i = 0; i < response.size(); i++) {
                             whereClause.append("group_user");
-                            whereClause.append(".objectId='").append(TestApplication.group_place_users.get(i).getObjectId()).append("'");
-                            if (i != TestApplication.group_place_users.size() - 1) {
+                            whereClause.append(".objectId='").append(response.get(i).getObjectId()).append("'");
+                            if (i != response.size() - 1) {
                                 whereClause.append(" or ");
                             }
+                            TestApplication.participating.add(response.get(i).isParticipating());
                         }
+
                         DataQueryBuilder queryBuilder = DataQueryBuilder.create();
                         queryBuilder.setWhereClause(whereClause.toString());
-                        queryBuilder.setSortBy("objectId");
-                        Log.i("query", whereClause.toString());
+                        Log.i("query utenti", whereClause.toString());
                         Backendless.Data.of(BackendlessUser.class).find(queryBuilder, new AsyncCallback<List<BackendlessUser>>() {
                             @Override
                             public void handleResponse(List<BackendlessUser> response) {
                                 Log.i("empty", "" + response.isEmpty());
-                                TestApplication.users_active = response;
-                                adapter = new ParticipantAdapter(getContext(), response);
+                                TestApplication.users_active = new ArrayList<>();
+                                TestApplication.places_active = new ArrayList<>();
+                                adapter = new ParticipantAdapter(getContext(), response, TestApplication.participating);
                                 lvParticipants.setAdapter(adapter);
-                            }
-
-                            @Override
-                            public void handleFault(BackendlessFault fault) {
-                                Toast.makeText(getContext(), "Error: " + fault.getMessage(), Toast.LENGTH_SHORT).show();
-                            }
-                        });
-
-                        whereClause = new StringBuilder();
-                        for (int i = 0; i < TestApplication.group_place_users.size(); i++) {
-                            whereClause.append("group_place");
-                            whereClause.append(".objectId='").append(TestApplication.group_place_users.get(i).getObjectId()).append("'");
-                            if (i != TestApplication.group_place_users.size() - 1) {
-                                whereClause.append(" or ");
-                            }
-                        }
-                        queryBuilder = DataQueryBuilder.create();
-                        queryBuilder.setWhereClause(whereClause.toString());
-                        queryBuilder.setSortBy("ownerId");
-                        Log.i("query", whereClause.toString());
-                        Backendless.Data.of(Place.class).find(queryBuilder, new AsyncCallback<List<Place>>() {
-                            @Override
-                            public void handleResponse(List<Place> response) {
-                                Log.i("empty", "" + response.size());
-                                TestApplication.places_active = response;
                             }
 
                             @Override
@@ -229,7 +198,6 @@ public class GroupInfo extends Fragment {
                 tvParticipants.setText(R.string.editname);
                 lvParticipants.setVisibility(View.GONE);
                 llEdit.setVisibility(View.VISIBLE);
-                //etName.setVisibility(View.VISIBLE);
 
                 btnSubmit.setOnClickListener(v1 -> {
                     TestApplication.hideSoftKeyboard(requireActivity());
@@ -245,8 +213,6 @@ public class GroupInfo extends Fragment {
                                 lvParticipants.setVisibility(View.VISIBLE);
                                 tvParticipants.setText(R.string.participants);
                                 llEdit.setVisibility(View.GONE);
-                                //btnSubmit.setVisibility(View.GONE);
-                                //etName.setVisibility(View.GONE);
                             }
 
                             @Override
@@ -262,8 +228,6 @@ public class GroupInfo extends Fragment {
                 TestApplication.hideSoftKeyboard(requireActivity());
                 tvParticipants.setText(R.string.participants);
                 lvParticipants.setVisibility(View.VISIBLE);
-                //btnSubmit.setVisibility(View.GONE);
-                //etName.setVisibility(View.GONE);
                 llEdit.setVisibility(View.GONE);
             }
         });
@@ -274,22 +238,18 @@ public class GroupInfo extends Fragment {
         });
 
         ivInvite.setOnClickListener(v -> {
-            //view.setVisibility(View.GONE);
+            view.setVisibility(View.GONE);
+            Bundle bundle = new Bundle();
+            bundle.putInt("index", index);
             ForwardingInvitations dest = new ForwardingInvitations();
+            dest.setArguments(bundle);
             FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            fragmentTransaction.replace(getId(), dest, "groupinfo");
-            //fragmentTransaction.addToBackStack("groupinfo");
+            fragmentTransaction.replace(getId(), dest);
             fragmentTransaction.commit();
         });
 
-        /*FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
-        fragmentManager.addOnBackStackChangedListener(() -> {
-            view.setVisibility(View.VISIBLE);
-            //adapter.notifyDataSetChanged();
-        });*/
 
-        // This callback will only be called when MyFragment is at least Started.
         OnBackPressedCallback callback = new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {

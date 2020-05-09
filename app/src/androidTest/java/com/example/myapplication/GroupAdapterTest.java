@@ -9,6 +9,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.example.myapplication.adapter.GroupAdapter;
 import com.example.myapplication.data.Group;
+import com.example.myapplication.data.Group_Place_User;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -29,13 +30,14 @@ public class GroupAdapterTest {
     private GroupAdapter iAdapter;
 
     @Before
-    public void setUp() throws InterruptedException {
+    public void setUp() {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
 
         //  assertEquals("com.example.myapplication", appContext.getOpPackageName());
 
-        ArrayList<Group> data= new ArrayList<Group>();
+        ArrayList<Group> data= new ArrayList<>();
+        ArrayList<Group_Place_User> gpu= new ArrayList<>();
 
         g1=new Group();
         g2=new Group();
@@ -44,7 +46,7 @@ public class GroupAdapterTest {
 
         data.add(g1);
         data.add(g2);
-        iAdapter= new GroupAdapter(appContext,data);
+        iAdapter= new GroupAdapter(appContext,data,gpu);
 
     }
 

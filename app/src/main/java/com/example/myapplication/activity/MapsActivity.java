@@ -378,9 +378,6 @@ public class MapsActivity extends FragmentActivity implements OnMyLocationButton
                 }
             }
         }
-        if (marker.getAlpha() == 1f)
-            //Toast.makeText(getBaseContext(), "Work in progress (RECENSIONE)", Toast.LENGTH_SHORT).show();
-            ;
         marker.showInfoWindow();
         return true;
     }
@@ -419,7 +416,8 @@ public class MapsActivity extends FragmentActivity implements OnMyLocationButton
     }
 
     /**
-     * method that takes as input the string "strAddress" which represents a person's address and returns a LatLng object containing the latitude and longitude of that address
+     * method that takes as input the string "strAddress" which represents a person's address and
+     * returns a LatLng object containing the latitude and longitude of that address
      */
     public LatLng getLocationFromAddress(String strAddress) {
 

@@ -93,7 +93,6 @@ public class GroupList extends Fragment {
                                 }
                             }
 
-
                             DataQueryBuilder queryBuilder = DataQueryBuilder.create();
                             queryBuilder.setWhereClause(whereClause.toString());
                             Log.i("query_group_group", whereClause.toString());
@@ -102,7 +101,7 @@ public class GroupList extends Fragment {
                                 @Override
                                 public void handleResponse(List<Group> response) {
                                     TestApplication.groups = response;
-                                    adapter = new GroupAdapter(getContext(), response);
+                                    adapter = new GroupAdapter(getContext(), response, TestApplication.group_place_users);
                                     lvList.setAdapter(adapter);
                                 }
 
@@ -113,7 +112,7 @@ public class GroupList extends Fragment {
                             });
                         } else {
                             TestApplication.groups = new ArrayList<>();
-                            adapter = new GroupAdapter(getContext(), TestApplication.groups);
+                            adapter = new GroupAdapter(getContext(), TestApplication.groups, TestApplication.group_place_users);
                             lvList.setAdapter(adapter);
                         }
                     }
@@ -136,10 +135,5 @@ public class GroupList extends Fragment {
         if (requestCode == 1) {
             adapter.notifyDataSetChanged();
         }
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
     }
 }

@@ -72,7 +72,7 @@ public class InvitationList extends Fragment {
                     }
                 } );
 
-        // This callback will only be called when MyFragment is at least Started.
+
         OnBackPressedCallback callback = new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {

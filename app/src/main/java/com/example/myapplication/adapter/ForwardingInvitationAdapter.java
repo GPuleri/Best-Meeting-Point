@@ -1,5 +1,6 @@
 package com.example.myapplication.adapter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -31,6 +32,7 @@ public class ForwardingInvitationAdapter extends BaseAdapter implements Filterab
 private Context context;
 private List<BackendlessUser> users;
 private List<BackendlessUser> filterUsers;
+private int index;
 
     /**
      * Adapter constructor. In Android, Adapter is a bridge between UI component and data source that
@@ -39,10 +41,11 @@ private List<BackendlessUser> filterUsers;
      * that I have recovered
      *
      */
-    public ForwardingInvitationAdapter (Context context, List <BackendlessUser> list){
+    public ForwardingInvitationAdapter (Context context, List <BackendlessUser> list, int index){
         this.context=context;
         this.users=list;
         this.filterUsers=list;
+        this.index = index;
     }
 
     /**
@@ -72,6 +75,7 @@ private List<BackendlessUser> filterUsers;
     /**
      * Get a View that displays the data at the specified position in the data set.
      */
+    @SuppressLint("ViewHolder")
     @NonNull
     @Override
     public View getView(final int position, @Nullable View convertView, @NonNull ViewGroup parent) {
@@ -79,6 +83,7 @@ private List<BackendlessUser> filterUsers;
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
         //specify a root view
+        assert inflater != null;
         convertView = inflater.inflate(R.layout.row_layout_forwarding_invitation, parent, false);
 
         Button btnInvite=convertView.findViewById(R.id.btnInvite);
@@ -87,45 +92,42 @@ private List<BackendlessUser> filterUsers;
         // I write in the TextView the username of the i-th user
         tvUsername.setText(users.get(position).getProperty("username").toString());
 
-        /**
+        /*
          * when I click the button I will have to invite the selected user.
          * Then I add a relation data object in the database in the "myInvitation" column to indicate
          * that the selected user has an invitation in that group.
          */
-        btnInvite.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ArrayList l= new ArrayList<Group>();
-                l.add(TestApplication.groups.get(TestApplication.position_selected_group));
+        btnInvite.setOnClickListener(v -> {
+            ArrayList<Group> l= new ArrayList<>();
+            l.add(TestApplication.groups.get(index));
 
-                Backendless.Data.of(BackendlessUser.class).addRelation(users.get(position), "myInvitation", l,
-                        new AsyncCallback<Integer>() {
-                            @Override
-                            public void handleResponse(Integer response) {
-                                Log.i( "MYAPP", "sending invitation");
-                                Toast.makeText(v.getContext(),"invitation sent",Toast.LENGTH_LONG).show();
-                                Log.i("MYAPPSEARCH",  "  position: " + Integer.toString(position)+ "  username users:"+ users.get(position).getProperty("username").toString());
-                                Log.i("MYAPPSEARCH",  "  position: " + Integer.toString(position)+ "  username filters:"+ filterUsers.get(position).getProperty("username").toString());
+            Backendless.Data.of(BackendlessUser.class).addRelation(users.get(position), "myInvitation", l,
+                    new AsyncCallback<Integer>() {
+                        @Override
+                        public void handleResponse(Integer response) {
+                            Log.i( "MYAPP", "sending invitation");
+                            Toast.makeText(v.getContext(),"invitation sent",Toast.LENGTH_LONG).show();
+                            Log.i("MYAPPSEARCH",  "  position: " + position + "  username users:"+ users.get(position).getProperty("username").toString());
+                            Log.i("MYAPPSEARCH",  "  position: " + position + "  username filters:"+ filterUsers.get(position).getProperty("username").toString());
 
-                                for (int i=0; i<filterUsers.size(); i++) {
-                                if (filterUsers.get(i).getProperty("username").toString().equals(users.get(position).getProperty("username").toString())) {
-                                    filterUsers.remove(i);
-                                    if (filterUsers.size() != users.size())
-                                          users.remove(position);
-                                    Log.i("MYAPPSEARCH", "i: "+Integer.toString(i) + "  position: " + Integer.toString(position));
-                                    break;
-                                }
-                                }
-                                notifyDataSetChanged();
+                            for (int i=0; i<filterUsers.size(); i++) {
+                            if (filterUsers.get(i).getProperty("username").toString().equals(users.get(position).getProperty("username").toString())) {
+                                filterUsers.remove(i);
+                                if (filterUsers.size() != users.size())
+                                      users.remove(position);
+                                Log.i("MYAPPSEARCH", "i: "+ i + "  position: " + position);
+                                break;
                             }
-
-                            @Override
-                            public void handleFault(BackendlessFault fault) {
-                                Log.e( "MYAPP", "server reported an error - " + fault.getMessage() );
                             }
-                        });
+                            notifyDataSetChanged();
+                        }
 
-            }
+                        @Override
+                        public void handleFault(BackendlessFault fault) {
+                            Log.e( "MYAPP", "server reported an error - " + fault.getMessage() );
+                        }
+                    });
+
         });
 
         return convertView;
@@ -145,7 +147,7 @@ private List<BackendlessUser> filterUsers;
                 if (constraint != null && constraint.length() > 0)
                     {
                         // We perform filtering operation
-                        List<BackendlessUser> nUsList = new ArrayList<BackendlessUser>();
+                        List<BackendlessUser> nUsList = new ArrayList<>();
                         for (BackendlessUser us : filterUsers) {
                             if (us.getProperty("username").toString().toLowerCase().contains(constraint.toString().toLowerCase())) {
                                 nUsList.add(us);
