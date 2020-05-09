@@ -30,6 +30,7 @@ public class TestApplication extends Application {
     public static List<Group> invitation_group;
     public static List<BackendlessUser> users_active;
     public static List<Place> places_active;
+    public static List<Place> best_places;
     public static Group_Place_User link;
     public static Group group;
     public static final String[] kind_codes = {"bar", "cafe", "movie_theater", "night_club", "park", "restaurant"};

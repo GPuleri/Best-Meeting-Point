@@ -123,12 +123,15 @@ public class MapsActivity extends FragmentActivity implements OnMyLocationButton
     private TextView tvDuration; // A textview used to show the duration of a trip
     private Button btnBestPoint; // A button used to calculate the best point
     private Button btnVote; // A button used to vote among the best points
+    boolean first_click = false; //Flag to know if we need to save the relation
+
 
     /**
      * It handles the creation of the activity initializating the needed objects
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
@@ -139,6 +142,7 @@ public class MapsActivity extends FragmentActivity implements OnMyLocationButton
         polylines = new ArrayList<>();
         markersPolylines = new HashMap<>();
         markersTrips = new HashMap<>();
+        TestApplication.best_places = new ArrayList<>();
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -165,10 +169,10 @@ public class MapsActivity extends FragmentActivity implements OnMyLocationButton
          * Calculate best meeting point
          */
         btnBestPoint = findViewById(R.id.btnBestpoint);
-        btnBestPoint.setEnabled(false);
+//        btnBestPoint.setEnabled(false);
 
 
-        //Only if every user already accepted the invitation
+        // Only if every user already accepted the invitation load the best places
         StringBuilder whereClause = new StringBuilder();
         whereClause.append("myInvitation.objectId='").append(TestApplication.group.getObjectId()).append("'");
         DataQueryBuilder queryBuilder = DataQueryBuilder.create();
@@ -185,10 +189,16 @@ public class MapsActivity extends FragmentActivity implements OnMyLocationButton
                             new AsyncCallback<List<Place>>() {
                                 @Override
                                 public void handleResponse(List<Place> response) {
-                                    if(response.isEmpty())
+                                    TestApplication.best_places = response;
+                                    if (response.isEmpty()) {
                                         btnBestPoint.setEnabled(true);
+                                        btnVote.setEnabled(false);
+                                        first_click = true;
+                                    } else {
+                                        btnVote.setEnabled(true);
+                                        btnBestPoint.setEnabled(false);
+                                    }
                                     Log.i("place_count", "Invitations number:" + response.size());
-
                                 }
 
                                 @Override
@@ -213,9 +223,10 @@ public class MapsActivity extends FragmentActivity implements OnMyLocationButton
 
         btnBestPoint.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                if(btnBestPoint.isEnabled()){
+                if (btnBestPoint.isEnabled()) {
                     calculateBestMeetingPoint();
                     btnBestPoint.setEnabled(false);
+                    btnVote.setEnabled(true);
                 } else
                     Toast.makeText(MapsActivity.this, "Disabled", Toast.LENGTH_LONG).show();
             }
@@ -228,7 +239,22 @@ public class MapsActivity extends FragmentActivity implements OnMyLocationButton
         btnVote.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(getBaseContext(), "Work in progress", Toast.LENGTH_SHORT).show();
+                if(first_click){
+                    Backendless.Data.of(Group.class).addRelation(TestApplication.group, "places", TestApplication.best_places, new AsyncCallback<Integer>() {
+                        @Override
+                        public void handleResponse(Integer response) {
+                            first_click = false;
+                            Log.i("relation_group_places", "DONE");
+                        }
+
+                        @Override
+                        public void handleFault(BackendlessFault fault) {
+                            Log.i("relation_group_places", fault.getMessage());
+                        }
+                    });
+                }
+
+
             }
         });
     }
