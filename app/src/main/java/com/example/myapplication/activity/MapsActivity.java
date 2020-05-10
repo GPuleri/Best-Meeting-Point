@@ -123,8 +123,7 @@ public class MapsActivity extends FragmentActivity implements OnMyLocationButton
     private TextView tvDuration; // A textview used to show the duration of a trip
     private Button btnBestPoint; // A button used to calculate the best point
     private Button btnVote; // A button used to vote among the best points
-    boolean first_click = false; //Flag to know if we need to save the relation
-
+    private static boolean first_click = false; //Flag to know if we need to save the relation
 
     /**
      * It handles the creation of the activity initializating the needed objects
@@ -195,8 +194,12 @@ public class MapsActivity extends FragmentActivity implements OnMyLocationButton
                                         btnVote.setEnabled(false);
                                         first_click = true;
                                     } else {
+//                                        if(response.size() == 1) {
+//                                             Le votazioni sono finite
+//                                        }
                                         btnVote.setEnabled(true);
                                         btnBestPoint.setEnabled(false);
+                                        calculateBestMeetingPoint();
                                     }
                                     Log.i("place_count", "Invitations number:" + response.size());
                                 }
@@ -398,6 +401,31 @@ public class MapsActivity extends FragmentActivity implements OnMyLocationButton
         googlePlacesUrl.append("location=" + best.latitude + "," + best.longitude);
         googlePlacesUrl.append("&radius=" + 1000);
         googlePlacesUrl.append("&types=" + TestApplication.group.getType());
+        googlePlacesUrl.append("&key=" + getString(R.string.google_maps_key));
+
+        // eseguo la classe GooglePlacesReadTask per visualizzare i place sulla mappa
+        GooglePlacesReadTask googlePlacesReadTask = new GooglePlacesReadTask();
+        Object[] toPass = new Object[3];
+        toPass[0] = mMap;
+        toPass[1] = googlePlacesUrl.toString();
+        toPass[2] = bestMarkers;
+        googlePlacesReadTask.execute(toPass);
+    }
+
+    /**
+     * Search close points to best meeting point and create markers of them.
+     * the function makes a url request to look for "restaurant" type places
+     * close to the coordinated one within 3km.
+     * after which, through the GooglePlacesReadTask class, it displays the Places found on the map,
+     * displaying the name of the restaurant and the street.
+     */
+    private void searchBestPoints2(List<Place> list) throws IOException, JSONException {
+
+        // creo la custom string per la richiesta url dei places
+        StringBuilder googlePlacesUrl = new StringBuilder("https://maps.googleapis.com/maps/api/place/details/json?");
+        for(Place place: list){
+            googlePlacesUrl.append("&placeid=" + place.getId_google_place());
+        }
         googlePlacesUrl.append("&key=" + getString(R.string.google_maps_key));
 
         // eseguo la classe GooglePlacesReadTask per visualizzare i place sulla mappa
@@ -831,6 +859,10 @@ public class MapsActivity extends FragmentActivity implements OnMyLocationButton
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
 
+    }
+
+    public static boolean getFirst_click() {
+        return first_click;
     }
 
 }
