@@ -15,9 +15,11 @@ import com.backendless.Backendless;
 import com.backendless.BackendlessUser;
 import com.backendless.async.callback.AsyncCallback;
 import com.backendless.exceptions.BackendlessFault;
+import com.backendless.persistence.LoadRelationsQueryBuilder;
 import com.example.myapplication.activity.MainActivity;
 import com.example.myapplication.data.Group;
 import com.example.myapplication.data.Group_Place_User;
+import com.example.myapplication.utility.DataLoaderHelperTest;
 import com.example.myapplication.utility.EspressoIdlingResource;
 import com.example.myapplication.utility.TestApplication;
 
@@ -28,7 +30,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import static androidx.test.espresso.Espresso.onData;
 import static androidx.test.espresso.Espresso.onView;
@@ -43,11 +45,12 @@ import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.allOf;
-import static org.hamcrest.Matchers.is;
 import static org.hamcrest.core.IsNot.not;
 
 @RunWith(AndroidJUnit4.class)
 public class AcceptingInvitationsTest {
+
+    private DataLoaderHelperTest test = new DataLoaderHelperTest();
 
     @Rule
     public ActivityTestRule<MainActivity> activityRule =
@@ -55,19 +58,9 @@ public class AcceptingInvitationsTest {
 
     @Before
     public void sendInvitation () throws InterruptedException {
-        Backendless.UserService.login("test2@test2.it", "test2", new AsyncCallback<BackendlessUser>() {
-            @Override
-            public void handleResponse(BackendlessUser response) {
-                TestApplication.user = response;
-                TestApplication.groups = new ArrayList<>();
-                TestApplication.group_place_users = new ArrayList<>();
 
-            }
-
-            @Override
-            public void handleFault(BackendlessFault fault) {
-            }
-        });
+        Backendless.UserService.logout();
+        test.loadUserData("fabio@app.com", "fabio");
         Thread.sleep(5000);
         activityRule.launchActivity(null);
         Thread.sleep(5000);
@@ -84,7 +77,7 @@ public class AcceptingInvitationsTest {
         Thread.sleep(7000);
 
         // check that the group has been created
-        Assert.assertEquals(TestApplication.groups.get(0).getName(), "TestGroup");
+        Assert.assertEquals(TestApplication.group.getName(), "TestGroup");
 
         onData(allOf())
                 .inAdapterView(withId(R.id.lvList))
@@ -118,7 +111,6 @@ public class AcceptingInvitationsTest {
         Thread.sleep(2500);
 
         //verifico che ci sia l'invito
-
         onView(withId(R.id.etMail)).perform(typeText("test@test.it"));
         Espresso.closeSoftKeyboard();
         onView(withId(R.id.etPassword)).perform(typeText("test"));
@@ -166,38 +158,12 @@ public class AcceptingInvitationsTest {
 
     @After
     public void deleteGroups() throws InterruptedException {
-
-
         IdlingRegistry.getInstance().register(EspressoIdlingResource.getIdlingResource());
         EspressoIdlingResource.increment();
         EspressoIdlingResource.increment();
 
-        Backendless.Data.of(Group.class).remove(TestApplication.groups.get(0), new AsyncCallback<Long>() {
-            @Override
-            public void handleResponse(Long response) {
-                Log.i("Group", response.toString());
-                EspressoIdlingResource.decrement();
-            }
-
-            @Override
-            public void handleFault(BackendlessFault fault) {
-
-            }
-        });
-        Backendless.Data.of(Group_Place_User.class).remove(TestApplication.group_place_users.get(0), new AsyncCallback<Long>() {
-            @Override
-            public void handleResponse(Long response) {
-                Log.i("Group_place_user", response.toString());
-                EspressoIdlingResource.decrement();
-            }
-
-            @Override
-            public void handleFault(BackendlessFault fault) {
-
-            }
-        });
-
-        Thread.sleep(3000);
+        test.deleteGroups();
+        Thread.sleep(5000);
         IdlingRegistry.getInstance().unregister(EspressoIdlingResource.getIdlingResource());
     }
 

@@ -159,23 +159,17 @@ public class MapsActivity extends FragmentActivity implements OnMyLocationButton
          */
         btnBestPoint = findViewById(R.id.btnBestpoint);
         btnBestPoint.setClickable(true);
-        btnBestPoint.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                calculateBestMeetingPoint();
-                btnBestPoint.setClickable(false);
-            }
+        btnBestPoint.setOnClickListener(v -> {
+            calculateBestMeetingPoint();
+            btnBestPoint.setClickable(false);
         });
 
         /*
          * Open the Vote Activity
          */
         btnVote = findViewById(R.id.btnVote);
-        btnVote.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Toast.makeText(getBaseContext(), "Work in progress", Toast.LENGTH_SHORT).show();
-            }
-        });
+        btnVote.setOnClickListener(view ->
+                Toast.makeText(getBaseContext(), "Work in progress", Toast.LENGTH_SHORT).show());
     }
 
     /**

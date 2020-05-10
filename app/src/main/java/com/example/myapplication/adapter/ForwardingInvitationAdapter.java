@@ -32,7 +32,6 @@ public class ForwardingInvitationAdapter extends BaseAdapter implements Filterab
 private Context context;
 private List<BackendlessUser> users;
 private List<BackendlessUser> filterUsers;
-private int index;
 
     /**
      * Adapter constructor. In Android, Adapter is a bridge between UI component and data source that
@@ -41,11 +40,10 @@ private int index;
      * that I have recovered
      *
      */
-    public ForwardingInvitationAdapter (Context context, List <BackendlessUser> list, int index){
+    public ForwardingInvitationAdapter (Context context, List <BackendlessUser> list){
         this.context=context;
         this.users=list;
         this.filterUsers=list;
-        this.index = index;
     }
 
     /**
@@ -99,7 +97,7 @@ private int index;
          */
         btnInvite.setOnClickListener(v -> {
             ArrayList<Group> l= new ArrayList<>();
-            l.add(TestApplication.groups.get(index));
+            l.add(TestApplication.group);
 
             Backendless.Data.of(BackendlessUser.class).addRelation(users.get(position), "myInvitation", l,
                     new AsyncCallback<Integer>() {

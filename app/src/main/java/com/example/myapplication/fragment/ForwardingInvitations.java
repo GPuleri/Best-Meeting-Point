@@ -46,8 +46,6 @@ public class ForwardingInvitations extends Fragment {
         SearchView searchView = view.findViewById(R.id.searchView);
         listView = view.findViewById(R.id.lvForwarding);
 
-        final int index = requireArguments().getInt("index");
-
         StringBuilder where = new StringBuilder();
         DataQueryBuilder queryBuilder = DataQueryBuilder.create();
 
@@ -80,7 +78,7 @@ public class ForwardingInvitations extends Fragment {
 
                                     boolean flag = false;
                                     for (int i = 0; i < response.size(); i++) {
-                                        if (response.get(i).getName().equals(TestApplication.groups.get(index).getName()))
+                                        if (response.get(i).getName().equals(TestApplication.group.getName()))
                                             flag = true;
                                     }
                                     if (!flag)
@@ -96,7 +94,7 @@ public class ForwardingInvitations extends Fragment {
                 }
 
                 //I set the adapter to use in the ListView
-                adapter = new ForwardingInvitationAdapter(getContext(), listuser, index);
+                adapter = new ForwardingInvitationAdapter(getContext(), listuser);
                 listView.setAdapter(adapter);
             }
 
@@ -121,14 +119,6 @@ public class ForwardingInvitations extends Fragment {
                 return false;
             }
         });
-
-        /*searchView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                adapter.getFilter().filter("######");
-                listView.setAdapter(adapter);
-            }
-        });*/
 
 
         OnBackPressedCallback callback = new OnBackPressedCallback(true) {

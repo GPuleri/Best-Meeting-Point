@@ -24,16 +24,13 @@ public class TestApplication extends Application {
 
     public static BackendlessUser user; // logged user
     public static Place place; // place of the logged user
-    public static List<Group_Place_User> group_place_users; // gpu of the logged user
-    public static List<Group> groups; // groups of the logged user
+    public static List<Group_Place_User> group_place_user; // group_place_user of the logged user
     public static List<Group> invitation_group; // invitation of the logged user
     public static List<BackendlessUser> users_active; // users taken into account in bmp calculation in a specified group
     public static List<Place> places_active; // places taken into account in bmp calculation in a specified group
-    public static Group_Place_User link; // link between a gpu and a group
     public static Group group; // group selected
     public static final String[] kind_codes = {"bar", "cafe", "movie_theater", "night_club", "park", "restaurant"};
     public static final String[] kinds = {"Bar", "Cafe", "Movie Theater", "Night Club", "Park", "Restaurant"};
-    public static List<Boolean> participating; // used to select the users/places to take into account in bmp calculation
 
     /**
      * it creates the link with the database

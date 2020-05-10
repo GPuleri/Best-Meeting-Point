@@ -3,13 +3,14 @@ package com.example.myapplication.adapter;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
-
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -61,7 +62,7 @@ public class ParticipantAdapter extends ArrayAdapter<BackendlessUser> {
         TextView tvEmail = convertView.findViewById(R.id.tvEmail);
         TextView tvName = convertView.findViewById(R.id.tvName);
         TextView tvSurname = convertView.findViewById(R.id.tvSurname);
-        ImageView ivParticipant = convertView.findViewById(R.id.ivParticipant);
+        ImageView ivParticipant = convertView.findViewById(R.id.ivParticipantUser);
 
         tvUsername.setText(users.get(position).getProperty("username").toString());
         tvEmail.setText(users.get(position).getEmail());
@@ -76,6 +77,8 @@ public class ParticipantAdapter extends ArrayAdapter<BackendlessUser> {
         loadRelationsQueryBuilder = LoadRelationsQueryBuilder.of(Place.class);
         loadRelationsQueryBuilder.setRelationName("user_place");
 
+        Log.i("position", String.valueOf(position));
+
         if (participating.get(position)) {
             ivParticipant.setImageDrawable(participant);
             TestApplication.users_active.add(users.get(position));
@@ -89,7 +92,7 @@ public class ParticipantAdapter extends ArrayAdapter<BackendlessUser> {
 
                         @Override
                         public void handleFault(BackendlessFault fault) {
-
+                            Toast.makeText(getContext(), "Error: " + fault.getMessage(), Toast.LENGTH_SHORT).show();
                         }
                     }
             );

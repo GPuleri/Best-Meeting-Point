@@ -20,6 +20,7 @@ import com.backendless.persistence.LoadRelationsQueryBuilder;
 import com.example.myapplication.activity.MainActivity;
 import com.example.myapplication.data.Group;
 import com.example.myapplication.data.Group_Place_User;
+import com.example.myapplication.utility.DataLoaderHelperTest;
 import com.example.myapplication.utility.EspressoIdlingResource;
 import com.example.myapplication.utility.TestApplication;
 
@@ -58,6 +59,8 @@ import static org.hamcrest.core.IsNot.not;
 @RunWith(AndroidJUnit4.class)
 public class ForwardingInvitationTest {
 
+    private DataLoaderHelperTest test = new DataLoaderHelperTest();
+
     @Rule
     public ActivityTestRule<MainActivity> activityRule =
             new ActivityTestRule<>(MainActivity.class,true, false);
@@ -65,22 +68,9 @@ public class ForwardingInvitationTest {
 
     @Before
     public void loadData() throws InterruptedException {
-        Backendless.UserService.login("test@test.it", "test", new AsyncCallback<BackendlessUser>() {
-            @Override
-            public void handleResponse(BackendlessUser response) {
-                TestApplication.user = response;
-                TestApplication.groups = new ArrayList<>();
-                TestApplication.group_place_users = new ArrayList<>();
-            }
-
-            @Override
-            public void handleFault(BackendlessFault fault) {
-            }
-        });
-
+        test.loadUserData("test@test.it", "test");
         Thread.sleep(5000);
         activityRule.launchActivity(null);
-        //Thread.sleep(5000);
     }
 
     @Test
@@ -94,7 +84,7 @@ public class ForwardingInvitationTest {
         Thread.sleep(7000);
 
         // check that the group has been created
-        Assert.assertEquals(TestApplication.groups.get(0).getName(), "TestGroup");
+        Assert.assertEquals(TestApplication.group.getName(), "TestGroup");
 
         onData(allOf())
                 .inAdapterView(withId(R.id.lvList))
@@ -161,40 +151,10 @@ public class ForwardingInvitationTest {
     @After
     public void deleteGroups() throws InterruptedException {
 
-
         IdlingRegistry.getInstance().register(EspressoIdlingResource.getIdlingResource());
         EspressoIdlingResource.increment();
         EspressoIdlingResource.increment();
-
-        Backendless.Data.of(Group.class).remove(TestApplication.groups.get(0), new AsyncCallback<Long>() {
-            @Override
-            public void handleResponse(Long response) {
-                Log.i("Group", response.toString());
-                EspressoIdlingResource.decrement();
-            }
-
-            @Override
-            public void handleFault(BackendlessFault fault) {
-
-            }
-        });
-        Backendless.Data.of(Group_Place_User.class).remove(TestApplication.group_place_users.get(0), new AsyncCallback<Long>() {
-            @Override
-            public void handleResponse(Long response) {
-                Log.i("Group_place_user", response.toString());
-                EspressoIdlingResource.decrement();
-            }
-
-            @Override
-            public void handleFault(BackendlessFault fault) {
-
-            }
-        });
-
-        Thread.sleep(3000);
-        IdlingRegistry.getInstance().unregister(EspressoIdlingResource.getIdlingResource());
+        test.deleteGroups();
+        Thread.sleep(5000);
     }
-
-
-
 }

@@ -2,8 +2,6 @@ package com.example.myapplication;
 
 import android.view.Gravity;
 
-import androidx.test.espresso.Espresso;
-
 import androidx.test.espresso.contrib.DrawerActions;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.LargeTest;
@@ -12,10 +10,7 @@ import androidx.test.rule.ActivityTestRule;
 
 import com.example.myapplication.activity.MainActivity;
 import com.example.myapplication.utility.DataLoaderHelperTest;
-import com.example.myapplication.utility.EspressoIdlingResource;
-import com.example.myapplication.utility.TestApplication;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -48,7 +43,7 @@ public class LogoutTest {
 
 
     @Test
-    public void CreationOfGroup() throws InterruptedException {
+    public void testLogout() throws InterruptedException {
         // Open Drawer to click on navigation.
         onView(withId(R.id.drawer_layout))
                 .check(matches(isClosed(Gravity.LEFT))) // Left Drawer should be closed.
