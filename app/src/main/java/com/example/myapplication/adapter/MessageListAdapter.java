@@ -129,4 +129,5 @@ public class MessageListAdapter extends RecyclerView.Adapter {
 
         }
     }
+
 }

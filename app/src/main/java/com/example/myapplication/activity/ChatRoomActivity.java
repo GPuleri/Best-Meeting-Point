@@ -55,7 +55,7 @@ public class ChatRoomActivity extends AppCompatActivity {
 
         message = findViewById(R.id.edittext_chatbox);
         send= findViewById(R.id.button_chatbox_send);
-        // messages = findViewById(R.id.messages);
+
         retrieveMessageHistory(messageList);
         mMessageAdapter.notifyDataSetChanged();
 
@@ -99,13 +99,11 @@ public class ChatRoomActivity extends AppCompatActivity {
                 Log.i( "MYAPP", "Message subtopic " + message.getSubtopic() );
                 BaseMessage mex= new BaseMessage();
                 mex.setMessage(message.getMessage().toString());
-                String mittente= message.getHeaders().toString().substring(1,message.getHeaders().toString().length()-1);
-                String[] namemittente= mittente.split("=");
-                Log.i( "MYAPP", namemittente[1] );
                 mex.setUser(message.getPublisherId());
                 mex.setCreatedAt(new Date());
                 messageList.add(mex);
                 mMessageAdapter.notifyItemInserted(messageList.size() - 1);
+                mMessageRecycler.scrollToPosition(messageList.size() - 1);
 
             }
 
@@ -115,44 +113,10 @@ public class ChatRoomActivity extends AppCompatActivity {
             }
         });
 
-    /*
-        message.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                boolean handled = false;
-
-                if ( actionId == EditorInfo.IME_ACTION_SEND || event.getKeyCode() == KeyEvent.KEYCODE_ENTER ) {
-
-                    message.setEnabled(false);
-
-                    Backendless.Messaging.publish(channelName, message.getText().toString(), new AsyncCallback<MessageStatus>() {
-                        @Override
-                        public void handleResponse(MessageStatus response) {
-                            Log.d(TAG, "Sent message " + response);
-                            message.setText("", TextView.BufferType.EDITABLE);
-                            message.setEnabled(true);
-                        }
-
-                        @Override
-                        public void handleFault(BackendlessFault fault) {
-                            message.setEnabled(true);
-                        }
-                    });
-                    handled = true;
-                }
-
-                return handled;
-            }
-        });
-
-     */
-
 
 
         send.setOnClickListener(view -> {
             message.setEnabled(false);
-           // PublishOptions publishOptions = new PublishOptions();
-           // publishOptions.putHeader( "username", TestApplication.user.getProperty("username").toString() );
 
             Backendless.Messaging.publish(channelName, message.getText().toString(),publishOptions, new AsyncCallback<MessageStatus>() {
                 @Override
