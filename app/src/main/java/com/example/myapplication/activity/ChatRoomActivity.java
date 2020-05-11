@@ -6,12 +6,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
 
-import android.os.Bundle;
 //import android.support.v7.app.AppCompatActivity;
-import android.text.Html;
 import android.util.Log;
-import android.view.KeyEvent;
-import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -22,15 +18,17 @@ import com.backendless.exceptions.BackendlessFault;
 import com.backendless.messaging.MessageStatus;
 import com.backendless.messaging.PublishMessageInfo;
 import com.backendless.messaging.PublishOptions;
+import com.backendless.persistence.DataQueryBuilder;
 import com.backendless.rt.messaging.Channel;
 import com.backendless.rt.messaging.MessageInfoCallback;
 import com.example.myapplication.R;
 import com.example.myapplication.adapter.MessageListAdapter;
 import com.example.myapplication.data.BaseMessage;
-import com.example.myapplication.utility.ColorPickerUtility;
+import com.example.myapplication.data.ChatHistory;
 import com.example.myapplication.utility.TestApplication;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 
@@ -44,7 +42,6 @@ public class ChatRoomActivity extends AppCompatActivity {
     private TextView messages;
     private Channel channel;
     private Button send;
-    private String color = ColorPickerUtility.next();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,13 +56,16 @@ public class ChatRoomActivity extends AppCompatActivity {
         message = findViewById(R.id.edittext_chatbox);
         send= findViewById(R.id.button_chatbox_send);
         // messages = findViewById(R.id.messages);
+        retrieveMessageHistory(messageList);
+        mMessageAdapter.notifyDataSetChanged();
 
         final String name = getIntent().getStringExtra("name");
         final String channelName="chat "+ TestApplication.groups.get(TestApplication.position_selected_group).getName();
 
         channel = Backendless.Messaging.subscribe(channelName);
         PublishOptions publishOptions = new PublishOptions();
-        publishOptions.putHeader( "username", TestApplication.user.getProperty("username").toString() );
+        publishOptions.setPublisherId(TestApplication.user.getProperty("username").toString());
+        publishOptions.putHeader( "groupId", TestApplication.groups.get(TestApplication.position_selected_group).getObjectId() );
         channel.addJoinListener(new AsyncCallback<Void>() {
             @Override
             public void handleResponse(Void response) {
@@ -95,14 +95,15 @@ public class ChatRoomActivity extends AppCompatActivity {
             public void handleResponse(PublishMessageInfo message) {
                 Log.i( "MYAPP", "Published message - " + message.getMessage() );
                 Log.i( "MYAPP", "Publisher ID - " + message.getPublisherId() );
-                Log.i( "MYAPP", "Message headers - " + message.getHeaders() );
+                Log.i( "MYAPP", "Message headers - " + message.getHeaders().toString() );
                 Log.i( "MYAPP", "Message subtopic " + message.getSubtopic() );
                 BaseMessage mex= new BaseMessage();
                 mex.setMessage(message.getMessage().toString());
                 String mittente= message.getHeaders().toString().substring(1,message.getHeaders().toString().length()-1);
                 String[] namemittente= mittente.split("=");
                 Log.i( "MYAPP", namemittente[1] );
-                mex.setUser(namemittente[1]);
+                mex.setUser(message.getPublisherId());
+                mex.setCreatedAt(new Date());
                 messageList.add(mex);
                 mMessageAdapter.notifyItemInserted(messageList.size() - 1);
 
@@ -174,8 +175,30 @@ public class ChatRoomActivity extends AppCompatActivity {
         Log.e(TAG, fault.toString());
     }
 
-    private String wrapToColor(String value) {
-        return "<font color='" + color + "'>" + value + "</font>";
+    private void retrieveMessageHistory(List messageList) {
+        DataQueryBuilder dataQuery = DataQueryBuilder.create();
+        dataQuery.setOffset(0);
+        dataQuery.setPageSize(100);
+        dataQuery.setSortBy("created");
+        dataQuery.setWhereClause("groupId='"+TestApplication.groups.get(TestApplication.position_selected_group).getObjectId()+"'");
+        Backendless.Data.of(ChatHistory.class).find(dataQuery, new AsyncCallback<List<ChatHistory>>() {
+            @Override
+            public void handleResponse(List<ChatHistory> response) {
+                for (ChatHistory chatHi : response){
+                    BaseMessage mex = new BaseMessage();
+                    mex.setMessage(chatHi.getMessageData());
+                    mex.setUser(chatHi.getPublisher());
+                    mex.setCreatedAt(chatHi.getCreated());
+                    messageList.add(mex);
+                }
+            }
+
+            @Override
+            public void handleFault(BackendlessFault fault) {
+
+            }
+        });
+
     }
 
     @Override

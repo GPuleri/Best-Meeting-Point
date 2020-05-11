@@ -2,11 +2,13 @@ package com.example.myapplication.data;
 
 import com.backendless.BackendlessUser;
 
+import java.util.Date;
+
 public class BaseMessage {
 
     private String message;
     String user;
-    int createdAt;
+    Date createdAt;
 
     public String getMessage() {
         return message;
@@ -24,11 +26,11 @@ public class BaseMessage {
         this.user = user;
     }
 
-    public long getCreatedAt() {
+    public Date getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(int createdAt) {
+    public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
     }
 }

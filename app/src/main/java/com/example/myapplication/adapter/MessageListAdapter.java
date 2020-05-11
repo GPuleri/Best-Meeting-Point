@@ -3,7 +3,6 @@ package com.example.myapplication.adapter;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
-import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,11 +12,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.myapplication.R;
 import com.example.myapplication.data.BaseMessage;
-import com.example.myapplication.utility.ColorPickerUtility;
 import com.example.myapplication.utility.TestApplication;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
 public class MessageListAdapter extends RecyclerView.Adapter {
@@ -102,7 +99,7 @@ public class MessageListAdapter extends RecyclerView.Adapter {
 
             // Format the stored timestamp into a readable String using method.
             SimpleDateFormat sdf = new SimpleDateFormat("h:mm a");
-            timeText.setText(sdf.format(new Date()));
+            timeText.setText(sdf.format(message.getCreatedAt()));
         }
     }
 
@@ -126,7 +123,7 @@ public class MessageListAdapter extends RecyclerView.Adapter {
 
             // Format the stored timestamp into a readable String using method.
             SimpleDateFormat sdf = new SimpleDateFormat("h:mm a");
-            timeText.setText(sdf.format(new Date()));
+            timeText.setText(sdf.format(message.getCreatedAt()));
 
             nameText.setText(message.getUser());
 
