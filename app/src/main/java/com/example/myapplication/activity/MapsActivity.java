@@ -159,23 +159,17 @@ public class MapsActivity extends FragmentActivity implements OnMyLocationButton
          */
         btnBestPoint = findViewById(R.id.btnBestpoint);
         btnBestPoint.setClickable(true);
-        btnBestPoint.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                calculateBestMeetingPoint();
-                btnBestPoint.setClickable(false);
-            }
+        btnBestPoint.setOnClickListener(v -> {
+            calculateBestMeetingPoint();
+            btnBestPoint.setClickable(false);
         });
 
         /*
          * Open the Vote Activity
          */
         btnVote = findViewById(R.id.btnVote);
-        btnVote.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Toast.makeText(getBaseContext(), "Work in progress", Toast.LENGTH_SHORT).show();
-            }
-        });
+        btnVote.setOnClickListener(view ->
+                Toast.makeText(getBaseContext(), "Work in progress", Toast.LENGTH_SHORT).show());
     }
 
     /**
@@ -378,9 +372,6 @@ public class MapsActivity extends FragmentActivity implements OnMyLocationButton
                 }
             }
         }
-        if (marker.getAlpha() == 1f)
-            //Toast.makeText(getBaseContext(), "Work in progress (RECENSIONE)", Toast.LENGTH_SHORT).show();
-            ;
         marker.showInfoWindow();
         return true;
     }
@@ -419,7 +410,8 @@ public class MapsActivity extends FragmentActivity implements OnMyLocationButton
     }
 
     /**
-     * method that takes as input the string "strAddress" which represents a person's address and returns a LatLng object containing the latitude and longitude of that address
+     * method that takes as input the string "strAddress" which represents a person's address and
+     * returns a LatLng object containing the latitude and longitude of that address
      */
     public LatLng getLocationFromAddress(String strAddress) {
 

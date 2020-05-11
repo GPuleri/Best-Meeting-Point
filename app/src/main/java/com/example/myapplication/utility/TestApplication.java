@@ -15,7 +15,6 @@ import com.example.myapplication.data.Group;
 import com.example.myapplication.data.Group_Place_User;
 import com.example.myapplication.data.Place;
 
-import java.util.HashMap;
 import java.util.List;
 
 public class TestApplication extends Application {
@@ -23,18 +22,15 @@ public class TestApplication extends Application {
     public static final String API_KEY = "278AD5E3-D39E-49EA-ACB4-495652BF6203";
     public static final String SERVER_URL = "https://api.backendless.com";
 
-    public static BackendlessUser user;
-    public static Place place;
-    public static List<Group_Place_User> group_place_users;
-    public static List<Group> groups;
-    public static List<Group> invitation_group;
-    public static List<BackendlessUser> users_active;
-    public static List<Place> places_active;
-    public static Group_Place_User link;
-    public static Group group;
+    public static BackendlessUser user; // logged user
+    public static Place place; // place of the logged user
+    public static List<Group_Place_User> group_place_user; // group_place_user of the logged user
+    public static List<Group> invitation_group; // invitation of the logged user
+    public static List<BackendlessUser> users_active; // users taken into account in bmp calculation in a specified group
+    public static List<Place> places_active; // places taken into account in bmp calculation in a specified group
+    public static Group group; // group selected
     public static final String[] kind_codes = {"bar", "cafe", "movie_theater", "night_club", "park", "restaurant"};
     public static final String[] kinds = {"Bar", "Cafe", "Movie Theater", "Night Club", "Park", "Restaurant"};
-    public static int position_selected_group;
 
     /**
      * it creates the link with the database

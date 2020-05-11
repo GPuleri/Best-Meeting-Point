@@ -32,7 +32,6 @@ import static android.view.KeyEvent.KEYCODE_I;
 import static android.view.KeyEvent.KEYCODE_O;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
-import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
 import static androidx.test.espresso.action.ViewActions.typeText;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 
@@ -87,27 +86,20 @@ public class RegistrationTest {
 
     @After
     public void deleteUser () throws InterruptedException {
-                String where= "ownerId='"+TestApplication.user.getObjectId()+"'";
-                DataQueryBuilder queryBuilder = DataQueryBuilder.create();
-                queryBuilder.setWhereClause(where);
-                Backendless.Data.of(Place.class).find(queryBuilder, new AsyncCallback<List<Place>>() {
+        String where= "ownerId='"+TestApplication.user.getObjectId()+"'";
+        DataQueryBuilder queryBuilder = DataQueryBuilder.create();
+        queryBuilder.setWhereClause(where);
+        Backendless.Data.of(Place.class).find(queryBuilder, new AsyncCallback<List<Place>>() {
+            @Override
+            public void handleResponse(List<Place> response) {
+                Backendless.Data.of(Place.class).remove(response.get(0), new AsyncCallback<Long>() {
                     @Override
-                    public void handleResponse(List<Place> response) {
-                        Backendless.Data.of(Place.class).remove(response.get(0), new AsyncCallback<Long>() {
+                    public void handleResponse(Long response) {
+
+                        Backendless.Data.of(BackendlessUser.class).remove(TestApplication.user, new AsyncCallback<Long>() {
                             @Override
                             public void handleResponse(Long response) {
 
-                                Backendless.Data.of(BackendlessUser.class).remove(TestApplication.user, new AsyncCallback<Long>() {
-                                    @Override
-                                    public void handleResponse(Long response) {
-
-                                    }
-
-                                    @Override
-                                    public void handleFault(BackendlessFault fault) {
-                                        Log.e( "MYAPP", "server reported an error - " + fault.getMessage() );
-                                    }
-                                });
                             }
 
                             @Override
@@ -122,6 +114,13 @@ public class RegistrationTest {
                         Log.e( "MYAPP", "server reported an error - " + fault.getMessage() );
                     }
                 });
+            }
+
+            @Override
+            public void handleFault(BackendlessFault fault) {
+                Log.e( "MYAPP", "server reported an error - " + fault.getMessage() );
+            }
+        });
 
 
         Thread.sleep(5000);

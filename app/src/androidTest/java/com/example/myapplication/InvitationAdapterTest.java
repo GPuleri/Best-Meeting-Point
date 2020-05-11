@@ -10,6 +10,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 import com.example.myapplication.adapter.InvitationAdapter;
 import com.example.myapplication.data.Group;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -89,7 +90,6 @@ public class InvitationAdapterTest {
 
         assertEquals(g2.getName(),tvName.getText());
         assertEquals(g2.getName().toUpperCase().charAt(0)+"",tvChar.getText());
-
 
     }
 }

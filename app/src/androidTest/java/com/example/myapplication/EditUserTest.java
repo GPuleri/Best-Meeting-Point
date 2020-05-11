@@ -65,7 +65,7 @@ public class EditUserTest {
                 .check(matches(isClosed(Gravity.LEFT))) // Left Drawer should be closed.
                 .perform(DrawerActions.open()); // Open Drawer
         onView(withId(R.id.ivSettings))
-                .perform(ViewActions.click());
+                .perform(click());
 
         onView(withId(R.id.etName))
                 .check(matches(withText(TestApplication.user.getProperty("name").toString())))

@@ -32,15 +32,11 @@ import com.example.myapplication.utility.TestApplication;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-
-import static android.app.Activity.RESULT_OK;
 
 public class CreateGroup extends Fragment {
 
     private EditText etName;
     private Spinner dropdown;
-
 
     /**
      * It creates the Create group activity, inside that you can insert the name of the new group and save it
@@ -59,18 +55,17 @@ public class CreateGroup extends Fragment {
                 android.R.layout.simple_spinner_dropdown_item, TestApplication.kinds);
         dropdown.setAdapter(adapterTypes);
 
-
         btnNew.setOnClickListener(v -> {
             if (etName.getText().toString().isEmpty()) {
                 Toast.makeText(getContext(), "Please enter the name", Toast.LENGTH_SHORT).show();
             } else {
                 TestApplication.hideSoftKeyboard(requireActivity());
-                TestApplication.link = new Group_Place_User();
-                TestApplication.group_place_users.add(TestApplication.link);
-                Backendless.Persistence.save(TestApplication.link, new AsyncCallback<Group_Place_User>() {
+                Group_Place_User gpu = new Group_Place_User();
+                Backendless.Persistence.save(gpu, new AsyncCallback<Group_Place_User>() {
                     @Override
                     public void handleResponse(Group_Place_User response) {
-                        TestApplication.link = response;
+                        Group_Place_User gpu = response;
+                        TestApplication.group_place_user.add(0, gpu);
                         ArrayList<Group_Place_User> list = new ArrayList<>();
                         list.add(response);
                         Backendless.Data.of(BackendlessUser.class).addRelation(TestApplication.user, "group_user", list,
@@ -87,14 +82,12 @@ public class CreateGroup extends Fragment {
                                             @Override
                                             public void handleResponse(Group response) {
                                                 ArrayList<Group_Place_User> list = new ArrayList<>();
-                                                list.add(TestApplication.link);
+                                                list.add(gpu);
                                                 Backendless.Data.of(Group.class).addRelation(response, "group_group", list,
                                                         new AsyncCallback<Integer>() {
                                                             @Override
                                                             public void handleResponse(Integer response) {
-                                                                TestApplication.groups.add(TestApplication.group);
                                                                 Toast.makeText(getContext(), "Group created!", Toast.LENGTH_SHORT).show();
-                                                                //requireActivity().getSupportFragmentManager().popBackStack();
 
                                                                 String where= "ownerId='"+TestApplication.user.getObjectId()+"'";
                                                                 DataQueryBuilder queryBuilder = DataQueryBuilder.create();
@@ -106,17 +99,14 @@ public class CreateGroup extends Fragment {
                                                                         Backendless.Data.of(Place.class).addRelation(response.get(0), "group_place", list, new AsyncCallback<Integer>() {
                                                                             @Override
                                                                             public void handleResponse(Integer response) {
-                                                                                requireActivity().getSupportFragmentManager().popBackStack();
-                                                                                /*
-                                                                                GroupList dest = new GroupList();
-                                                                                FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
-                                                                                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                                                                                fragmentTransaction.replace(getId(), dest);
-                                                                                fragmentTransaction.addToBackStack(null);
-                                                                                fragmentTransaction.commit();
                                                                                 view.setVisibility(View.GONE);
 
-                                                                                 */
+                                                                                FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
+                                                                                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                                                                                fragmentTransaction.addToBackStack(null);
+                                                                                fragmentTransaction.commit();
+
+                                                                                requireActivity().getSupportFragmentManager().popBackStack();
                                                                             }
 
                                                                             @Override
@@ -166,18 +156,17 @@ public class CreateGroup extends Fragment {
             }
         });
 
-        // This callback will only be called when MyFragment is at least Started.
         OnBackPressedCallback callback = new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
-                requireActivity().setResult(RESULT_OK);
-                GroupList dest = new GroupList();
+                view.setVisibility(View.GONE);
+
                 FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                fragmentTransaction.replace(getId(), dest);
                 fragmentTransaction.addToBackStack(null);
                 fragmentTransaction.commit();
-                view.setVisibility(View.GONE);
+
+                requireActivity().getSupportFragmentManager().popBackStack();
             }
         };
         requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), callback);

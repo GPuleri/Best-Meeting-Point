@@ -16,7 +16,6 @@
         android:layout_marginTop="30dp"
         android:layout_gravity="center_horizontal"
         android:gravity="center"
-        android:text="@string/name"
         android:textSize="30sp"
         android:textColor="@color/darkText"/>
 
@@ -75,7 +74,7 @@
         android:layout_marginRight="10dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Participants"
+        android:text="@string/participants"
         android:textSize="25sp"
         android:gravity="center"
         android:background="@color/colorPrimaryMedium_transparent"
@@ -89,28 +88,35 @@
         android:layout_marginRight="10dp"
         android:layout_weight="1" />
 
-    <EditText
-        android:id="@+id/etName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:inputType="textPersonName"
-        android:text="@string/name"
-        android:layout_gravity="center"
-        android:textSize="30sp"
-        android:gravity="center"
-        android:visibility="gone" />
+    <LinearLayout
+        android:id="@+id/llEdit"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_weight="1"
+        android:orientation="horizontal"
+        android:visibility="gone">
 
-    <Button
-        android:id="@+id/btnSubmit"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="20dp"
-        android:layout_gravity="center"
-        android:background="@drawable/buttons2"
-        android:text="@string/submit"
-        android:textSize="20sp"
-        android:textColor="@color/white"
-        android:visibility="gone"/>
+        <EditText
+            android:id="@+id/etName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="textPersonName"
+            android:text="@string/name"
+            android:textSize="25sp"
+            android:gravity="center" />
+
+        <Button
+            android:id="@+id/btnSubmit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/buttons_orange"
+            android:text="@string/submit"
+            android:textSize="20sp"
+            android:textColor="@color/white" />
+
+    </LinearLayout>
 
 </LinearLayout>

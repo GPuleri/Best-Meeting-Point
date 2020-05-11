@@ -9,12 +9,6 @@
     <string name="create">Create</string>
     <string name="confirm">Confirm</string>
     <string name="delete">Delete</string>
-
-    <string name="normal">Normal</string>
-    <string name="hybrid">Hybrid</string>
-    <string name="satellite">Satellite</string>
-    <string name="terrain">Terrain</string>
-    <string name="traffic">Traffic</string>
     <string name="hint_group_name">group name</string>
     <string name="loading">Loading…please wait…</string>
     <string name="hint_email">email</string>
@@ -31,7 +25,15 @@
     <string name="confirm_password">confirm password</string>
     <string name="edit">edit</string>
     <string name="newpassword">new password</string>
+    <string name="invite">Invite</string>
+    <string name="participants">Participants</string>
+    <string name="editname">Edit name</string>
 
+    <string name="normal">Normal</string>
+    <string name="hybrid">Hybrid</string>
+    <string name="satellite">Satellite</string>
+    <string name="terrain">Terrain</string>
+    <string name="traffic">Traffic</string>
     <string-array name="layers_array">
         <item>@string/normal</item>
         <item>@string/hybrid</item>

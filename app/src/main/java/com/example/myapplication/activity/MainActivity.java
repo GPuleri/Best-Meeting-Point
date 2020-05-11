@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.os.Build;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -70,29 +71,25 @@ public class MainActivity extends AppCompatActivity {
             FragmentManager fragmentManager = getSupportFragmentManager();
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
             fragmentTransaction.replace(R.id.nav_host_fragment, dest);
-            fragmentTransaction.addToBackStack(null);
             fragmentTransaction.commit();
             drawer.closeDrawer(Gravity.LEFT);
         });
 
-        logout.setOnClickListener(v -> {
-            Backendless.UserService.logout(new AsyncCallback<Void>()
+        logout.setOnClickListener(v -> Backendless.UserService.logout(new AsyncCallback<Void>()
+        {
+            public void handleResponse( Void response )
             {
-                public void handleResponse( Void response )
-                {
-                    // user has been logged out.
-                    Intent i = new Intent(MainActivity.this, Login.class);
-                    finish();
-                    startActivity(i);
-                }
+                // user has been logged out.
+                Intent i = new Intent(MainActivity.this, Login.class);
+                finish();
+                startActivity(i);
+            }
 
-                public void handleFault( BackendlessFault fault )
-                {
-                    // something went wrong and logout failed, to get the error code call fault.getCode()
-                }
-            });
-
-        });
+            public void handleFault( BackendlessFault fault )
+            {
+                Log.e("logout", fault.getMessage());
+            }
+        }));
 
         drawer.addDrawerListener(new DrawerLayout.DrawerListener() {
             @Override
