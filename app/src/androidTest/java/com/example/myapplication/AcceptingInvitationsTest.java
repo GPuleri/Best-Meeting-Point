@@ -74,7 +74,7 @@ public class AcceptingInvitationsTest {
         Espresso.closeSoftKeyboard();
         onView(withId(R.id.btnNewGroup)).perform(click());
 
-        Thread.sleep(7000);
+        Thread.sleep(10000);
 
         // check that the group has been created
         Assert.assertEquals(TestApplication.group.getName(), "TestGroup");

@@ -24,6 +24,7 @@ import com.example.myapplication.R;
 import com.example.myapplication.data.Place;
 import com.example.myapplication.utility.TestApplication;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -72,32 +73,47 @@ public class ParticipantAdapter extends ArrayAdapter<BackendlessUser> {
         Drawable participant = ivParticipant.getResources().getDrawable(R.drawable.participant);
         Drawable participant_no = ivParticipant.getResources().getDrawable(R.drawable.participant_no);
 
+        // useful only for testing
+        if (TestApplication.usersAll == null)
+            TestApplication.usersAll = new ArrayList<>();
+        if (TestApplication.placesAll == null)
+            TestApplication.placesAll = new ArrayList<>();
+        if (TestApplication.users_active == null)
+            TestApplication.users_active = new ArrayList<>();
+        if (TestApplication.places_active == null)
+            TestApplication.places_active = new ArrayList<>();
+
 
         LoadRelationsQueryBuilder<Place> loadRelationsQueryBuilder;
         loadRelationsQueryBuilder = LoadRelationsQueryBuilder.of(Place.class);
         loadRelationsQueryBuilder.setRelationName("user_place");
 
         Log.i("position", String.valueOf(position));
+        Backendless.Data.of(BackendlessUser.class).loadRelations(users.get(position).getObjectId(),
+                loadRelationsQueryBuilder,
+                new AsyncCallback<List<Place>>() {
+                    @Override
+                    public void handleResponse(List<Place> response) {
 
-        if (participating.get(position)) {
-            ivParticipant.setImageDrawable(participant);
-            TestApplication.users_active.add(users.get(position));
-            Backendless.Data.of(BackendlessUser.class).loadRelations(users.get(position).getObjectId(),
-                    loadRelationsQueryBuilder,
-                    new AsyncCallback<List<Place>>() {
-                        @Override
-                        public void handleResponse(List<Place> response) {
+                        if (participating.get(position)) {
+                            ivParticipant.setImageDrawable(participant);
+                            TestApplication.users_active.add(users.get(position));
                             TestApplication.places_active.add(response.get(0));
                         }
+                        else
+                            ivParticipant.setImageDrawable(participant_no);
 
-                        @Override
-                        public void handleFault(BackendlessFault fault) {
-                            Toast.makeText(getContext(), "Error: " + fault.getMessage(), Toast.LENGTH_SHORT).show();
-                        }
+
+                        TestApplication.usersAll.add(users.get(position));
+                        TestApplication.placesAll.add(response.get(0));
                     }
-            );
-        } else
-            ivParticipant.setImageDrawable(participant_no);
+
+                    @Override
+                    public void handleFault(BackendlessFault fault) {
+                        Toast.makeText(getContext(), "Error: " + fault.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                }
+        );
 
         return convertView;
     }

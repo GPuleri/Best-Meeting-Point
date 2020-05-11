@@ -26,6 +26,8 @@ public class TestApplication extends Application {
     public static Place place; // place of the logged user
     public static List<Group_Place_User> group_place_user; // group_place_user of the logged user
     public static List<Group> invitation_group; // invitation of the logged user
+    public static List<BackendlessUser> usersAll; // all users in a specified group
+    public static List<Place> placesAll; // all places in a specified group
     public static List<BackendlessUser> users_active; // users taken into account in bmp calculation in a specified group
     public static List<Place> places_active; // places taken into account in bmp calculation in a specified group
     public static Group group; // group selected

@@ -104,7 +104,8 @@ public class MapsActivity extends FragmentActivity implements OnMyLocationButton
     }
 
     private ArrayList<Trip> trips; // A list of trip
-    private ArrayList<Marker> departureMarkers; // A list of departure markers
+    private ArrayList<Marker> departureMarkers; // A list of departure markers of all the people
+    private ArrayList<MarkerOptions> departureMarkersBMP; // A list of departure markers of the people partecipating in BMP
     private ArrayList<Marker> bestMarkers; // A list of best meeting point markers
     private ArrayList<Polyline> polylines; // A list of polylines (used to draw routes)
     private HashMap<Marker, Polyline> markersPolylines; // A map between a marker and its polyline
@@ -128,6 +129,7 @@ public class MapsActivity extends FragmentActivity implements OnMyLocationButton
 
         trips = new ArrayList<>();
         departureMarkers = new ArrayList<>();
+        departureMarkersBMP = new ArrayList<>();
         bestMarkers = new ArrayList<>();
         polylines = new ArrayList<>();
         markersPolylines = new HashMap<>();
@@ -160,8 +162,10 @@ public class MapsActivity extends FragmentActivity implements OnMyLocationButton
         btnBestPoint = findViewById(R.id.btnBestpoint);
         btnBestPoint.setClickable(true);
         btnBestPoint.setOnClickListener(v -> {
-            calculateBestMeetingPoint();
-            btnBestPoint.setClickable(false);
+            if (!departureMarkersBMP.isEmpty()) {
+                calculateBestMeetingPoint();
+                btnBestPoint.setClickable(false);
+            }
         });
 
         /*
@@ -208,30 +212,41 @@ public class MapsActivity extends FragmentActivity implements OnMyLocationButton
      * using the getLocationFromAddress() function.
      * Create departure markers adding the username as infoWindow
      * Marker's caption:
+     * 0.4f --> other users
      * 0.5f --> other best points
+     * 0.99f --> logged user
      * 1f --> current best point
      */
     public void createDepartureMarkers() {
 
         int index = 0;
 
-        List<String> users = new ArrayList<>();
-        List<String> places = new ArrayList<>();
+        List<String> usersAll = new ArrayList<>();
+        List<String> placesAll = new ArrayList<>();
+
+        List<String> users_active = new ArrayList<>();
+        List<String> places_active = new ArrayList<>();
+
+        for (BackendlessUser user : TestApplication.usersAll)
+            usersAll.add(user.getProperty("username").toString());
+
+        for (Place place : TestApplication.placesAll)
+            placesAll.add(place.getFull_address());
 
         for (BackendlessUser user : TestApplication.users_active)
-            users.add(user.getProperty("username").toString());
+            users_active.add(user.getProperty("username").toString());
 
         for (Place place : TestApplication.places_active)
-            places.add(place.getFull_address());
+            places_active.add(place.getFull_address());
 
         /*
-         * For every departure add a marker setting its title to the username and alpha to 0.4f
+         * For every user add a marker setting its title to the username and alpha to 0.4f
          */
         int i = 0;
-        for (String user : users) {
+        for (String user : usersAll) {
             if (!user.equals(TestApplication.user.getProperty("username").toString())) {
                 departureMarkers.add(mMap.addMarker(new MarkerOptions()
-                        .position(getLocationFromAddress(places.get(i)))
+                        .position(getLocationFromAddress(placesAll.get(i)))
                         .title(user)
                         .alpha(0.4f)));
             } else {
@@ -241,12 +256,44 @@ public class MapsActivity extends FragmentActivity implements OnMyLocationButton
         }
 
         /*
+         * For every user partecipating in BMP add a marker setting its title to the username and alpha to 0.4f
+         */
+        i = 0;
+        for (String user : users_active) {
+            if (!user.equals(TestApplication.user.getProperty("username").toString())) {
+                departureMarkersBMP.add(new MarkerOptions()
+                        .position(getLocationFromAddress(places_active.get(i)))
+                        .title(user)
+                        .alpha(0.4f));
+            } else {
+                index = i;
+            }
+            i++;
+        }
+
+        /*
          * marker "You" added later in order to better visualize polylines on the map
          */
-        departureMarkers.add(mMap.addMarker(new MarkerOptions()
-                .position(getLocationFromAddress(places.get(index)))
-                .title("You")
-                .alpha(0.99f)));
+        for (String user : usersAll) {
+            if (user.equals(TestApplication.user.getProperty("username").toString())) {
+                departureMarkers.add(mMap.addMarker(new MarkerOptions()
+                        .position(getLocationFromAddress(placesAll.get(index)))
+                        .title("You")
+                        .alpha(0.99f)));
+            }
+        }
+
+        /*
+         * marker "You" added later in order to better visualize polylines on the map
+         */
+        for (String user : users_active) {
+            if (user.equals(TestApplication.user.getProperty("username").toString())) {
+                departureMarkersBMP.add(new MarkerOptions()
+                        .position(getLocationFromAddress(places_active.get(index)))
+                        .title("You")
+                        .alpha(0.99f));
+            }
+        }
 
 
         departureMarkers.get(departureMarkers.size() - 1).showInfoWindow();
@@ -280,13 +327,13 @@ public class MapsActivity extends FragmentActivity implements OnMyLocationButton
         double latitude = 0.0;
         double longitude = 0.0;
 
-        for (int i = 0; i < departureMarkers.size(); i++) {
-            latitude = latitude + departureMarkers.get(i).getPosition().latitude;
-            longitude = longitude + departureMarkers.get(i).getPosition().longitude;
+        for (int i = 0; i < departureMarkersBMP.size(); i++) {
+            latitude = latitude + departureMarkersBMP.get(i).getPosition().latitude;
+            longitude = longitude + departureMarkersBMP.get(i).getPosition().longitude;
         }
 
-        latitude = latitude / departureMarkers.size();
-        longitude = longitude / departureMarkers.size();
+        latitude = latitude / departureMarkersBMP.size();
+        longitude = longitude / departureMarkersBMP.size();
 
 
         mMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(latitude, longitude)));

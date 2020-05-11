@@ -42,6 +42,7 @@ public class ParticipantAdapterTest {
         u1.setProperty("name", "name1");
         u1.setProperty("username", "username1");
         u1.setProperty("surname", "surname2");
+        u1.setProperty("objectId", "ID");
 
         u2 = new BackendlessUser();
         u2.setEmail("prova1@mail.it");
@@ -49,6 +50,7 @@ public class ParticipantAdapterTest {
         u2.setProperty("name", "name1");
         u2.setProperty("username", "username2");
         u2.setProperty("surname", "surname2");
+        u2.setProperty("objectId", "ID");
 
         data.add(u1);
         data.add(u2);
@@ -57,7 +59,6 @@ public class ParticipantAdapterTest {
         b.add(true);
 
         iAdapter = new ParticipantAdapter(appContext, data, b);
-
     }
 
     @Test

@@ -126,7 +126,7 @@ public class CreateGroupTest {
 
         Thread.sleep(2000);
 
-        onView(withId(R.id.ivNavigate))
+        onView(withId(R.id.btnBestpoint))
                 .check(matches(isDisplayed()));
 
     }

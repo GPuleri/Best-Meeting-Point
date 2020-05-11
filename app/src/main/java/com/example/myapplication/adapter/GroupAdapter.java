@@ -97,6 +97,8 @@ public class GroupAdapter extends ArrayAdapter<Group_Place_User>
                         @Override
                         public void handleResponse(Group_Place_User response) {
 
+                            // must pay attention that the if-clause is reverted since the ivParticipant
+                            // is already setted few lines before here
                             if (ivParticipant.getDrawable().equals(participant)) {
                                 TestApplication.group_place_user.get(position).setParticipating(true);
                                 response.setParticipating(true);

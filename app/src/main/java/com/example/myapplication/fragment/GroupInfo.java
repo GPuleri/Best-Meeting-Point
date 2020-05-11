@@ -126,6 +126,8 @@ public class GroupInfo extends Fragment {
                                             Log.i("response", String.valueOf(user.getEmail()));
                                         TestApplication.users_active = new ArrayList<>();
                                         TestApplication.places_active = new ArrayList<>();
+                                        TestApplication.usersAll = new ArrayList<>();
+                                        TestApplication.placesAll = new ArrayList<>();
                                         adapter = new ParticipantAdapter(getContext(), response, participating);
                                         lvParticipants.setAdapter(adapter);
                                     }
@@ -261,22 +263,11 @@ public class GroupInfo extends Fragment {
 
 
         ivNavigate.setOnClickListener(v -> {
-
             for (BackendlessUser user : TestApplication.users_active)
                 Log.i("USERS", String.valueOf(user.getEmail()));
 
-            boolean b = false;
-            for (BackendlessUser user : TestApplication.users_active)
-                if (user.getEmail().equals(TestApplication.user.getEmail()))
-                    b = true;
-
-            if (b) {
-                Intent intent = new Intent(getContext(), MapsActivity.class);
-                startActivityForResult(intent, 1);
-            }
-            else
-                Toast.makeText(getContext(), "You can not see the map because you are not active", Toast.LENGTH_SHORT).show();
-
+            Intent intent = new Intent(getContext(), MapsActivity.class);
+            startActivityForResult(intent, 1);
         });
 
 
