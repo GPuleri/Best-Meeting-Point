@@ -31,7 +31,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-
+/**
+ * this is the class that manages the functioning of the chat. All messages from a group will be
+ * displayed and new messages can be sent.
+ */
 public class ChatRoomActivity extends AppCompatActivity {
 
     private RecyclerView mMessageRecycler;
@@ -39,7 +42,6 @@ public class ChatRoomActivity extends AppCompatActivity {
 
     public static final String TAG = "RTChat";
     private EditText message;
-    private TextView messages;
     private Channel channel;
     private Button send;
 
@@ -49,6 +51,8 @@ public class ChatRoomActivity extends AppCompatActivity {
         setContentView(R.layout.activity_message_list);
         List messageList = new ArrayList <BaseMessage>();
         mMessageRecycler = findViewById(R.id.reyclerview_message_list);
+
+        //I create and set the message adapter
         mMessageAdapter = new MessageListAdapter(this, messageList);
         mMessageRecycler.setLayoutManager(new LinearLayoutManager(this));
         mMessageRecycler.setAdapter(mMessageAdapter);
@@ -56,20 +60,24 @@ public class ChatRoomActivity extends AppCompatActivity {
         message = findViewById(R.id.edittext_chatbox);
         send= findViewById(R.id.button_chatbox_send);
 
+        //I recover the messages already sent and add them to the list
         retrieveMessageHistory(messageList);
         mMessageAdapter.notifyDataSetChanged();
 
-        final String name = getIntent().getStringExtra("name");
+        // this will be the name of the chat channel
         final String channelName="chat "+ TestApplication.groups.get(TestApplication.position_selected_group).getName();
 
+        //I subscribe to the communication channel with its API and set the message publishing options
         channel = Backendless.Messaging.subscribe(channelName);
         PublishOptions publishOptions = new PublishOptions();
         publishOptions.setPublisherId(TestApplication.user.getProperty("username").toString());
         publishOptions.putHeader( "groupId", TestApplication.groups.get(TestApplication.position_selected_group).getObjectId() );
+
+        //I join the channel
         channel.addJoinListener(new AsyncCallback<Void>() {
             @Override
             public void handleResponse(Void response) {
-
+                //if the connection to the chat was successful, I send everyone the message "I joined the chat!"
                 Backendless.Messaging.publish(channelName, " I joined the chat!", publishOptions, new AsyncCallback<MessageStatus>() {
                     @Override
                     public void handleResponse(MessageStatus response) {
@@ -90,6 +98,8 @@ public class ChatRoomActivity extends AppCompatActivity {
                 ChatRoomActivity.this.handleFault(fault);
             }
         });
+
+        //when a message is sent on the channel and I receive it
         channel.addMessageListener(new MessageInfoCallback() {
             @Override
             public void handleResponse(PublishMessageInfo message) {
@@ -97,6 +107,7 @@ public class ChatRoomActivity extends AppCompatActivity {
                 Log.i( "MYAPP", "Publisher ID - " + message.getPublisherId() );
                 Log.i( "MYAPP", "Message headers - " + message.getHeaders().toString() );
                 Log.i( "MYAPP", "Message subtopic " + message.getSubtopic() );
+                //I insert the message in the adapter and display it
                 BaseMessage mex= new BaseMessage();
                 mex.setMessage(message.getMessage().toString());
                 mex.setUser(message.getPublisherId());
@@ -114,7 +125,7 @@ public class ChatRoomActivity extends AppCompatActivity {
         });
 
 
-
+        // when I press the "send" button I send the message on the chat communication channel I joined
         send.setOnClickListener(view -> {
             message.setEnabled(false);
 
@@ -139,6 +150,9 @@ public class ChatRoomActivity extends AppCompatActivity {
         Log.e(TAG, fault.toString());
     }
 
+    /**
+     * function for recovering messages saved on the server
+     */
     private void retrieveMessageHistory(List messageList) {
         DataQueryBuilder dataQuery = DataQueryBuilder.create();
         dataQuery.setOffset(0);

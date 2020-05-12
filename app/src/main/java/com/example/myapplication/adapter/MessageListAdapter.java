@@ -17,6 +17,11 @@ import com.example.myapplication.utility.TestApplication;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
+/**
+ * adapter for chat messages. When a message is sent on the channel, if it is a message sent by me
+ * it will be displayed on the right without a sender name otherwise it will be displayed on the left with
+ * the sender's name.
+ */
 public class MessageListAdapter extends RecyclerView.Adapter {
     private static final int VIEW_TYPE_MESSAGE_SENT = 1;
     private static final int VIEW_TYPE_MESSAGE_RECEIVED = 2;
