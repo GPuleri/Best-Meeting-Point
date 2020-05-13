@@ -1,6 +1,5 @@
 package com.example.myapplication;
 
-import android.util.Log;
 import android.view.Gravity;
 import android.widget.EditText;
 
@@ -12,13 +11,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.rule.ActivityTestRule;
 
 import com.backendless.Backendless;
-import com.backendless.BackendlessUser;
-import com.backendless.async.callback.AsyncCallback;
-import com.backendless.exceptions.BackendlessFault;
-import com.backendless.persistence.LoadRelationsQueryBuilder;
 import com.example.myapplication.activity.MainActivity;
-import com.example.myapplication.data.Group;
-import com.example.myapplication.data.Group_Place_User;
 import com.example.myapplication.utility.DataLoaderHelperTest;
 import com.example.myapplication.utility.EspressoIdlingResource;
 import com.example.myapplication.utility.TestApplication;
@@ -29,8 +22,6 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import java.util.List;
 
 import static androidx.test.espresso.Espresso.onData;
 import static androidx.test.espresso.Espresso.onView;
