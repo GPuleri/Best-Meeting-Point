@@ -51,6 +51,13 @@
             app:srcCompat="@drawable/navigation" />
 
         <ImageView
+            android:id="@+id/ivChat"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            app:srcCompat="@drawable/chat" />
+
+        <ImageView
             android:id="@+id/ivEdit"
             android:layout_width="wrap_content"
             android:layout_height="40dp"

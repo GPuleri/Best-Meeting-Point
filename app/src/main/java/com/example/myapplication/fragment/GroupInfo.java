@@ -60,7 +60,7 @@ public class GroupInfo extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_group_info, container, false);
 
-        ImageView ivInvite, ivNavigate, ivDelete, ivEdit;
+        ImageView ivInvite, ivNavigate, ivDelete, ivEdit, ivChat;
 
         tvName = view.findViewById(R.id.tvName);
         ivInvite = view.findViewById(R.id.ivInvite);
@@ -73,6 +73,7 @@ public class GroupInfo extends Fragment {
         tvParticipants = view.findViewById(R.id.tvParticipants);
         TextView tvType = view.findViewById(R.id.tvType);
         llEdit = view.findViewById(R.id.llEdit);
+        ivChat= view.findViewById(R.id.ivChat);
 
         final int index = requireArguments().getInt("index");
 
@@ -278,6 +279,12 @@ public class GroupInfo extends Fragment {
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
             fragmentTransaction.replace(getId(), dest);
             fragmentTransaction.commit();
+        });
+
+        ivChat.setOnClickListener(v -> {
+            Intent intent = new Intent(getContext(), ChatRoomActivity.class);
+            intent.putExtra("name", TestApplication.user.getProperty("username").toString());
+            startActivityForResult(intent, 1);
         });
 
 
