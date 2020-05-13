@@ -63,8 +63,7 @@ public class ChatRoomTest {
             @Override
             public void handleResponse(BackendlessUser response) {
                 TestApplication.user = response;
-                TestApplication.groups = new ArrayList<>();
-                TestApplication.group_place_users = new ArrayList<>();
+                TestApplication.group_place_user = new ArrayList<>();
             }
 
             @Override
@@ -95,7 +94,7 @@ public class ChatRoomTest {
         Thread.sleep(3000);
 
         // check that the group has been created
-        Assert.assertEquals(TestApplication.groups.get(0).getName(), "TestGroup");
+        Assert.assertEquals(TestApplication.group.getName(), "TestGroup");
 
         onView(withId(R.id.lvList))
                 .check(matches(isDisplayed()));
@@ -146,11 +145,11 @@ public class ChatRoomTest {
                 .check(matches(withText(containsString("Hello!"))));
 
 
-        final String channelName="chat "+ TestApplication.groups.get(TestApplication.position_selected_group).getName();
+        final String channelName="chat "+ TestApplication.group.getName();
         Channel channel = Backendless.Messaging.subscribe(channelName);
         PublishOptions publishOptions = new PublishOptions();
         publishOptions.setPublisherId("fabio");
-        publishOptions.putHeader( "groupId", TestApplication.groups.get(TestApplication.position_selected_group).getObjectId() );
+        publishOptions.putHeader( "groupId", TestApplication.group.getObjectId() );
 
         Backendless.Messaging.publish(channelName, "Hello test!",publishOptions, new AsyncCallback<MessageStatus>() {
             @Override
@@ -239,7 +238,7 @@ public class ChatRoomTest {
     public void deleteGroups() throws InterruptedException {
 
 
-        Backendless.Data.of(Group.class).remove(TestApplication.groups.get(0), new AsyncCallback<Long>() {
+        Backendless.Data.of(Group.class).remove(TestApplication.group, new AsyncCallback<Long>() {
             @Override
             public void handleResponse(Long response) {
                 Log.i("Group", response.toString());
@@ -250,7 +249,7 @@ public class ChatRoomTest {
 
             }
         });
-        Backendless.Data.of(Group_Place_User.class).remove(TestApplication.group_place_users.get(0), new AsyncCallback<Long>() {
+        Backendless.Data.of(Group_Place_User.class).remove(TestApplication.group_place_user.get(0), new AsyncCallback<Long>() {
             @Override
             public void handleResponse(Long response) {
                 Log.i("Group_place_user", response.toString());

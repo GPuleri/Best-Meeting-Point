@@ -31,6 +31,7 @@ import com.backendless.exceptions.BackendlessFault;
 import com.backendless.persistence.DataQueryBuilder;
 import com.backendless.persistence.LoadRelationsQueryBuilder;
 import com.example.myapplication.R;
+import com.example.myapplication.activity.ChatRoomActivity;
 import com.example.myapplication.activity.MapsActivity;
 import com.example.myapplication.adapter.ParticipantAdapter;
 import com.example.myapplication.data.Group;

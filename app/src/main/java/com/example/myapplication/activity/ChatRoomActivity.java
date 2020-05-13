@@ -65,13 +65,13 @@ public class ChatRoomActivity extends AppCompatActivity {
         mMessageAdapter.notifyDataSetChanged();
 
         // this will be the name of the chat channel
-        final String channelName="chat "+ TestApplication.groups.get(TestApplication.position_selected_group).getName();
+        final String channelName="chat "+ TestApplication.group.getName();
 
         //I subscribe to the communication channel with its API and set the message publishing options
         channel = Backendless.Messaging.subscribe(channelName);
         PublishOptions publishOptions = new PublishOptions();
         publishOptions.setPublisherId(TestApplication.user.getProperty("username").toString());
-        publishOptions.putHeader( "groupId", TestApplication.groups.get(TestApplication.position_selected_group).getObjectId() );
+        publishOptions.putHeader( "groupId", TestApplication.group.getObjectId() );
 
         //I join the channel
         channel.addJoinListener(new AsyncCallback<Void>() {
@@ -158,7 +158,7 @@ public class ChatRoomActivity extends AppCompatActivity {
         dataQuery.setOffset(0);
         dataQuery.setPageSize(100);
         dataQuery.setSortBy("created");
-        dataQuery.setWhereClause("groupId='"+TestApplication.groups.get(TestApplication.position_selected_group).getObjectId()+"'");
+        dataQuery.setWhereClause("groupId='"+TestApplication.group.getObjectId()+"'");
         Backendless.Data.of(ChatHistory.class).find(dataQuery, new AsyncCallback<List<ChatHistory>>() {
             @Override
             public void handleResponse(List<ChatHistory> response) {
