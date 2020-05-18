@@ -31,7 +31,6 @@ import com.backendless.exceptions.BackendlessFault;
 import com.backendless.persistence.DataQueryBuilder;
 import com.backendless.persistence.LoadRelationsQueryBuilder;
 import com.example.myapplication.data.Group;
-import com.example.myapplication.data.Group_Place_User;
 import com.example.myapplication.parser.DirectionsJSONParser;
 import com.example.myapplication.utility.GooglePlacesReadTask;
 import com.example.myapplication.R;
@@ -125,6 +124,9 @@ public class MapsActivity extends FragmentActivity implements OnMyLocationButton
     private Button btnVote; // A button used to vote among the best points
     private static boolean first_click = false; //Flag to know if we need to save the relation
 
+    public static boolean ultimo_passaggio = false;
+
+
     /**
      * It handles the creation of the activity initializating the needed objects
      */
@@ -143,7 +145,7 @@ public class MapsActivity extends FragmentActivity implements OnMyLocationButton
         markersTrips = new HashMap<>();
         TestApplication.best_places = new ArrayList<>();
         btnVote = findViewById(R.id.btnVote);
-
+        btnVote.setBackgroundResource(R.drawable.buttons_disabled);
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -173,7 +175,6 @@ public class MapsActivity extends FragmentActivity implements OnMyLocationButton
 //        btnBestPoint.setEnabled(false);
 
 
-
         // Only if every user already accepted the invitation load the best places
         DataQueryBuilder queryBuilder = DataQueryBuilder.create();
         queryBuilder.setWhereClause("myInvitation.objectId='" + TestApplication.group.getObjectId() + "'");
@@ -192,18 +193,25 @@ public class MapsActivity extends FragmentActivity implements OnMyLocationButton
                                     TestApplication.best_places = response;
                                     if (response.isEmpty()) {
                                         btnBestPoint.setEnabled(true);
+                                        btnBestPoint.setBackgroundResource(R.drawable.buttons2);
                                         btnVote.setEnabled(false);
+                                        btnVote.setBackgroundResource(R.drawable.buttons_disabled);
                                         first_click = true;
                                     } else {
-                                        if(TestApplication.check_best_place()){
+                                        if (TestApplication.check_best_place()) {
                                             btnBestPoint.setEnabled(false);
+                                            btnBestPoint.setBackgroundResource(R.drawable.buttons_disabled);
                                             btnVote.setEnabled(false);
-                                            //TODO: inserisco il punto del best meeting point
-                                            getLocationFromAddress(TestApplication.final_group_place.getFull_address());
+                                            btnVote.setBackgroundResource(R.drawable.buttons_disabled);
+                                            calculateBestMeetingPoint();
+                                            ultimo_passaggio = true;
                                         } else {
-                                            if(!TestApplication.group_place_user.getVoted())
+                                            if (!TestApplication.group_place_user.getVoted()){
                                                 btnVote.setEnabled(true);
+                                                btnVote.setBackgroundResource(R.drawable.buttons2);
+                                            }
                                             btnBestPoint.setEnabled(false);
+                                            btnBestPoint.setBackgroundResource(R.drawable.buttons_disabled);
                                             calculateBestMeetingPoint();
                                         }
                                     }
@@ -235,7 +243,9 @@ public class MapsActivity extends FragmentActivity implements OnMyLocationButton
                 if (btnBestPoint.isEnabled()) {
                     calculateBestMeetingPoint();
                     btnBestPoint.setEnabled(false);
+                    btnBestPoint.setBackgroundResource(R.drawable.buttons_disabled);
                     btnVote.setEnabled(true);
+                    btnVote.setBackgroundResource(R.drawable.buttons2);
                 } else
                     Toast.makeText(MapsActivity.this, "Disabled", Toast.LENGTH_LONG).show();
             }
@@ -247,7 +257,7 @@ public class MapsActivity extends FragmentActivity implements OnMyLocationButton
         btnVote.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(first_click){
+                if (first_click) {
                     Backendless.Data.of(Group.class).addRelation(TestApplication.group, "places", TestApplication.best_places, new AsyncCallback<Integer>() {
                         @Override
                         public void handleResponse(Integer response) {
@@ -412,7 +422,6 @@ public class MapsActivity extends FragmentActivity implements OnMyLocationButton
         googlePlacesUrl.append("&radius=" + 1000);
         googlePlacesUrl.append("&types=" + TestApplication.group.getType());
         googlePlacesUrl.append("&key=" + getString(R.string.google_maps_key));
-        Log.i("sitoweb", googlePlacesUrl.toString());
 
         // eseguo la classe GooglePlacesReadTask per visualizzare i place sulla mappa
         GooglePlacesReadTask googlePlacesReadTask = new GooglePlacesReadTask();
@@ -467,9 +476,11 @@ public class MapsActivity extends FragmentActivity implements OnMyLocationButton
             drawDirections(departureMarkers, marker);
         } else if (marker.getAlpha() == 0.4f || marker.getAlpha() == 0.99f) { // if is user departure
             if (!btnBestPoint.isEnabled()) {
-                changePolyline(markersPolylines.get(marker));
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                    setTextView(Objects.requireNonNull(markersTrips.get(marker)));
+                if (markersPolylines.get(marker) != null) {
+                    changePolyline(markersPolylines.get(marker));
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                        setTextView(Objects.requireNonNull(markersTrips.get(marker)));
+                    }
                 }
             }
         }
@@ -854,7 +865,7 @@ public class MapsActivity extends FragmentActivity implements OnMyLocationButton
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(resultCode==RESULT_OK){
+        if (resultCode == RESULT_OK) {
             recreate();
         }
     }

@@ -87,7 +87,11 @@ public class PlacesDisplayTask extends AsyncTask<Object, Integer, List<HashMap<S
                     }
                 });
             }
-            bestMarkers.add(googleMap.addMarker(markerOptions));
+            if (!MapsActivity.ultimo_passaggio)
+                bestMarkers.add(googleMap.addMarker(markerOptions));
+            else if (TestApplication.final_group_place.getName().equals(googlePlace.get("place_name")))
+                bestMarkers.add(googleMap.addMarker(markerOptions));
+
 
         }
 

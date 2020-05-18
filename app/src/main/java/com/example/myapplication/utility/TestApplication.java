@@ -78,11 +78,10 @@ public class TestApplication extends Application {
         if (flag) {
             int max = -1;
             for (Place placeTemp : best_places) {
-                if(placeTemp.getVotes() > max) {                    //TODO inserire il rating come ulteriore controllo
+                if (placeTemp.getVotes() > max) {
                     TestApplication.final_group_place = placeTemp;
                     max = placeTemp.getVotes();
                 }
-
             }
         }
         return flag;
