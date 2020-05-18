@@ -142,6 +142,8 @@ public class MapsActivity extends FragmentActivity implements OnMyLocationButton
         markersPolylines = new HashMap<>();
         markersTrips = new HashMap<>();
         TestApplication.best_places = new ArrayList<>();
+        btnVote = findViewById(R.id.btnVote);
+
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -171,11 +173,10 @@ public class MapsActivity extends FragmentActivity implements OnMyLocationButton
 //        btnBestPoint.setEnabled(false);
 
 
+
         // Only if every user already accepted the invitation load the best places
-        StringBuilder whereClause = new StringBuilder();
-        whereClause.append("myInvitation.objectId='").append(TestApplication.group.getObjectId()).append("'");
         DataQueryBuilder queryBuilder = DataQueryBuilder.create();
-        queryBuilder.setWhereClause(whereClause.toString());
+        queryBuilder.setWhereClause("myInvitation.objectId='" + TestApplication.group.getObjectId() + "'");
         Backendless.Data.of(BackendlessUser.class).find(queryBuilder, new AsyncCallback<List<BackendlessUser>>() {
             @Override
             public void handleResponse(List<BackendlessUser> response) {
@@ -194,12 +195,17 @@ public class MapsActivity extends FragmentActivity implements OnMyLocationButton
                                         btnVote.setEnabled(false);
                                         first_click = true;
                                     } else {
-//                                        if(response.size() == 1) {
-//                                             Le votazioni sono finite
-//                                        }
-                                        btnVote.setEnabled(true);
-                                        btnBestPoint.setEnabled(false);
-                                        calculateBestMeetingPoint();
+                                        if(TestApplication.check_best_place()){
+                                            btnBestPoint.setEnabled(false);
+                                            btnVote.setEnabled(false);
+                                            //TODO: inserisco il punto del best meeting point
+                                            getLocationFromAddress(TestApplication.final_group_place.getFull_address());
+                                        } else {
+                                            if(!TestApplication.group_place_user.getVoted())
+                                                btnVote.setEnabled(true);
+                                            btnBestPoint.setEnabled(false);
+                                            calculateBestMeetingPoint();
+                                        }
                                     }
                                     Log.i("place_count", "Invitations number:" + response.size());
                                 }
@@ -238,7 +244,6 @@ public class MapsActivity extends FragmentActivity implements OnMyLocationButton
         /*
          * Open the Vote Activity
          */
-        btnVote = findViewById(R.id.btnVote);
         btnVote.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -257,9 +262,14 @@ public class MapsActivity extends FragmentActivity implements OnMyLocationButton
                     });
                 }
 
+                Intent intent = new Intent(MapsActivity.this, VoteActivity.class);
+                startActivityForResult(intent, 2);
+
 
             }
         });
+
+
     }
 
     /**
@@ -402,31 +412,7 @@ public class MapsActivity extends FragmentActivity implements OnMyLocationButton
         googlePlacesUrl.append("&radius=" + 1000);
         googlePlacesUrl.append("&types=" + TestApplication.group.getType());
         googlePlacesUrl.append("&key=" + getString(R.string.google_maps_key));
-
-        // eseguo la classe GooglePlacesReadTask per visualizzare i place sulla mappa
-        GooglePlacesReadTask googlePlacesReadTask = new GooglePlacesReadTask();
-        Object[] toPass = new Object[3];
-        toPass[0] = mMap;
-        toPass[1] = googlePlacesUrl.toString();
-        toPass[2] = bestMarkers;
-        googlePlacesReadTask.execute(toPass);
-    }
-
-    /**
-     * Search close points to best meeting point and create markers of them.
-     * the function makes a url request to look for "restaurant" type places
-     * close to the coordinated one within 3km.
-     * after which, through the GooglePlacesReadTask class, it displays the Places found on the map,
-     * displaying the name of the restaurant and the street.
-     */
-    private void searchBestPoints2(List<Place> list) throws IOException, JSONException {
-
-        // creo la custom string per la richiesta url dei places
-        StringBuilder googlePlacesUrl = new StringBuilder("https://maps.googleapis.com/maps/api/place/details/json?");
-        for(Place place: list){
-            googlePlacesUrl.append("&placeid=" + place.getId_google_place());
-        }
-        googlePlacesUrl.append("&key=" + getString(R.string.google_maps_key));
+        Log.i("sitoweb", googlePlacesUrl.toString());
 
         // eseguo la classe GooglePlacesReadTask per visualizzare i place sulla mappa
         GooglePlacesReadTask googlePlacesReadTask = new GooglePlacesReadTask();
@@ -863,6 +849,14 @@ public class MapsActivity extends FragmentActivity implements OnMyLocationButton
 
     public static boolean getFirst_click() {
         return first_click;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode==RESULT_OK){
+            recreate();
+        }
     }
 
 }

@@ -67,10 +67,10 @@ public class PlacesDisplayTask extends AsyncTask<Object, Integer, List<HashMap<S
             markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
             markerOptions.alpha(0.5f);
 
-
-            if(MapsActivity.getFirst_click()){
+            if (MapsActivity.getFirst_click()) {
                 //Creation of place for database
                 Place temp_place = new Place();
+                temp_place.setName(googlePlace.get("place_name"));
                 temp_place.setFull_address(googlePlace.get("vicinity"));
                 temp_place.setId_google_place(googlePlace.get("reference"));
                 temp_place.setVotes(0);

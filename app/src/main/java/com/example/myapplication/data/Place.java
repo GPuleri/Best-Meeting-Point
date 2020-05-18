@@ -19,6 +19,7 @@ public class Place
   private Integer votes;
   private String objectId;
   private Date updated;
+  private String name;
   public String getId_google_place()
   {
     return id_google_place;
@@ -69,7 +70,17 @@ public class Place
     return updated;
   }
 
+  public String getName()
+  {
+    return name;
+  }
 
+  public void setName( String name )
+  {
+    this.name = name;
+  }
+
+                                                    
   public Place save()
   {
     return Backendless.Data.of( Place.class ).save( this );

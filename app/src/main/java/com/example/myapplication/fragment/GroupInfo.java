@@ -76,7 +76,7 @@ public class GroupInfo extends Fragment {
 
 
         final int index = requireArguments().getInt("index");
-        TestApplication.position_selected_group=index;
+        TestApplication.position_selected_group = index;
 
         tvName.setText(TestApplication.groups.get(index).getName());
         tvType.setText(TestApplication.kinds[java.util.Arrays.binarySearch(TestApplication.kind_codes,
@@ -96,6 +96,13 @@ public class GroupInfo extends Fragment {
                     @Override
                     public void handleResponse(List<Group_Place_User> response) {
                         TestApplication.group_place_users = response;
+
+                        for (Group_Place_User temp : TestApplication.group_place_users)
+                            if (temp.getOwnerId().equals(TestApplication.user.getUserId())){
+                                TestApplication.group_place_user = temp;
+                                Log.i("group_place_user", TestApplication.group_place_user.getObjectId());
+                            }
+
                         StringBuilder whereClause = new StringBuilder();
                         for (int i = 0; i < TestApplication.group_place_users.size(); i++) {
                             whereClause.append("group_user");
@@ -250,8 +257,7 @@ public class GroupInfo extends Fragment {
                     }
 
                 });
-            }
-            else {
+            } else {
                 TestApplication.hideSoftKeyboard(requireActivity());
                 tvParticipants.setVisibility(View.VISIBLE);
                 lvParticipants.setVisibility(View.VISIBLE);
