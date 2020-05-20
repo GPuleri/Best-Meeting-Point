@@ -80,7 +80,7 @@ public class MapsActivity extends FragmentActivity implements OnMyLocationButton
     private GoogleMap mMap; // A generic Google's map
 
     /**
-     * Inner class used for storing trip informations.
+     * Inner class used for storing trip information.
      */
     static class Trip {
         private int duration;
@@ -148,6 +148,9 @@ public class MapsActivity extends FragmentActivity implements OnMyLocationButton
         btnVote = findViewById(R.id.btnVote);
         btnVote.setBackgroundResource(R.drawable.buttons_disabled);
 
+        final int gpuIndex = getIntent().getIntExtra("gpuIndex", -1);
+
+
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -194,7 +197,7 @@ public class MapsActivity extends FragmentActivity implements OnMyLocationButton
                                     TestApplication.best_places = response;
                                     if (response.isEmpty()) {
                                         btnBestPoint.setEnabled(true);
-                                        btnBestPoint.setBackgroundResource(R.drawable.buttons2);
+                                        btnBestPoint.setBackgroundResource(R.drawable.buttons_orange);
                                         btnVote.setEnabled(false);
                                         btnVote.setBackgroundResource(R.drawable.buttons_disabled);
                                         first_click = true;
@@ -207,9 +210,9 @@ public class MapsActivity extends FragmentActivity implements OnMyLocationButton
                                             calculateBestMeetingPoint();
                                             ultimo_passaggio = true;
                                         } else {
-                                            if (!TestApplication.group_place_user.get(gpuIndex).getVoted()){
+                                            if (!TestApplication.group_place_user_groups.get(gpuIndex).getVoted()){
                                                 btnVote.setEnabled(true);
-                                                btnVote.setBackgroundResource(R.drawable.buttons2);
+                                                btnVote.setBackgroundResource(R.drawable.buttons_orange);
                                             }
                                             btnBestPoint.setEnabled(false);
                                             btnBestPoint.setBackgroundResource(R.drawable.buttons_disabled);
@@ -246,7 +249,7 @@ public class MapsActivity extends FragmentActivity implements OnMyLocationButton
                     btnBestPoint.setEnabled(false);
                     btnBestPoint.setBackgroundResource(R.drawable.buttons_disabled);
                     btnVote.setEnabled(true);
-                    btnVote.setBackgroundResource(R.drawable.buttons2);
+                    btnVote.setBackgroundResource(R.drawable.buttons_orange);
                 } else
                     Toast.makeText(MapsActivity.this, "Disabled", Toast.LENGTH_LONG).show();
             }
@@ -274,7 +277,7 @@ public class MapsActivity extends FragmentActivity implements OnMyLocationButton
                     });
                 }
 
-                Intent intent = new Intent(MapsActivity.this, VoteActivity.class);
+                Intent intent = new Intent(MapsActivity.this, VoteActivity.class).putExtra("gpuIndex", gpuIndex);
                 startActivityForResult(intent, 2);
 
 

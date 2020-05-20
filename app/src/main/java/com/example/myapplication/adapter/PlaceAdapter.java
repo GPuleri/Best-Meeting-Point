@@ -19,7 +19,7 @@ import com.example.myapplication.data.Place;
 import java.util.List;
 
 /**
- *
+ * adapter of a list of place
  */
 public class PlaceAdapter extends ArrayAdapter<Place> {
 
@@ -27,7 +27,7 @@ public class PlaceAdapter extends ArrayAdapter<Place> {
     private List<Place> places;
 
     /**
-     * Constructor that receives a Context object and a list of users
+     * Constructor that receives a Context object and a list of places
      */
     public PlaceAdapter(Context context, List<Place> list) {
         super(context, R.layout.row_places, list);
@@ -37,7 +37,7 @@ public class PlaceAdapter extends ArrayAdapter<Place> {
     }
 
     /**
-     * It set the details of every user inside the list
+     * It set the details of every place inside the list
      */
     @NonNull
     @Override

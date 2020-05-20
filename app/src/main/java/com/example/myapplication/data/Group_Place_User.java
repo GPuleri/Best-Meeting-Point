@@ -14,9 +14,8 @@ public class Group_Place_User
 {
   private Date updated;
   private String ownerId;
-  private Boolean voted;
+  private boolean voted = false;
   private String objectId;
-  private Boolean participating;
   private Date created;
   private boolean participating = true;
 
@@ -30,12 +29,12 @@ public class Group_Place_User
     return ownerId;
   }
 
-  public Boolean getVoted()
+  public boolean getVoted()
   {
     return voted;
   }
 
-  public void setVoted( Boolean voted )
+  public void setVoted( boolean voted )
   {
     this.voted = voted;
   }
@@ -45,15 +44,11 @@ public class Group_Place_User
     return objectId;
   }
 
-  public Boolean getParticipating()
+  public boolean getParticipating()
   {
     return participating;
   }
 
-  public void setParticipating( Boolean participating )
-  {
-    this.participating = participating;
-  }
 
   public Date getCreated()
   {

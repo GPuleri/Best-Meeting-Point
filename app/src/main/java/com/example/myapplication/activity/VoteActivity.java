@@ -21,6 +21,9 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.List;
 
+/**
+ * Activity that allow the user to vote the best place
+ */
 public class VoteActivity extends AppCompatActivity {
 
     ListView lvList;
@@ -33,6 +36,8 @@ public class VoteActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_vote);
 
+
+        final int gpuIndex = getIntent().getIntExtra("gpuIndex", -1);
         FloatingActionButton confirm = findViewById(R.id.confirmVote);
         lvList = findViewById(R.id.lvPlaces);
         adapter = new PlaceAdapter(VoteActivity.this, TestApplication.best_places);
@@ -47,8 +52,8 @@ public class VoteActivity extends AppCompatActivity {
                     @Override
                     public void handleResponse(Place response) {
                         Log.i("vote", place.getName() + " added one vote");
-                        TestApplication.group_place_user.setVoted(true);
-                        TestApplication.group_place_user.saveAsync(new AsyncCallback<Group_Place_User>() {
+                        TestApplication.group_place_user_groups.get(gpuIndex).setVoted(true);
+                        TestApplication.group_place_user_groups.get(gpuIndex).saveAsync(new AsyncCallback<Group_Place_User>() {
                             @Override
                             public void handleResponse(Group_Place_User response) {
                                 Log.i("group_place_user", "Voted successfully");

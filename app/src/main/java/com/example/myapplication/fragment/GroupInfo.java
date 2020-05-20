@@ -64,6 +64,7 @@ public class GroupInfo extends Fragment {
 
         ImageView ivInvite, ivNavigate, ivDelete, ivEdit, ivChat;
 
+        final int[] gpuIndex = new int[1];
         tvName = view.findViewById(R.id.tvName);
         ivInvite = view.findViewById(R.id.ivInvite);
         ivNavigate = view.findViewById(R.id.ivNavigate);
@@ -75,7 +76,7 @@ public class GroupInfo extends Fragment {
         tvParticipants = view.findViewById(R.id.tvParticipants);
         TextView tvType = view.findViewById(R.id.tvType);
         llEdit = view.findViewById(R.id.llEdit);
-        ivChat= view.findViewById(R.id.ivChat);
+        ivChat = view.findViewById(R.id.ivChat);
 
         final int index = requireArguments().getInt("index");
 
@@ -106,6 +107,12 @@ public class GroupInfo extends Fragment {
                         new AsyncCallback<List<Group_Place_User>>() {
                             @Override
                             public void handleResponse(List<Group_Place_User> response) {
+
+                                TestApplication.group_place_user_groups = response;
+                                for (int n = 0; n< response.size(); n++) {
+                                    if (response.get(n).getOwnerId().equals(TestApplication.user.getObjectId()))
+                                        gpuIndex[0] = n;
+                                }
                                 List<Boolean> participating = new ArrayList<>();
                                 StringBuilder whereClause = new StringBuilder();
 
@@ -255,8 +262,7 @@ public class GroupInfo extends Fragment {
                     }
 
                 });
-            }
-            else {
+            } else {
                 TestApplication.hideSoftKeyboard(requireActivity());
                 tvParticipants.setText(R.string.participants);
                 lvParticipants.setVisibility(View.VISIBLE);
@@ -270,6 +276,7 @@ public class GroupInfo extends Fragment {
                 Log.i("USERS", String.valueOf(user.getEmail()));
 
             Intent intent = new Intent(getContext(), MapsActivity.class);
+            intent.putExtra("gpuIndex", gpuIndex[0]);
             startActivityForResult(intent, 1);
         });
 
