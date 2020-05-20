@@ -23,14 +23,23 @@ public class TestApplication extends Application {
     public static final String SERVER_URL = "https://api.backendless.com";
 
     public static BackendlessUser user; // logged user
-    public static Place place; // place of the logged user
-    public static List<Group_Place_User> group_place_user; // group_place_user of the logged user
-    public static List<Group> invitation_group; // invitation of the logged user
-    public static List<BackendlessUser> usersAll; // all users in a specified group
-    public static List<Place> placesAll; // all places in a specified group
     public static List<BackendlessUser> users_active; // users taken into account in bmp calculation in a specified group
-    public static List<Place> places_active; // places taken into account in bmp calculation in a specified group
+    public static List<BackendlessUser> usersAll; // all users in a specified group
+
+    public static List<Group_Place_User> group_place_user; // group_place_user of the logged user
+
+    public static List<Group> invitation_group; // invitation of the logged user
     public static Group group; // group selected
+    public static List<Group> groups;
+
+
+    public static Place place; // place of the logged user
+    public static List<Place> placesAll; // all places in a specified group
+    public static List<Place> places_active; // places taken into account in bmp calculation in a specified group
+    public static List<Place> best_places;
+    public static Place final_group_place;
+
+
     public static final String[] kind_codes = {"bar", "cafe", "movie_theater", "night_club", "park", "restaurant"};
     public static final String[] kinds = {"Bar", "Cafe", "Movie Theater", "Night Club", "Park", "Restaurant"};
 
@@ -58,6 +67,23 @@ public class TestApplication extends Application {
         InputMethodManager inputMethodManager = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
         assert inputMethodManager != null;
         inputMethodManager.hideSoftInputFromWindow(activity.getCurrentFocus().getWindowToken(), 0);
+    }
+
+    public static boolean check_best_place() {
+        boolean flag = true;
+        for (Group_Place_User grTemp : group_place_user) {
+            flag = flag && grTemp.getVoted();
+        }
+        if (flag) {
+            int max = -1;
+            for (Place placeTemp : best_places) {
+                if (placeTemp.getVotes() > max) {
+                    TestApplication.final_group_place = placeTemp;
+                    max = placeTemp.getVotes();
+                }
+            }
+        }
+        return flag;
     }
 
 }

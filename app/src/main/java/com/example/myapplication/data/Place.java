@@ -1,3 +1,4 @@
+
 package com.example.myapplication.data;
 
 import com.backendless.Backendless;
@@ -11,50 +12,22 @@ import java.util.Date;
 
 public class Place
 {
-  private String city;
-  private String country;
+  private String id_google_place;
   private Date created;
+  private String full_address;
   private String ownerId;
-  private String address;
+  private Integer votes;
   private String objectId;
   private Date updated;
-  private String full_address;
-  private String id_google_place;
-
-  public String getId_google_place() {
+  private String name;
+  public String getId_google_place()
+  {
     return id_google_place;
   }
 
-  public void setId_google_place(String id_google_place) {
+  public void setId_google_place( String id_google_place )
+  {
     this.id_google_place = id_google_place;
-  }
-
-  public String getFull_address() {
-    return full_address;
-  }
-
-  public void setFull_address(String full_address) {
-    this.full_address = full_address;
-  }
-
-  public String getCity()
-  {
-    return city;
-  }
-
-  public void setCity( String city )
-  {
-    this.city = city;
-  }
-
-  public String getCountry()
-  {
-    return country;
-  }
-
-  public void setCountry( String country )
-  {
-    this.country = country;
   }
 
   public Date getCreated()
@@ -62,19 +35,29 @@ public class Place
     return created;
   }
 
+  public String getFull_address()
+  {
+    return full_address;
+  }
+
+  public void setFull_address( String full_address )
+  {
+    this.full_address = full_address;
+  }
+
   public String getOwnerId()
   {
     return ownerId;
   }
 
-  public String getAddress()
+  public Integer getVotes()
   {
-    return address;
+    return votes;
   }
 
-  public void setAddress( String address )
+  public void setVotes( Integer votes )
   {
-    this.address = address;
+    this.votes = votes;
   }
 
   public String getObjectId()
@@ -87,7 +70,17 @@ public class Place
     return updated;
   }
 
+  public String getName()
+  {
+    return name;
+  }
 
+  public void setName( String name )
+  {
+    this.name = name;
+  }
+
+                                                    
   public Place save()
   {
     return Backendless.Data.of( Place.class ).save( this );
@@ -148,4 +141,3 @@ public class Place
     Backendless.Data.of( Place.class ).find( queryBuilder, callback );
   }
 }
-

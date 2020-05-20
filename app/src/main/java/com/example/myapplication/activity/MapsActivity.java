@@ -24,7 +24,13 @@ import android.widget.Toast;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 
+import com.backendless.Backendless;
 import com.backendless.BackendlessUser;
+import com.backendless.async.callback.AsyncCallback;
+import com.backendless.exceptions.BackendlessFault;
+import com.backendless.persistence.DataQueryBuilder;
+import com.backendless.persistence.LoadRelationsQueryBuilder;
+import com.example.myapplication.data.Group;
 import com.example.myapplication.parser.DirectionsJSONParser;
 import com.example.myapplication.utility.GooglePlacesReadTask;
 import com.example.myapplication.R;
@@ -117,6 +123,10 @@ public class MapsActivity extends FragmentActivity implements OnMyLocationButton
     private TextView tvDuration; // A textview used to show the duration of a trip
     private Button btnBestPoint; // A button used to calculate the best point
     private Button btnVote; // A button used to vote among the best points
+    private static boolean first_click = false; //Flag to know if we need to save the relation
+
+    public static boolean ultimo_passaggio = false;
+
 
     /**
      * It handles the creation of the activity initializating the needed objects
@@ -134,6 +144,9 @@ public class MapsActivity extends FragmentActivity implements OnMyLocationButton
         polylines = new ArrayList<>();
         markersPolylines = new HashMap<>();
         markersTrips = new HashMap<>();
+        TestApplication.best_places = new ArrayList<>();
+        btnVote = findViewById(R.id.btnVote);
+        btnVote.setBackgroundResource(R.drawable.buttons_disabled);
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -160,20 +173,113 @@ public class MapsActivity extends FragmentActivity implements OnMyLocationButton
          * Calculate best meeting point
          */
         btnBestPoint = findViewById(R.id.btnBestpoint);
-        btnBestPoint.setClickable(true);
-        btnBestPoint.setOnClickListener(v -> {
-            if (!departureMarkersBMP.isEmpty()) {
-                calculateBestMeetingPoint();
-                btnBestPoint.setClickable(false);
+//        btnBestPoint.setEnabled(false);
+
+
+        // Only if every user already accepted the invitation load the best places
+        DataQueryBuilder queryBuilder = DataQueryBuilder.create();
+        queryBuilder.setWhereClause("myInvitation.objectId='" + TestApplication.group.getObjectId() + "'");
+        Backendless.Data.of(BackendlessUser.class).find(queryBuilder, new AsyncCallback<List<BackendlessUser>>() {
+            @Override
+            public void handleResponse(List<BackendlessUser> response) {
+                if (response.isEmpty()) {
+                    LoadRelationsQueryBuilder<Place> loadRelationsQueryBuilder;
+                    loadRelationsQueryBuilder = LoadRelationsQueryBuilder.of(Place.class);
+                    loadRelationsQueryBuilder.setRelationName("places");
+                    Backendless.Data.of(Group.class).loadRelations(TestApplication.group.getObjectId(),
+                            loadRelationsQueryBuilder,
+                            new AsyncCallback<List<Place>>() {
+                                @Override
+                                public void handleResponse(List<Place> response) {
+                                    TestApplication.best_places = response;
+                                    if (response.isEmpty()) {
+                                        btnBestPoint.setEnabled(true);
+                                        btnBestPoint.setBackgroundResource(R.drawable.buttons2);
+                                        btnVote.setEnabled(false);
+                                        btnVote.setBackgroundResource(R.drawable.buttons_disabled);
+                                        first_click = true;
+                                    } else {
+                                        if (TestApplication.check_best_place()) {
+                                            btnBestPoint.setEnabled(false);
+                                            btnBestPoint.setBackgroundResource(R.drawable.buttons_disabled);
+                                            btnVote.setEnabled(false);
+                                            btnVote.setBackgroundResource(R.drawable.buttons_disabled);
+                                            calculateBestMeetingPoint();
+                                            ultimo_passaggio = true;
+                                        } else {
+                                            if (!TestApplication.group_place_user.get(gpuIndex).getVoted()){
+                                                btnVote.setEnabled(true);
+                                                btnVote.setBackgroundResource(R.drawable.buttons2);
+                                            }
+                                            btnBestPoint.setEnabled(false);
+                                            btnBestPoint.setBackgroundResource(R.drawable.buttons_disabled);
+                                            calculateBestMeetingPoint();
+                                        }
+                                    }
+                                    Log.i("place_count", "Invitations number:" + response.size());
+                                }
+
+                                @Override
+                                public void handleFault(BackendlessFault fault) {
+                                    Log.e("error_places", fault.getMessage());
+                                }
+                            });
+
+
+                } else {
+                    Toast.makeText(MapsActivity.this, "There are still invitations unresolved", Toast.LENGTH_LONG).show();
+                }
+                Log.i("inv_count", "Invitations number:" + response.size());
+            }
+
+            @Override
+            public void handleFault(BackendlessFault fault) {
+                Log.e("Error_invitation", fault.getMessage());
             }
         });
+
+
+        btnBestPoint.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                if (btnBestPoint.isEnabled()) {
+                    calculateBestMeetingPoint();
+                    btnBestPoint.setEnabled(false);
+                    btnBestPoint.setBackgroundResource(R.drawable.buttons_disabled);
+                    btnVote.setEnabled(true);
+                    btnVote.setBackgroundResource(R.drawable.buttons2);
+                } else
+                    Toast.makeText(MapsActivity.this, "Disabled", Toast.LENGTH_LONG).show();
+            }
+        });
+
 
         /*
          * Open the Vote Activity
          */
-        btnVote = findViewById(R.id.btnVote);
-        btnVote.setOnClickListener(view ->
-                Toast.makeText(getBaseContext(), "Work in progress", Toast.LENGTH_SHORT).show());
+        btnVote.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (first_click) {
+                    Backendless.Data.of(Group.class).addRelation(TestApplication.group, "places", TestApplication.best_places, new AsyncCallback<Integer>() {
+                        @Override
+                        public void handleResponse(Integer response) {
+                            first_click = false;
+                            Log.i("relation_group_places", "DONE");
+                        }
+
+                        @Override
+                        public void handleFault(BackendlessFault fault) {
+                            Log.i("relation_group_places", fault.getMessage());
+                        }
+                    });
+                }
+
+                Intent intent = new Intent(MapsActivity.this, VoteActivity.class);
+                startActivityForResult(intent, 2);
+
+
+            }
+        });
     }
 
     /**
@@ -789,6 +895,18 @@ public class MapsActivity extends FragmentActivity implements OnMyLocationButton
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
 
+    }
+
+    public static boolean getFirst_click() {
+        return first_click;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK) {
+            recreate();
+        }
     }
 
 }

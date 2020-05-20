@@ -93,7 +93,8 @@
             android:background="@drawable/buttons_orange"
             android:text="@string/best"
             android:textColor="@color/white"
-            android:textSize="30sp" />
+            android:textSize="30sp"
+            android:enabled="false"/>
 
         <Button
             android:id="@+id/btnVote"
@@ -104,7 +105,8 @@
             android:background="@drawable/buttons_orange"
             android:text="@string/vote"
             android:textColor="@color/white"
-            android:textSize="30sp" />
+            android:textSize="30sp"
+            android:enabled="false"/>
     </LinearLayout>
 
 </LinearLayout>

@@ -36,6 +36,7 @@ import com.example.myapplication.activity.MapsActivity;
 import com.example.myapplication.adapter.ParticipantAdapter;
 import com.example.myapplication.data.Group;
 import com.example.myapplication.data.Group_Place_User;
+import com.example.myapplication.data.Place;
 import com.example.myapplication.utility.TestApplication;
 
 import java.util.ArrayList;

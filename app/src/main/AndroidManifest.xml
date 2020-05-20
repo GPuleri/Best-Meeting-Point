@@ -42,6 +42,8 @@
         <activity android:name=".fragment.ForwardingInvitations" />
         <activity android:name=".activity.MapsActivity" />
         <activity android:name=".activity.StreetViewActivity" />
+        <activity android:name=".activity.VoteActivity"></activity>
+
     </application>
 
 </manifest>
