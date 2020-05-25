@@ -39,6 +39,9 @@ public class DetailsActivity extends AppCompatActivity {
 
         String placeId = getIntent().getStringExtra("id");
 
+        System.out.println("ID: " + placeId);
+
+
         List<Place.Field> placeFields = Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.OPENING_HOURS, Place.Field.PHONE_NUMBER, Place.Field.PRICE_LEVEL, Place.Field.RATING, Place.Field.USER_RATINGS_TOTAL, Place.Field.VIEWPORT, Place.Field.UTC_OFFSET, Place.Field.WEBSITE_URI, Place.Field.PLUS_CODE);
 
         FetchPlaceRequest request = FetchPlaceRequest.newInstance(placeId, placeFields);
@@ -56,6 +59,7 @@ public class DetailsActivity extends AppCompatActivity {
             adapter = new DetailsAdapter(DetailsActivity.this, places);
             lvDetails.setAdapter(adapter);
 
+            /*
             System.out.println("nome: " + place.getName());
             System.out.println("ore: " + place.getOpeningHours());
             OpeningHours open = place.getOpeningHours();
@@ -74,7 +78,7 @@ public class DetailsActivity extends AppCompatActivity {
             System.out.println("UtcOffsetMinute: " + place.getUtcOffsetMinutes());
             System.out.println("viewport: " + place.getViewport());
             System.out.println("sito: " + place.getWebsiteUri());
-
+            */
 
             //Log.i(TAG, "Place found: " + place.getName());
         }).addOnFailureListener((exception) -> {
@@ -86,19 +90,5 @@ public class DetailsActivity extends AppCompatActivity {
             }
         });
 
-
-        /*
-        System.out.println("nome: " + place.getName());
-        places = new ArrayList<>();
-        places.add(place);
-
-        lvDetails = findViewById(R.id.lvDetails);
-        System.out.println("price level: " + place.getPriceLevel());
-        adapter = new DetailsAdapter(DetailsActivity.this, places);
-        System.out.println("rating: " + place.getRating());
-        lvDetails.setAdapter(adapter);
-
-
-         */
     }
 }

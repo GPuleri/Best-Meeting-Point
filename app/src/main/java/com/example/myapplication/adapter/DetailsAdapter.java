@@ -48,7 +48,7 @@ public class DetailsAdapter extends ArrayAdapter<Place> {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         convertView = inflater.inflate(R.layout.row_details, parent, false);
 
-        TextView title = convertView.findViewById(R.id.single_place_title);
+        TextView title = convertView.findViewById(R.id.single_details_title);
         TextView rating = convertView.findViewById(R.id.rating);
         TextView price = convertView.findViewById(R.id.prezzo);
         TextView orario = convertView.findViewById(R.id.orario);
@@ -56,7 +56,6 @@ public class DetailsAdapter extends ArrayAdapter<Place> {
         TextView url = convertView.findViewById(R.id.url);
 
         TextView ratingData = convertView.findViewById(R.id.ratingData);
-
         TextView priceData = convertView.findViewById(R.id.prezzoData);
         TextView lunedi = convertView.findViewById(R.id.lunedi);
         TextView martedi = convertView.findViewById(R.id.martedi);
@@ -65,7 +64,6 @@ public class DetailsAdapter extends ArrayAdapter<Place> {
         TextView venerdi = convertView.findViewById(R.id.venerdi);
         TextView sabato = convertView.findViewById(R.id.sabato);
         TextView domenica = convertView.findViewById(R.id.domenica);
-
         TextView urlData = convertView.findViewById(R.id.urlData);
         TextView celData = convertView.findViewById(R.id.numCel);
 
