@@ -85,13 +85,13 @@ public class DetailsAdapter extends ArrayAdapter<Place> {
             priceData.setText(places.get(position).getPriceLevel().toString());
 
         orario.setText("Orari:");
-        lunedi.setText(places.get(position).getOpeningHours().getWeekdayText().get(0).toString());
-        martedi.setText(places.get(position).getOpeningHours().getWeekdayText().get(1).toString());
-        mercoledi.setText(places.get(position).getOpeningHours().getWeekdayText().get(2).toString());
-        giovedi.setText(places.get(position).getOpeningHours().getWeekdayText().get(3).toString());
-        venerdi.setText(places.get(position).getOpeningHours().getWeekdayText().get(4).toString());
-        sabato.setText(places.get(position).getOpeningHours().getWeekdayText().get(5).toString());
-        domenica.setText(places.get(position).getOpeningHours().getWeekdayText().get(6).toString());
+        lunedi.setText(places.get(position).getOpeningHours().getWeekdayText().get(0));
+        martedi.setText(places.get(position).getOpeningHours().getWeekdayText().get(1));
+        mercoledi.setText(places.get(position).getOpeningHours().getWeekdayText().get(2));
+        giovedi.setText(places.get(position).getOpeningHours().getWeekdayText().get(3));
+        venerdi.setText(places.get(position).getOpeningHours().getWeekdayText().get(4));
+        sabato.setText(places.get(position).getOpeningHours().getWeekdayText().get(5));
+        domenica.setText(places.get(position).getOpeningHours().getWeekdayText().get(6));
 
         cel.setText("Telefono:");
         if (places.get(position).getPhoneNumber() == null)

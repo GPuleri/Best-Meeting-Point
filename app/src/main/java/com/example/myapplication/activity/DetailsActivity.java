@@ -23,15 +23,14 @@ import java.util.List;
 
 import static com.google.android.libraries.places.api.Places.createClient;
 
+/**
+ * Activity that show all the details about a place
+ */
 public class DetailsActivity extends AppCompatActivity {
 
-
-    //Place place;
     ListView lvDetails;
     DetailsAdapter adapter;
     List<Place> places;
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
