@@ -1,6 +1,7 @@
 package com.example.myapplication.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.example.myapplication.R;
+import com.example.myapplication.activity.DetailsActivity;
 import com.example.myapplication.activity.VoteActivity;
 import com.example.myapplication.data.Place;
 
@@ -46,6 +48,13 @@ public class PlaceAdapter extends ArrayAdapter<Place> {
         convertView = inflater.inflate(R.layout.row_places, parent, false);
 
         TextView title = convertView.findViewById(R.id.single_place_title);
+        title.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(context, DetailsActivity.class).putExtra("id", places.get(position).getId_google_place());
+                context.startActivity(i);
+            }
+        });
         TextView address = convertView.findViewById(R.id.single_place_address);
         title.setText(places.get(position).getName());
         address.setText(places.get(position).getFull_address());

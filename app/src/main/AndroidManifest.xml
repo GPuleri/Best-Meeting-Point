@@ -19,7 +19,8 @@
         android:roundIcon="@mipmap/ic_launcher_foreground"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".activity.ChatRoomActivity"></activity>
+        <activity android:name=".activity.DetailsActivity"></activity>
+        <activity android:name=".activity.ChatRoomActivity" />
 
         <meta-data
             android:name="com.google.android.gms.version"
@@ -42,8 +43,7 @@
         <activity android:name=".fragment.ForwardingInvitations" />
         <activity android:name=".activity.MapsActivity" />
         <activity android:name=".activity.StreetViewActivity" />
-        <activity android:name=".activity.VoteActivity"></activity>
-
+        <activity android:name=".activity.VoteActivity" />
     </application>
 
 </manifest>
