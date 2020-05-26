@@ -70,37 +70,56 @@ public class DetailsAdapter extends ArrayAdapter<Place> {
 
         title.setText(places.get(position).getName());
 
-        rating.setText("Voto:");
+        rating.setText("Rating:");
         if (places.get(position).getRating() == null)
-            ratingData.setText("voto non disponibile");
+            ratingData.setText("rating not available");
         else
             ratingData.setText(places.get(position).getRating().toString());
 
-        price.setText("Fascia Prezzo:");
+        price.setText("Level price::");
         if (places.get(position).getPriceLevel() == null)
-            priceData.setText("fascia di prezzo non disponibile");
+            priceData.setText("level price not available");
+        else if (places.get(position).getPriceLevel() == 0)
+            priceData.setText("free");
+        else if (places.get(position).getPriceLevel() == 1)
+            priceData.setText("$");
+        else if (places.get(position).getPriceLevel() == 2)
+            priceData.setText("$$");
+        else if (places.get(position).getPriceLevel() == 3)
+            priceData.setText("$$$");
         else
-            priceData.setText(places.get(position).getPriceLevel().toString());
+            priceData.setText("$$$$");
 
-        orario.setText("Orari:");
-        lunedi.setText(places.get(position).getOpeningHours().getWeekdayText().get(0));
-        martedi.setText(places.get(position).getOpeningHours().getWeekdayText().get(1));
-        mercoledi.setText(places.get(position).getOpeningHours().getWeekdayText().get(2));
-        giovedi.setText(places.get(position).getOpeningHours().getWeekdayText().get(3));
-        venerdi.setText(places.get(position).getOpeningHours().getWeekdayText().get(4));
-        sabato.setText(places.get(position).getOpeningHours().getWeekdayText().get(5));
-        domenica.setText(places.get(position).getOpeningHours().getWeekdayText().get(6));
+        orario.setText("Opening Hours:");
+        if (places.get(position).getOpeningHours() == null) {
+            lunedi.setText("Monday: not available");
+            martedi.setText("Tuesday: not available");
+            mercoledi.setText("Wednesday: not available");
+            giovedi.setText("Thursday: not available");
+            venerdi.setText("Friday: not available");
+            sabato.setText("Saturday: not available");
+            domenica.setText("Sunday: not available");
+        } else {
+            lunedi.setText(places.get(position).getOpeningHours().getWeekdayText().get(0));
+            martedi.setText(places.get(position).getOpeningHours().getWeekdayText().get(1));
+            mercoledi.setText(places.get(position).getOpeningHours().getWeekdayText().get(2));
+            giovedi.setText(places.get(position).getOpeningHours().getWeekdayText().get(3));
+            venerdi.setText(places.get(position).getOpeningHours().getWeekdayText().get(4));
+            sabato.setText(places.get(position).getOpeningHours().getWeekdayText().get(5));
+            domenica.setText(places.get(position).getOpeningHours().getWeekdayText().get(6));
+        }
 
-        cel.setText("Telefono:");
+
+        cel.setText("Phone number:");
         if (places.get(position).getPhoneNumber() == null)
-            celData.setText("numero di telefono non disponibile");
+            celData.setText("phone number not available");
         else
             celData.setText(places.get(position).getPhoneNumber());
 
 
-        url.setText("Sito internet:");
+        url.setText("Website:");
         if (places.get(position).getWebsiteUri() == null)
-            urlData.setText("sito internet non disponibile");
+            urlData.setText("website not available");
         else
             urlData.setText(places.get(position).getWebsiteUri().toString());
 

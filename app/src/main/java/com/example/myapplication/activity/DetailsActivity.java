@@ -59,6 +59,7 @@ public class DetailsActivity extends AppCompatActivity {
             adapter = new DetailsAdapter(DetailsActivity.this, places);
             lvDetails.setAdapter(adapter);
 
+
             /*
             System.out.println("nome: " + place.getName());
             System.out.println("ore: " + place.getOpeningHours());
