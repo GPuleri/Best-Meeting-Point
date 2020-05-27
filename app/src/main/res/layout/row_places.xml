@@ -28,13 +28,12 @@
                 android:textStyle="bold" />
 
             <TextView
-                android:id="@+id/single_place_address"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="5dp"
-                android:text="Indirizzo"
-                android:textSize="10dp" />
-
+            android:id="@+id/single_place_address"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:text="Indirizzo"
+            android:textSize="10dp" />
         </LinearLayout>
 
         <RadioButton
