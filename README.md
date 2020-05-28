@@ -16,7 +16,7 @@ L’utente potrà scegliere come recarsi nel luogo prestabilito (e.g. mezzi o au
 ![Architecture](architettura.jpg)
 
 ## Database Diagram
-![Database diagram](Database_diagram.jpg)
+![Database diagram](Database_Diagram.jpg)
 
 ## Backendless Architecture
 ![Backendless Architecture](backendless_architecture.jpg)
