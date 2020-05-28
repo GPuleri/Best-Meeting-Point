@@ -13,13 +13,13 @@ Quest’app rileverà le posizioni geografiche di ciascun utente e restituirà c
 L’utente potrà scegliere come recarsi nel luogo prestabilito (e.g. mezzi o auto), incrociando dati su traffico e mezzi pubblici e opzioni legate ai locali come le recensioni e il tipo (e.g. ristorante per cena o aperitivo).
 
 ## High Level Architecture
-![Architecture (1)](architettura.jpg)
+![Architecture](architettura.jpg)
 
 ## Database Diagram
 ![Database diagram](Database_diagram.jpg)
 
 ## Backendless Architecture
-
+![Backendless Architecture](backendless_architecture.jpg)
 
 ## Directories description
 All'interno della directory principale `app` troviamo 4 sottocartelle, le quali contengono a loro volta altre sottocartelle:
