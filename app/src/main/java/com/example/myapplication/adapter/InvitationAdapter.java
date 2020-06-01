@@ -1,5 +1,6 @@
 package com.example.myapplication.adapter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -19,6 +20,7 @@ import com.backendless.async.callback.AsyncCallback;
 import com.backendless.exceptions.BackendlessFault;
 import com.backendless.persistence.DataQueryBuilder;
 import com.example.myapplication.R;
+import com.example.myapplication.data.Place;
 import com.example.myapplication.utility.TestApplication;
 import com.example.myapplication.data.Group;
 import com.example.myapplication.data.Group_Place_User;
@@ -49,6 +51,7 @@ public class InvitationAdapter extends ArrayAdapter<Group> {
     /**
      * Get a View that displays the data at the specified position in the data set.
      */
+    @SuppressLint({"SetTextI18n", "ViewHolder"})
     @NonNull
     @Override
     public View getView(final int position, @Nullable View convertView, @NonNull ViewGroup parent) {
@@ -56,8 +59,8 @@ public class InvitationAdapter extends ArrayAdapter<Group> {
         LayoutInflater inflater= (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
         //specify a root view
+        assert inflater != null;
         convertView= inflater.inflate(R.layout.row_layout_invitation,parent,false);
-
 
         Button btnConfirm=convertView.findViewById(R.id.btnConfirm);
         Button btnDelete=convertView.findViewById(R.id.btnDelete);
@@ -79,12 +82,12 @@ public class InvitationAdapter extends ArrayAdapter<Group> {
         // I run the query which will return a list of users. Since for each group only the creator
         // of the group can invite me, the list will consist of 1 element.
         Backendless.Persistence.of(BackendlessUser.class).find(queryBuilder, new AsyncCallback<List<BackendlessUser>>() {
+            @SuppressLint("SetTextI18n")
             @Override
             public void handleResponse(List<BackendlessUser> response) {
                s[0] = response.get(0).getProperty("username").toString();
-                tvCreator.setText("invited by: "+ s[0]);
+                tvCreator.setText("created by: "+ s[0]);
                Log.i("MYAPP", s[0]);
-
             }
 
             @Override
@@ -95,105 +98,126 @@ public class InvitationAdapter extends ArrayAdapter<Group> {
 
         // if the user confirms the invitation, I insert the user into that group by making the appropriate
         // joins in the db and then I delete the invitation
-        btnConfirm.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(v.getContext(), "invitation accepted", Toast.LENGTH_SHORT).show();
-                Log.i("MYAPP", "bottone confirm cliccato");
+        btnConfirm.setOnClickListener(v -> {
+            Toast.makeText(v.getContext(), "invitation accepted", Toast.LENGTH_SHORT).show();
+            Log.i("MYAPP", "bottone confirm cliccato");
 
-                Group_Place_User gpu = new Group_Place_User();
-                Backendless.Data.of(Group_Place_User.class).save(gpu, new AsyncCallback<Group_Place_User>() {
-                    @Override
-                    public void handleResponse(Group_Place_User response) {
+            Group_Place_User gpu = new Group_Place_User();
+            Backendless.Data.of(Group_Place_User.class).save(gpu, new AsyncCallback<Group_Place_User>() {
+                @Override
+                public void handleResponse(Group_Place_User response) {
+                    Log.i("MYAPP", "creato group place user");
+                    ArrayList<Group_Place_User> l= new ArrayList<>();
+                    l.add(response);
+                    Backendless.Data.of(Group.class).addRelation(groups.get(position), "group_group", l,
+                            new AsyncCallback<Integer>() {
+                                @Override
+                                public void handleResponse(Integer response) {
+                                    Log.i("MYAPP", "aggiunta relation a group");
+                                }
 
-                        ArrayList l= new ArrayList<Group_Place_User>();
-                        l.add(response);
-                        Backendless.Data.of(Group.class).addRelation(groups.get(position), "group_group", l,
-                                new AsyncCallback<Integer>() {
-                                    @Override
-                                    public void handleResponse(Integer response) {
-                                        Log.i("MYAPP", "aggiunta group_group fatta in group");
-                                    }
+                                @Override
+                                public void handleFault(BackendlessFault fault) {
+                                    Log.e( "MYAPP", "server reported an error - " + fault.getMessage() );
+                                }
+                            });
 
-                                    @Override
-                                    public void handleFault(BackendlessFault fault) {
-                                        Log.e( "MYAPP", "server reported an error - " + fault.getMessage() );
-                                    }
-                                });
+                    //Log.i("MYAPP", "aggiunta group_group fatta in group");
 
+                    String where1 = "ownerId='"+TestApplication.user.getObjectId()+"'";
+                    DataQueryBuilder queryBuilder1 = DataQueryBuilder.create();
+                    queryBuilder1.setWhereClause(where1);
 
+                    Backendless.Persistence.of(Place.class).find(queryBuilder1, new AsyncCallback<List<Place>>() {
+                        @Override
+                        public void handleResponse(List<Place> response) {
+                            Log.i("posto",response.get(0).getFull_address());
+                            Backendless.Data.of(Place.class).addRelation(response.get(0), "group_place", l, new AsyncCallback<Integer>() {
+                                @Override
+                                public void handleResponse(Integer response) {
 
+                                }
 
-                        Backendless.Data.of(BackendlessUser.class).addRelation(TestApplication.user, "group_user", l,
-                                new AsyncCallback<Integer>() {
-                                    @Override
-                                    public void handleResponse(Integer response) {
-                                        Log.i("MYAPP", "aggiunta group_user fatta in user");
-                                    }
+                                @Override
+                                public void handleFault(BackendlessFault fault) {
+                                    Log.e( "MYAPP", "server reported an error - " + fault.getMessage() );
+                                }
+                            });
+                        }
 
-                                    @Override
-                                    public void handleFault(BackendlessFault fault) {
-                                        Log.e( "MYAPP", "server reported an error - " + fault.getMessage() );
-                                    }
-                                });
-
-
-
-                        ArrayList<Group> groupCollection = new ArrayList <Group>();
-                        groupCollection.add(groups.get(position));
-                        Backendless.Data.of("Users").deleteRelation(TestApplication.user.getProperties(), "myInvitation", groupCollection,
-                                new AsyncCallback<Integer>() {
-                                    @Override
-                                    public void handleResponse(Integer response) {
-                                        Log.i( "MYAPP", "relation has been deleted");
-                                        groups.remove(position);
-                                        notifyDataSetChanged();
-                                    }
-
-                                    @Override
-                                    public void handleFault(BackendlessFault fault) {
-                                        Log.e( "MYAPP", "server reported an error - " + fault.getMessage() );
-                                    }
-                                });
+                        @Override
+                        public void handleFault(BackendlessFault fault) {
+                            Log.e( "MYAPP", "server reported an error - " + fault.getMessage() );
+                        }
+                    });
 
 
 
-                    }
+                    Backendless.Data.of(BackendlessUser.class).addRelation(TestApplication.user, "group_user", l,
+                            new AsyncCallback<Integer>() {
+                                @Override
+                                public void handleResponse(Integer response) {
+                                    Log.i("MYAPP", "aggiunta group_user fatta in user");
+                                }
 
-                    @Override
-                    public void handleFault(BackendlessFault fault) {
+                                @Override
+                                public void handleFault(BackendlessFault fault) {
+                                    Log.e( "MYAPP", "server reported an error - " + fault.getMessage() );
+                                }
+                            });
 
-                    }
-                });
-            }
+
+
+                    ArrayList<Group> groupCollection = new ArrayList<>();
+                    groupCollection.add(groups.get(position));
+                    Backendless.Data.of("Users").deleteRelation(TestApplication.user.getProperties(), "myInvitation", groupCollection,
+                            new AsyncCallback<Integer>() {
+                                @Override
+                                public void handleResponse(Integer response) {
+                                    Log.i( "MYAPP", "relation has been deleted");
+                                    groups.remove(position);
+                                    notifyDataSetChanged();
+                                }
+
+                                @Override
+                                public void handleFault(BackendlessFault fault) {
+                                    Log.e( "MYAPP", "server reported an error - " + fault.getMessage() );
+                                }
+                            });
+
+
+                }
+
+                @Override
+                public void handleFault(BackendlessFault fault) {
+
+                }
+            });
         });
 
 
 
         //if the user refuses the invitation I delete it
-        btnDelete.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(v.getContext(), "invitation declined", Toast.LENGTH_SHORT).show();
-                Log.i("MYAPP", "bottone delete cliccato");
+        btnDelete.setOnClickListener(v -> {
+            Toast.makeText(v.getContext(), "invitation declined", Toast.LENGTH_SHORT).show();
+            Log.i("MYAPP", "bottone delete cliccato");
 
-                ArrayList<Group> groupCollection = new ArrayList <Group>();
-                groupCollection.add(groups.get(position));
-                Backendless.Data.of("Users").deleteRelation(TestApplication.user.getProperties(), "myInvitation", groupCollection,
-                        new AsyncCallback<Integer>() {
-                            @Override
-                            public void handleResponse(Integer response) {
-                                Log.i( "MYAPP", "relation has been deleted");
-                                groups.remove(position);
-                                notifyDataSetChanged();
-                            }
+            ArrayList<Group> groupCollection = new ArrayList<>();
+            groupCollection.add(groups.get(position));
+            Backendless.Data.of("Users").deleteRelation(TestApplication.user.getProperties(), "myInvitation", groupCollection,
+                    new AsyncCallback<Integer>() {
+                        @Override
+                        public void handleResponse(Integer response) {
+                            Log.i( "MYAPP", "relation has been deleted");
+                            groups.remove(position);
+                            notifyDataSetChanged();
+                        }
 
-                            @Override
-                            public void handleFault(BackendlessFault fault) {
-                                Log.e( "MYAPP", "server reported an error - " + fault.getMessage() );
-                            }
-                        });
-            }
+                        @Override
+                        public void handleFault(BackendlessFault fault) {
+                            Log.e( "MYAPP", "server reported an error - " + fault.getMessage() );
+                        }
+                    });
         });
 
 

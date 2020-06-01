@@ -13,17 +13,15 @@ import java.util.Date;
 public class Group_Place_User
 {
   private Date updated;
-  private String objectId;
   private String ownerId;
+  private boolean voted = false;
+  private String objectId;
   private Date created;
+  private boolean participating = true;
+
   public Date getUpdated()
   {
     return updated;
-  }
-
-  public String getObjectId()
-  {
-    return objectId;
   }
 
   public String getOwnerId()
@@ -31,12 +29,40 @@ public class Group_Place_User
     return ownerId;
   }
 
+  public boolean getVoted()
+  {
+    return voted;
+  }
+
+  public void setVoted( boolean voted )
+  {
+    this.voted = voted;
+  }
+
+  public String getObjectId()
+  {
+    return objectId;
+  }
+
+  public boolean getParticipating()
+  {
+    return participating;
+  }
+
+
   public Date getCreated()
   {
     return created;
   }
 
-                                                    
+  public boolean isParticipating() {
+    return participating;
+  }
+
+  public void setParticipating(boolean participating) {
+    this.participating = participating;
+  }
+
   public Group_Place_User save()
   {
     return Backendless.Data.of( Group_Place_User.class ).save( this );

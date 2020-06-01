@@ -29,10 +29,11 @@ public class ParticipantAdapterTest {
     private ParticipantAdapter iAdapter;
 
     @Before
-    public void setUp() throws InterruptedException {
+    public void setUp() {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
-        ArrayList<BackendlessUser> data = new ArrayList<BackendlessUser>();
+        ArrayList<BackendlessUser> data = new ArrayList<>();
+        ArrayList<Boolean> b = new ArrayList<>();
 
 
         u1 = new BackendlessUser();
@@ -41,6 +42,7 @@ public class ParticipantAdapterTest {
         u1.setProperty("name", "name1");
         u1.setProperty("username", "username1");
         u1.setProperty("surname", "surname2");
+        u1.setProperty("objectId", "ID");
 
         u2 = new BackendlessUser();
         u2.setEmail("prova1@mail.it");
@@ -48,17 +50,21 @@ public class ParticipantAdapterTest {
         u2.setProperty("name", "name1");
         u2.setProperty("username", "username2");
         u2.setProperty("surname", "surname2");
+        u2.setProperty("objectId", "ID");
 
         data.add(u1);
         data.add(u2);
-        iAdapter = new ParticipantAdapter(appContext, data);
 
+        b.add(true);
+        b.add(true);
+
+        iAdapter = new ParticipantAdapter(appContext, data, b);
     }
 
     @Test
     public void testGetItem() {
         assertEquals("User was expected.", u2.getEmail(),
-                ((BackendlessUser) iAdapter.getItem(1)).getEmail());
+                (iAdapter.getItem(1)).getEmail());
     }
 
     @Test
@@ -69,10 +75,10 @@ public class ParticipantAdapterTest {
     @Test
     public void testGetView() {
         View view = iAdapter.getView(0, null, null);
-        TextView tvUsername = (TextView) view.findViewById(R.id.tvUsername);
-        TextView tvName = (TextView) view.findViewById(R.id.tvName);
-        TextView tvEmail = (TextView) view.findViewById(R.id.tvEmail);
-        TextView tvSurname = (TextView) view.findViewById(R.id.tvSurname);
+        TextView tvUsername = view.findViewById(R.id.tvUsername);
+        TextView tvName = view.findViewById(R.id.tvName);
+        TextView tvEmail = view.findViewById(R.id.tvEmail);
+        TextView tvSurname = view.findViewById(R.id.tvSurname);
 
         assertNotNull(tvUsername);
         assertNotNull(tvName);
@@ -86,10 +92,10 @@ public class ParticipantAdapterTest {
 
 
          view = iAdapter.getView(1, null, null);
-          tvUsername = (TextView) view.findViewById(R.id.tvUsername);
-          tvName = (TextView) view.findViewById(R.id.tvName);
-          tvEmail = (TextView) view.findViewById(R.id.tvEmail);
-          tvSurname = (TextView) view.findViewById(R.id.tvSurname);
+          tvUsername = view.findViewById(R.id.tvUsername);
+          tvName = view.findViewById(R.id.tvName);
+          tvEmail = view.findViewById(R.id.tvEmail);
+          tvSurname = view.findViewById(R.id.tvSurname);
 
         assertNotNull(tvUsername);
         assertNotNull(tvName);
